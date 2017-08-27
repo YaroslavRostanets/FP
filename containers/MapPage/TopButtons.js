@@ -2,11 +2,12 @@
  * Created by Yaroslav on 26.08.2017.
  */
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { View, TouchableHighlight, Text } from 'react-native';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import store from '../../store/configureStore'
 import * as uiActions from '../../actions/uiActions'
+import MenuButton from '../../svg/icons'
 
 class TopButtons extends Component {
 
@@ -19,19 +20,21 @@ class TopButtons extends Component {
 
         return (
             <View style={styles.topButtons} menuOpen={menuOpen}>
+                <MenuButton />
                 <TouchableHighlight onPress={this.toggleMenu.bind(this)} style={styles.stdBut}>
                     <Text>
-                        true
+                        lala
                     </Text>
                 </TouchableHighlight>
 
                 <TouchableHighlight style={styles.stdBut}>
                     <Text>
-                        false
+                        la
                     </Text>
                 </TouchableHighlight>
             </View>
         );
+
     }
 }
 

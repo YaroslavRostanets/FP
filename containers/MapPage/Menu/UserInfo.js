@@ -2,7 +2,7 @@
  * Created by Yaroslav on 26.08.2017.
  */
 import React, { Component } from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import { Text, View, Image, TouchableHighlight, StyleSheet } from 'react-native';
 
 class UserInfo extends Component {
 
@@ -10,7 +10,7 @@ class UserInfo extends Component {
         return (
             <View style={styles.userInfo}>
                 <View style={styles.imgCont}>
-                    <Image style={styles.avatar} source={require('../../../images/photo.jpg')}></Image>
+                    <Image resizeMode='contain' style={styles.avatar} source={require('../../../images/photo.jpg')}></Image>
                 </View>
                 <View>
                     <Text style={styles.name}>Kim chen</Text>
@@ -56,14 +56,14 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 35
+        marginRight: 35,
     },
     avatar: {
-        display: 'flex',
-        flexGrow: 1,
-        borderTopRightRadius: 40,
-        overflow: 'hidden'
-
+        overlayColor: '#F3F6F8',
+        resizeMode: 'contain',
+        width: 75,
+        height: 75,
+        borderRadius: 150
     },
     name: {
         color: '#5093DF',
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         color: '#5093DF',
     },
     rankCont: {
-        marginTop: 10
+        marginTop: 7
     },
     raite: {
         display: 'flex',
@@ -92,9 +92,10 @@ const styles = StyleSheet.create({
         borderColor: '#FFFFFF',
         textAlign: 'center',
         color: '#FFFFFF',
-        fontSize: 13,
+        fontSize: 12,
         marginRight: 1,
-        textAlignVertical: 'center'
+        textAlignVertical: 'center',
+        lineHeight: 15
     },
     oneP: {
         width: 15,
@@ -107,7 +108,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 13,
         color: '#FFFFFF',
-        textAlignVertical: 'center'
+        textAlignVertical: 'center',
+        lineHeight: 15
     }
 
 

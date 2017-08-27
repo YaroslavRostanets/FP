@@ -6,6 +6,7 @@ import { Text, View, StyleSheet, Animated, Dimensions } from 'react-native';
 import { connect } from 'react-redux'
 import store from '../../../store/configureStore'
 import UserInfo from './UserInfo'
+import MenuList from './MenuList'
 
 
 class Menu extends Component {
@@ -47,6 +48,7 @@ class Menu extends Component {
         return (
             <Animated.View style={{...this.menuStyles,marginLeft: fadeAnim}} menuOpen={menuOpen}>
                 <UserInfo/>
+                <MenuList />
                     <Text>Menu2</Text>
                     <Text>{+menuOpen}</Text>
                     <Text>
