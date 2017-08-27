@@ -16,9 +16,7 @@ class Menu extends Component {
 
         this.menuStyles = {
             width: "80%",
-            backgroundColor: "red",
-            borderWidth: 1,
-            borderColor: "#000000",
+            backgroundColor: "#FFFFFF",
             flex: 0,
             position: "relative",
             zIndex: 9,
