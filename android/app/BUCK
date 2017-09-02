@@ -45,12 +45,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.fp",
+    package = "com.fpark",
 )
 
 android_resource(
     name = "res",
-    package = "com.fp",
+    package = "com.fpark",
     res = "src/main/res",
 )
 

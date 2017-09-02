@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import store from '../../store/configureStore'
 import * as uiActions from '../../actions/uiActions'
-import MenuButton from '../../svg/icons'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class TopButtons extends Component {
 
@@ -20,17 +20,12 @@ class TopButtons extends Component {
 
         return (
             <View style={styles.topButtons} menuOpen={menuOpen}>
-                <MenuButton />
                 <TouchableHighlight onPress={this.toggleMenu.bind(this)} style={styles.stdBut}>
-                    <Text>
-                        lala
-                    </Text>
+                    <Icon name="reorder" style={styles.ico} />
                 </TouchableHighlight>
 
                 <TouchableHighlight style={styles.stdBut}>
-                    <Text>
-                        la
-                    </Text>
+                    <Icon name="map-marker" style={styles.ico} />
                 </TouchableHighlight>
             </View>
         );
@@ -56,7 +51,14 @@ const styles = {
         borderRadius: 3,
         backgroundColor: '#F2F5F7',
         borderWidth: 1,
-        borderColor: '#D3DFE1'
+        borderColor: '#D3DFE1',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    ico: {
+        color: "#6F7071",
+        fontSize: 26
     }
 };
 

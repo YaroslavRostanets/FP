@@ -12,7 +12,7 @@ import {
   View
 } from 'react-native';
 
-export default class FP extends Component {
+export default class FPark extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('FP', () => FP);
+AppRegistry.registerComponent('FPark', () => FPark);

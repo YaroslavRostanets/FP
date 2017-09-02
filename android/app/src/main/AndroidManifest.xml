@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fp"
+    package="com.fpark"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -8,7 +8,7 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="22" />
 
     <application
       android:name=".MainApplication"
@@ -27,7 +27,7 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-      <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCDYGg5Ia7wILorj2sEeCDAzw5OlsCVXUM"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCDYGg5Ia7wILorj2sEeCDAzw5OlsCVXUM"/>
     </application>
 
 </manifest>
