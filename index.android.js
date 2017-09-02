@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import App from './containers/App'
 import store from './store/configureStore'
 
-export default class FPark extends Component {
+export default class FP extends Component {
     render() {
         return (
             <Provider store={store}>
@@ -17,4 +17,4 @@ export default class FPark extends Component {
 
 
 
-AppRegistry.registerComponent('FPark', () => FPark);
+AppRegistry.registerComponent('FP', () => FP);

@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "FPark-tvOS.app"
-               BlueprintName = "FPark-tvOS"
-               ReferencedContainer = "container:FPark.xcodeproj">
+               BuildableName = "FP-tvOS.app"
+               BlueprintName = "FP-tvOS"
+               ReferencedContainer = "container:FP.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "FPark-tvOSTests.xctest"
-               BlueprintName = "FPark-tvOSTests"
-               ReferencedContainer = "container:FPark.xcodeproj">
+               BuildableName = "FP-tvOSTests.xctest"
+               BlueprintName = "FP-tvOSTests"
+               ReferencedContainer = "container:FP.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "FPark-tvOSTests.xctest"
-               BlueprintName = "FPark-tvOSTests"
-               ReferencedContainer = "container:FPark.xcodeproj">
+               BuildableName = "FP-tvOSTests.xctest"
+               BlueprintName = "FP-tvOSTests"
+               ReferencedContainer = "container:FP.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "FPark-tvOS.app"
-            BlueprintName = "FPark-tvOS"
-            ReferencedContainer = "container:FPark.xcodeproj">
+            BuildableName = "FP-tvOS.app"
+            BlueprintName = "FP-tvOS"
+            ReferencedContainer = "container:FP.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "FPark-tvOS.app"
-            BlueprintName = "FPark-tvOS"
-            ReferencedContainer = "container:FPark.xcodeproj">
+            BuildableName = "FP-tvOS.app"
+            BlueprintName = "FP-tvOS"
+            ReferencedContainer = "container:FP.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -113,9 +113,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "FPark-tvOS.app"
-            BlueprintName = "FPark-tvOS"
-            ReferencedContainer = "container:FPark.xcodeproj">
+            BuildableName = "FP-tvOS.app"
+            BlueprintName = "FP-tvOS"
+            ReferencedContainer = "container:FP.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

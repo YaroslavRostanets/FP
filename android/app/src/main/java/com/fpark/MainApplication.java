@@ -1,4 +1,4 @@
-package com.fpark;
+package com.FP;
 
 import android.app.Application;
 
