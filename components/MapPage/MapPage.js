@@ -6,6 +6,7 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import MapView from 'react-native-maps';
 import Menu from '../../containers/MapPage/Menu/Menu';
 import TopButtons from '../../containers/MapPage/TopButtons'
+import ParkTabs from '../../containers/MapPage/ParkTabs/ParkTabs'
 
 class MapPage extends Component {
     goToDetail(){
@@ -28,6 +29,7 @@ class MapPage extends Component {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421}}
                     />
+                    <ParkTabs/>
                 </View>
             </View>
         )
