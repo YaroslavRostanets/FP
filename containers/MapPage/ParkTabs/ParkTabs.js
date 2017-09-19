@@ -5,30 +5,12 @@
 import React, { Component } from 'react';
 import { View, FlatList, Text, TouchableHighlight } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import TabSelector from '../../../containers/MapPage/ParkTabs/TabSelector'
+import  FastParking from '../../../containers/MapPage/ParkTabs/FastParking'
 
 class ParkTabs extends Component {
 
     render() {
-        const parkExample = [{
-            key: 1,
-            lat: 52,
-            lon: 53,
-            onWeekdays: '8-22',
-            onSaturday: '12-15',
-            onSunday: '15-19',
-            time: '2h'
-        },
-        {
-            key: 3,
-            lat: 53,
-            lon: 54,
-            onWeekdays: '8-22',
-            onSaturday: '12-15',
-            onSunday: '15-19',
-            time: '2h'
-            }
-
-        ];
 
         const menuOpen = this.props.menuOpen;
 
@@ -36,30 +18,14 @@ class ParkTabs extends Component {
             <View style={styles.parkTabs}>
                 <View style={styles.botCont}>
                     <View style={styles.tabCont}>
-                        <FlatList style={{height: 100}}
-                            data={parkExample}
-                            renderItem={({item}) => (
-                                <View style={{height: 100}}>
-                                    <Text>{item.key}</Text>
-                                </View>
-                            )}
-                        />
-                        <View style={styles.tabSel}>
-                            <TouchableHighlight style={styles.oneTabBut}>
-                                <Text>Fast</Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight style={styles.oneTabBut}>
-                                <Text>
-                                    S
-                                </Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight style={styles.oneTabBut}>
-                                <Text>
-                                    La
-                                </Text>
-                            </TouchableHighlight>
-                        </View>
+                        <FastParking />
                     </View>
+                    <TabSelector />
+                    <TouchableHighlight style={styles.centerBut}>
+                        <Text style={styles.centerButText}>
+                            Start(78)
+                        </Text>
+                    </TouchableHighlight>
                 </View>
             </View>
         );
@@ -87,7 +53,11 @@ const styles = {
         width: '100%'
     },
     tabCont: {
-        maxHeight: 400
+        borderStyle: 'solid',
+        borderColor: '#EDEDED',
+        borderWidth: 1,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 3
     },
     parkList: {
         backgroundColor: '#FFFFFF',
@@ -96,23 +66,22 @@ const styles = {
         borderColor: '#EDEDED',
         position: 'relative'
     },
-    tabSel: {
-        display: "flex",
-        justifyContent: 'space-between',
-        flexDirection: "row"
-    },
-    oneTabBut: {
-        backgroundColor: '#FFFFFF',
-        width: '32%',
-        height: 105,
+    centerBut: {
+        height: 48,
+        marginTop: 7,
+        marginLeft: 5,
+        marginRight: 5,
+        marginBottom: 0,
+        backgroundColor: '#FF6D64',
+        borderRadius: 3,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        flexDirection: 'column',
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: '#EDEDED',
-        position: 'relative'
+        flexGrow: 1
+    },
+    centerButText: {
+        fontSize: 16,
+        color: '#FFFFFF'
     }
 
 };
