@@ -3,6 +3,11 @@
  */
 import React, { Component } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
+import { createIconSetFromFontello } from 'react-native-vector-icons';
+import fontelloConfig from '../../../src/config.json';
+import { connect } from 'react-redux'
+
+const CustIcon = createIconSetFromFontello(fontelloConfig);
 
 class TabSelector extends Component {
 
@@ -11,17 +16,22 @@ class TabSelector extends Component {
         return(
             <View style={styles.tabSel}>
                 <TouchableHighlight style={styles.oneTabBut}>
-                    <Text>Fast</Text>
+                    <View style={styles.align}>
+                        <CustIcon name="rocket" style={styles.tabIcon}/>
+                        <Text style={styles.tabDescr}>Fast parking</Text>
+                    </View>
                 </TouchableHighlight>
                 <TouchableHighlight style={styles.oneTabBut}>
-                    <Text>
-                        S
-                    </Text>
+                    <View style={styles.align}>
+                        <CustIcon name="filter" style={styles.tabIcon}/>
+                        <Text style={styles.tabDescr}>Filter</Text>
+                    </View>
                 </TouchableHighlight>
                 <TouchableHighlight style={styles.oneTabBut}>
-                    <Text>
-                        La
-                    </Text>
+                    <View style={styles.align}>
+                        <CustIcon name="loupe" style={styles.tabIcon}/>
+                        <Text style={styles.tabDescr}>Search</Text>
+                    </View>
                 </TouchableHighlight>
             </View>
         )
@@ -46,7 +56,26 @@ const styles = {
         borderStyle: 'solid',
         borderColor: '#EDEDED',
         position: 'relative'
+    },
+    align: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    tabDescr: {
+        fontSize: 16,
+        color: '#6F7071'
+    },
+    tabIcon: {
+        fontSize: 40,
+        marginBottom: 5
     }
 };
 
-export default TabSelector
+function mapStateToProps (store) {
+    return {
+        activeTab: store.ui.activeTab
+    }
+}
+
+export default connect(mapStateToProps)(TabSelector);

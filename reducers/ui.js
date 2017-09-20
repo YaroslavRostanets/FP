@@ -4,7 +4,8 @@
 import {TOGGLE_MENU} from '../constants/UI'
 
 const initialState = {
-    menuOpen: false
+    menuOpen: false,
+    activeTab: 'FastParking'
 };
 
 export default function ui(state = initialState, action) {

@@ -11,3 +11,11 @@ export function toggleMenu(menuState) {
     }
 
 }
+
+export function toggleTab(activeTab) {
+
+    return {
+        type: TOGGLE_TAB,
+        payload: activeTab
+    }
+}

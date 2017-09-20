@@ -4,6 +4,11 @@
 
 import React, { Component } from 'react';
 import { View, Text, FlatList } from 'react-native';
+//import { createIconSetFromFontello } from 'react-native-vector-icons';
+//import fontelloConfig from '../../../src/config.json';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+//const CustIcon = createIconSetFromFontello(fontelloConfig);
 
 class FastParking extends Component {
 
@@ -59,14 +64,21 @@ class FastParking extends Component {
             <FlatList style={styles.fastParking}
                 data={parkExample}
                 renderItem={({item}) => (
-                    <View style={styles.oneRow}>
+                    <View id={item.key} style={styles.oneRow}>
                         <View style={styles.imgCont}>
+                            <Icon style={styles.timer} name="circle-thin"/>
                             <Text style={styles.icoTime}>2h</Text>
                         </View>
                         <View style={styles.content}>
-
+                            <Text style={styles.distance}>
+                                200m
+                            </Text>
+                            <View style={styles.time}>
+                                <Text style={styles.onDays}>{item.onWeekdays}</Text>
+                                <Text style={styles.onDays}>({item.onSaturday})</Text>
+                                <Text style={styles.onSunday}>{item.onSunday}</Text>
+                            </View>
                         </View>
-                        <Text>{item.key}</Text>
                     </View>
                 )}
             />
@@ -99,8 +111,8 @@ const styles = {
     icoTime: {
         color: '#5093DF',
         position: 'absolute',
-        left: 19,
-        top: 17,
+        left: 13,
+        top: 13,
         fontSize: 15
     },
     content: {
@@ -108,6 +120,26 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between'
+    },
+    timer: {
+        fontSize: 50
+    },
+    time: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+    },
+    onDays: {
+        color: '#6F7071',
+        fontSize: 16,
+        paddingRight: 7,
+        marginRight: 7,
+        borderRightColor: '#B6B6B6',
+        borderRightWidth: 1,
+    },
+    onSunday: {
+        fontSize: 16,
+        color: '#FB0007'
     }
 };
 
