@@ -4,21 +4,37 @@
 
 import React, { Component } from 'react';
 import { View, FlatList, Text, TouchableHighlight } from 'react-native';
+import { connect } from 'react-redux';
+import {FAST_PARKING, FILTER, SEARCH} from '../../../constants/UI';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import TabSelector from '../../../containers/MapPage/ParkTabs/TabSelector'
-import  FastParking from '../../../containers/MapPage/ParkTabs/FastParking'
+import TabSelector from '../../../containers/MapPage/ParkTabs/TabSelector';
+import  FastParking from './FastParkingTab';
+import  FilterTab from './FilterTab';
+import SearchTab from './SearchTab';
 
 class ParkTabs extends Component {
 
     render() {
-
+        const activeTab = this.props.activeTab;
         const menuOpen = this.props.menuOpen;
 
         return (
             <View style={styles.parkTabs}>
                 <View style={styles.botCont}>
                     <View style={styles.tabCont}>
-                        <FastParking />
+                        {((activeTab)=>{
+                            switch(activeTab) {
+                                case FAST_PARKING:
+                                    return (<FastParking />);
+                                case FILTER:
+                                    return (<FilterTab/>);
+                                case SEARCH:
+                                    return (<SearchTab/>);
+                                default:
+                                    return (<FastParking />);
+                            }
+                        })(activeTab)}
+
                     </View>
                     <TabSelector />
                     <TouchableHighlight style={styles.centerBut}>
@@ -86,6 +102,12 @@ const styles = {
 
 };
 
+function mapStateToProps (state) {
+    return {
+        activeTab: state.ui.activeTab
+    }
+}
 
-export default ParkTabs
+
+export default connect(mapStateToProps)(ParkTabs)
 

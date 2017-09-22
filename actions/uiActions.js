@@ -1,7 +1,10 @@
 /**
  * Created by Yaroslav on 26.08.2017.
  */
-import { TOGGLE_MENU } from '../constants/UI'
+import {
+    TOGGLE_MENU,
+    TOGGLE_TAB
+} from '../constants/UI'
 
 export function toggleMenu(menuState) {
 

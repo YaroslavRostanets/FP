@@ -44,15 +44,15 @@ class FastParking extends Component {
                 lat: 53,
                 lon: 54,
                 onWeekdays: '8-22',
-                onSaturday: '12-15',
-                onSunday: '15-19',
+                onSaturday: '10-15',
+                onSunday: '15-17',
                 time: '2h'
             },
             {
                 key: 6,
                 lat: 53,
                 lon: 54,
-                onWeekdays: '8-22',
+                onWeekdays: '7-15',
                 onSaturday: '12-15',
                 onSunday: '15-19',
                 time: '2h'

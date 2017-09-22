@@ -3,6 +3,10 @@
  */
 import React, { Component } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
+import { bindActionCreators } from 'redux'
+import store from '../../../store/configureStore'
+import * as uiActions from '../../../actions/uiActions'
+import {FAST_PARKING, FILTER, SEARCH} from '../../../constants/UI'
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../src/config.json';
 import { connect } from 'react-redux'
@@ -11,23 +15,27 @@ const CustIcon = createIconSetFromFontello(fontelloConfig);
 
 class TabSelector extends Component {
 
+    setActiveTab(activeTab){
+        this.props.uiActions.toggleTab(activeTab);
+    }
+
     render(){
 
         return(
             <View style={styles.tabSel}>
-                <TouchableHighlight style={styles.oneTabBut}>
+                <TouchableHighlight onPress={this.setActiveTab.bind(this,FAST_PARKING)} style={styles.oneTabBut}>
                     <View style={styles.align}>
                         <CustIcon name="rocket" style={styles.tabIcon}/>
                         <Text style={styles.tabDescr}>Fast parking</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.oneTabBut}>
+                <TouchableHighlight onPress={this.setActiveTab.bind(this,FILTER)} style={styles.oneTabBut}>
                     <View style={styles.align}>
                         <CustIcon name="filter" style={styles.tabIcon}/>
                         <Text style={styles.tabDescr}>Filter</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.oneTabBut}>
+                <TouchableHighlight onPress={this.setActiveTab.bind(this,SEARCH)} style={styles.oneTabBut}>
                     <View style={styles.align}>
                         <CustIcon name="loupe" style={styles.tabIcon}/>
                         <Text style={styles.tabDescr}>Search</Text>
@@ -78,4 +86,10 @@ function mapStateToProps (store) {
     }
 }
 
-export default connect(mapStateToProps)(TabSelector);
+function mapDispatchToProps(dispatch) {
+    return {
+        uiActions: bindActionCreators(uiActions, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabSelector);
