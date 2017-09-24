@@ -4,12 +4,13 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import store from '../../../store/configureStore'
 import * as uiActions from '../../../actions/uiActions'
 import {FAST_PARKING, FILTER, SEARCH} from '../../../constants/UI'
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../src/config.json';
-import { connect } from 'react-redux'
+
 
 const CustIcon = createIconSetFromFontello(fontelloConfig);
 
@@ -23,22 +24,27 @@ class TabSelector extends Component {
 
         return(
             <View style={styles.tabSel}>
-                <TouchableHighlight onPress={this.setActiveTab.bind(this,FAST_PARKING)} style={styles.oneTabBut}>
+                <TouchableHighlight onPress={this.setActiveTab.bind(this,FAST_PARKING)}
+                                    style={(this.props.activeTab == FAST_PARKING)?{...styles.oneTabBut,...styles.activeTab}:styles.oneTabBut}>
                     <View style={styles.align}>
-                        <CustIcon name="rocket" style={styles.tabIcon}/>
-                        <Text style={styles.tabDescr}>Fast parking</Text>
+                        <CustIcon name="rocket" style={(this.props.activeTab == FAST_PARKING)?{...styles.tabIcon,...styles.activeText}:styles.tabIcon}/>
+                        <Text style={(this.props.activeTab == FAST_PARKING)?{...styles.tabDescr,...styles.activeText}:styles.tabDescr}>
+                            Fast parking
+                        </Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight onPress={this.setActiveTab.bind(this,FILTER)} style={styles.oneTabBut}>
+                <TouchableHighlight onPress={this.setActiveTab.bind(this,FILTER)}
+                                    style={(this.props.activeTab == FILTER)?{...styles.oneTabBut,...styles.activeTab}:styles.oneTabBut}>
                     <View style={styles.align}>
-                        <CustIcon name="filter" style={styles.tabIcon}/>
-                        <Text style={styles.tabDescr}>Filter</Text>
+                        <CustIcon name="filter" style={(this.props.activeTab == FILTER)?{...styles.tabIcon,...styles.activeText}:styles.tabIcon}/>
+                        <Text style={(this.props.activeTab == FILTER)?{...styles.tabDescr,...styles.activeText}:styles.tabDescr}>Filter</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight onPress={this.setActiveTab.bind(this,SEARCH)} style={styles.oneTabBut}>
+                <TouchableHighlight onPress={this.setActiveTab.bind(this,SEARCH)}
+                                    style={(this.props.activeTab == SEARCH)?{...styles.oneTabBut,...styles.activeTab}:styles.oneTabBut}>
                     <View style={styles.align}>
-                        <CustIcon name="loupe" style={styles.tabIcon}/>
-                        <Text style={styles.tabDescr}>Search</Text>
+                        <CustIcon name="loupe" style={(this.props.activeTab == SEARCH)?{...styles.tabIcon,...styles.activeText}:styles.tabIcon}/>
+                        <Text style={(this.props.activeTab == SEARCH)?{...styles.tabDescr,...styles.activeText}:styles.tabDescr}>Search</Text>
                     </View>
                 </TouchableHighlight>
             </View>
@@ -77,6 +83,12 @@ const styles = {
     tabIcon: {
         fontSize: 40,
         marginBottom: 5
+    },
+    activeText: {
+        color: '#5093DF'
+    },
+    activeTab: {
+        borderTopColor: '#FFFFFF'
     }
 };
 

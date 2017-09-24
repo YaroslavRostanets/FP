@@ -73,7 +73,8 @@ const styles = {
         borderColor: '#EDEDED',
         borderWidth: 1,
         backgroundColor: '#FFFFFF',
-        borderRadius: 3
+        borderRadius: 3,
+        marginBottom: -1
     },
     parkList: {
         backgroundColor: '#FFFFFF',
