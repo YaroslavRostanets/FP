@@ -38,6 +38,7 @@ class FilterTab extends Component {
 
         const { selected } = this.state;
 
+        /*
         return (
             <View style={styles.filterTab}>
                 <View style={styles.oneRow}>
@@ -53,8 +54,7 @@ class FilterTab extends Component {
                                 <CheckboxField
                                     onSelect={this.selectCheckbox}
                                     selected={selected}
-                                    label="Mon-Fry"
-                                    labelSide="right"
+                                    labelSide="left"
                                 >
                                     <Icon name="check" color="#fff" />
                                 </CheckboxField>
@@ -63,7 +63,6 @@ class FilterTab extends Component {
                                 <CheckboxField
                                     onSelect={this.selectCheckbox2}
                                     selected={selected}
-                                    label="Sat"
                                     labelSide="right"
                                 >
                                     <Icon name="check" color="#fff" />
@@ -74,12 +73,30 @@ class FilterTab extends Component {
                     </View>
                 </View>
                 <View style={styles.oneRow}>
-
+                    <CheckboxField
+                        onSelect={this.selectCheckbox}
+                        selected={selected}
+                        label="Accept terms and conditions"
+                        labelSide="right"
+                    >
+                        <Icon name="check" color="#fff" />
+                    </CheckboxField>
                 </View>
                 <View style={{...styles.oneRow,borderBottomWidth: 0}}>
 
                 </View>
             </View>
+        )
+        */
+        return (
+            <CheckboxField
+                onSelect={this.selectCheckbox}
+                selected={selected}
+                label="Accept terms and conditions"
+                labelSide="right"
+            >
+                <Icon name="check" color="#fff" />
+            </CheckboxField>
         )
     }
 }
