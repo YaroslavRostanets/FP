@@ -9,6 +9,7 @@
   "dependencies": {
     "react": "16.0.0-alpha.12",
     "react-native": "^0.48.0",
+    "react-native-checkbox-field": "^2.0.2",
     "react-native-deprecated-custom-components": "^0.1.1",
     "react-native-maps": "^0.16.2",
     "react-native-shadow": "^1.2.1",
