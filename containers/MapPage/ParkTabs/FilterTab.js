@@ -38,7 +38,6 @@ class FilterTab extends Component {
 
         const { selected } = this.state;
 
-        /*
         return (
             <View style={styles.filterTab}>
                 <View style={styles.oneRow}>
@@ -50,25 +49,36 @@ class FilterTab extends Component {
                             Day2:
                         </Text>
                         <View style={styles.checkbox}>
-                            <View>
+                            <View style={{...styles.oneCheck,marginLeft: -20, width: 125, marginRight: 8}}>
                                 <CheckboxField
                                     onSelect={this.selectCheckbox}
                                     selected={selected}
-                                    labelSide="left"
+                                    labelSide="right"
+                                    label="Mon-Fry"
                                 >
                                     <Icon name="check" color="#fff" />
                                 </CheckboxField>
                             </View>
-                            <View>
+                            <View style={{...styles.oneCheck, width: 95}}>
                                 <CheckboxField
                                     onSelect={this.selectCheckbox2}
                                     selected={selected}
                                     labelSide="right"
+                                    label="Sat"
                                 >
                                     <Icon name="check" color="#fff" />
                                 </CheckboxField>
                             </View>
-
+                            <View style={{...styles.oneCheck, width: 98}}>
+                                <CheckboxField
+                                    onSelect={this.selectCheckbox2}
+                                    selected={selected}
+                                    labelSide="right"
+                                    label="Sun"
+                                >
+                                    <Icon name="check" color="#fff" />
+                                </CheckboxField>
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -87,17 +97,7 @@ class FilterTab extends Component {
                 </View>
             </View>
         )
-        */
-        return (
-            <CheckboxField
-                onSelect={this.selectCheckbox}
-                selected={selected}
-                label="Accept terms and conditions"
-                labelSide="right"
-            >
-                <Icon name="check" color="#fff" />
-            </CheckboxField>
-        )
+
     }
 }
 
@@ -141,7 +141,12 @@ const styles = {
     },
     checkbox: {
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
+        width: "100%"
+    },
+    oneCheck: {
+        width: 120,
+        marginLeft: -20
     }
 };
 
