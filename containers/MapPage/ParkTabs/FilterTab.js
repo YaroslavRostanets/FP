@@ -3,40 +3,73 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-
+import { View, Text, Button, TimePickerAndroid } from 'react-native';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../src/config.json';
-
 import CheckboxField from 'react-native-checkbox-field'; // Field with label
-import { Checkbox } from 'react-native-checkbox-field'; // Checkbox only
-
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+import {MONFRY, SAT, SUN} from '../../../constants/Filter'
 
 const CustIcon = createIconSetFromFontello(fontelloConfig);
 
 class FilterTab extends Component {
 
     state = {
-        selected: false,
-        selected2: true
+        MONFRY: true,
+        SAT: false,
+        SUN: true
     };
 
-    selectCheckbox = () => {
+    selectCheckbox = (selectedDays) => {
+        console.log(selectedDays);
+
+        switch(selectedDays) {
+            case MONFRY:
+                this.setState({
+                    MONFRY: !this.state.MONFRY
+                });
+                break;
+            case SAT:
+                this.setState({
+                    SAT: !this.state.SAT
+                });
+                break;
+            case SUN:
+                this.setState({
+                    SUN: !this.state.SUN
+                });
+                break;
+            default :
+                console.log("Error, Ошибка установки дней");
+        }
+
         this.setState({
-            selected: !this.state.selected,
-        });
+            selectedDays: false
+        })
+
     };
 
-    selectCheckbox2 = () => {
-        this.setState({
-            selected2: !this.state.selected2,
-        });
+    onTest = () => {
+        try {
+            const {action, hour, minute} = TimePickerAndroid.open({
+                hour: 14,
+                minute: 0,
+                is24Hour: false, // Will display '2 PM'
+            });
+            if (action !== TimePickerAndroid.dismissedAction) {
+                // Selected hour (0-23), minute (0-59)
+            }
+        } catch ({code, message}) {
+            console.warn('Cannot open time picker', message);
+        }
     };
 
     render(){
 
-        const { selected } = this.state;
+        const monFry = this.state.MONFRY;
+        const sat = this.state.SAT;
+        const sun = this.state.SUN;
 
         return (
             <View style={styles.filterTab}>
@@ -46,54 +79,65 @@ class FilterTab extends Component {
                     </View>
                     <View style={styles.rightPart}>
                         <Text style={styles.topDescr}>
-                            Day2:
+                            Day:
                         </Text>
                         <View style={styles.checkbox}>
-                            <View style={{...styles.oneCheck,marginLeft: -20, width: 125, marginRight: 8}}>
+                            <View style={{...styles.oneCheck,marginLeft: -20, width: "auto"}}>
                                 <CheckboxField
-                                    onSelect={this.selectCheckbox}
-                                    selected={selected}
+                                    onSelect={this.selectCheckbox.bind(this,MONFRY)}
+                                    selected={monFry}
                                     labelSide="right"
                                     label="Mon-Fry"
+                                    labelStyle={styles.labelStyle}
                                 >
                                     <Icon name="check" color="#fff" />
                                 </CheckboxField>
                             </View>
-                            <View style={{...styles.oneCheck, width: 95}}>
+                            <View style={{...styles.oneCheck, width: "auto"}}>
                                 <CheckboxField
-                                    onSelect={this.selectCheckbox2}
-                                    selected={selected}
+                                    onSelect={this.selectCheckbox.bind(this, SAT)}
+                                    selected={sat}
                                     labelSide="right"
                                     label="Sat"
+                                    labelStyle={styles.labelStyle}
                                 >
                                     <Icon name="check" color="#fff" />
                                 </CheckboxField>
                             </View>
-                            <View style={{...styles.oneCheck, width: 98}}>
+                            <View style={{...styles.oneCheck, width: "auto"}}>
                                 <CheckboxField
-                                    onSelect={this.selectCheckbox2}
-                                    selected={selected}
+                                    onSelect={this.selectCheckbox.bind(this, SUN)}
+                                    selected={sun}
                                     labelSide="right"
                                     label="Sun"
+                                    labelStyle={styles.labelStyle}
                                 >
                                     <Icon name="check" color="#fff" />
                                 </CheckboxField>
                             </View>
+
                         </View>
                     </View>
                 </View>
-                <View style={styles.oneRow}>
-                    <CheckboxField
-                        onSelect={this.selectCheckbox}
-                        selected={selected}
-                        label="Accept terms and conditions"
-                        labelSide="right"
-                    >
-                        <Icon name="check" color="#fff" />
-                    </CheckboxField>
+                <View style={{...styles.oneRow}}>
+                    <View style={styles.iconWrap}>
+                        <CustIcon name="clock" style={styles.icon} />
+                    </View>
+                    <View style={styles.rightPart}>
+                        <Text style={styles.topDescr}>
+                            Time:
+                        </Text>
+                        <View style={styles.selTime}>
+                            <Button onPress={this.onTest.bind(this)}
+                                    title="Learn More"
+                                    color="#841584" />
+                        </View>
+                    </View>
                 </View>
-                <View style={{...styles.oneRow,borderBottomWidth: 0}}>
-
+                <View style={{...styles.oneRow,borderBottomWidth:0}}>
+                    <View style={styles.iconWrap}>
+                        <CustIcon name="clock" style={styles.icon} />
+                    </View>
                 </View>
             </View>
         )
@@ -146,7 +190,20 @@ const styles = {
     },
     oneCheck: {
         width: 120,
-        marginLeft: -20
+        marginLeft: -20,
+        flexGrow: 1
+    },
+    labelStyle: {
+        fontSize: 14,
+        color: "#6F7071",
+        marginLeft: 8
+    },
+    checkboxStyle: {
+        width: 24,
+        height: 24
+    },
+    selTime: {
+
     }
 };
 
