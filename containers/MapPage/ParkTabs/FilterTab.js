@@ -53,9 +53,9 @@ class FilterTab extends Component {
     onTest = () => {
         try {
             const {action, hour, minute} = TimePickerAndroid.open({
-                hour: 14,
+                hour: 10,
                 minute: 0,
-                is24Hour: false, // Will display '2 PM'
+                is24Hour: true
             });
             if (action !== TimePickerAndroid.dismissedAction) {
                 // Selected hour (0-23), minute (0-59)
@@ -63,6 +63,11 @@ class FilterTab extends Component {
         } catch ({code, message}) {
             console.warn('Cannot open time picker', message);
         }
+
+        function action() {
+            console.log("lala");
+        }
+
     };
 
     render(){
