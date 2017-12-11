@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Button, TimePickerAndroid } from 'react-native';
+import { View, Text, TouchableHighlight, TimePickerAndroid } from 'react-native';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../src/config.json';
 import CheckboxField from 'react-native-checkbox-field'; // Field with label
@@ -50,22 +50,21 @@ class FilterTab extends Component {
 
     };
 
-    onTest = () => {
+    async filterSetTime() {
         try {
-            const {action, hour, minute} = TimePickerAndroid.open({
-                hour: 10,
+            const {action, hour, minute} = await TimePickerAndroid.open({
+                hour: 14,
                 minute: 0,
                 is24Hour: true
             });
             if (action !== TimePickerAndroid.dismissedAction) {
-                // Selected hour (0-23), minute (0-59)
+                console.log("hour",hour);
+            }
+            if (action !== TimePickerAndroid.timeSetAction) {
+                console.log("hour",hour);
             }
         } catch ({code, message}) {
             console.warn('Cannot open time picker', message);
-        }
-
-        function action() {
-            console.log("lala");
         }
 
     };
@@ -133,15 +132,39 @@ class FilterTab extends Component {
                             Time:
                         </Text>
                         <View style={styles.selTime}>
-                            <Button onPress={this.onTest.bind(this)}
-                                    title="Learn More"
-                                    color="#841584" />
+                            <Text>
+                                from
+                            </Text>
+                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this)}>
+                                <View style={styles.setTimeIn}>
+                                    <Icon name="clock-o" />
+                                    <Text>
+                                       14
+                                    </Text>
+                                </View>
+                            </TouchableHighlight>
+                            <Text>
+                                to
+                            </Text>
+                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this)}>
+                                <View style={styles.setTimeIn}>
+                                    <Icon name="clock-o" />
+                                    <Text>
+                                        16
+                                    </Text>
+                                </View>
+                            </TouchableHighlight>
                         </View>
                     </View>
                 </View>
                 <View style={{...styles.oneRow,borderBottomWidth:0}}>
                     <View style={styles.iconWrap}>
-                        <CustIcon name="clock" style={styles.icon} />
+                        <Icon name="hourglass-o" style={styles.icon} />
+                    </View>
+                    <View style={styles.rightPart}>
+                        <Text style={styles.topDescr}>
+                            Hours:
+                        </Text>
                     </View>
                 </View>
             </View>
@@ -208,7 +231,17 @@ const styles = {
         height: 24
     },
     selTime: {
-
+        display: "flex",
+        flexDirection: "row"
+    },
+    selTimeText: {
+        fontSize: 20,
+        color: "#FFFFFF"
+    },
+    setTimeIn: {
+        display: "flex",
+        flexDirection: "row",
+        color: "#FFFFFF"
     }
 };
 
