@@ -5,3 +5,6 @@
 export const MONFRY = 'MONFRY';
 export const SAT = 'SAT';
 export const SUN = 'SUN';
+
+export const FROM = 'FROM';
+export const TO = 'TO';

@@ -9,7 +9,7 @@ import fontelloConfig from '../../../src/config.json';
 import CheckboxField from 'react-native-checkbox-field'; // Field with label
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import {MONFRY, SAT, SUN} from '../../../constants/Filter'
+import {MONFRY, SAT, SUN, FROM, TO} from '../../../constants/Filter'
 
 const CustIcon = createIconSetFromFontello(fontelloConfig);
 
@@ -18,11 +18,12 @@ class FilterTab extends Component {
     state = {
         MONFRY: true,
         SAT: false,
-        SUN: true
+        SUN: true,
+        filterFrom: "14-00",
+        filterTo: "16-00"
     };
 
     selectCheckbox = (selectedDays) => {
-        console.log(selectedDays);
 
         switch(selectedDays) {
             case MONFRY:
@@ -50,18 +51,27 @@ class FilterTab extends Component {
 
     };
 
-    async filterSetTime() {
+    async filterSetTime(fromOrTo) {
         try {
             const {action, hour, minute} = await TimePickerAndroid.open({
-                hour: 14,
+                hour: 12,
                 minute: 0,
                 is24Hour: true
             });
             if (action !== TimePickerAndroid.dismissedAction) {
-                console.log("hour",hour);
+                var returnTime = `${hour}-${minute}`;
+                if(fromOrTo == FROM){
+                    this.setState({
+                        filterFrom: returnTime
+                    });
+                } else if (fromOrTo == TO) {
+                    this.setState({
+                        filterTo: returnTime
+                    });
+                }
             }
             if (action !== TimePickerAndroid.timeSetAction) {
-                console.log("hour",hour);
+
             }
         } catch ({code, message}) {
             console.warn('Cannot open time picker', message);
@@ -74,6 +84,9 @@ class FilterTab extends Component {
         const monFry = this.state.MONFRY;
         const sat = this.state.SAT;
         const sun = this.state.SUN;
+        const filterFrom = this.state.filterFrom;
+        const filterTo = this.state.filterTo;
+
 
         return (
             <View style={styles.filterTab}>
@@ -132,25 +145,25 @@ class FilterTab extends Component {
                             Time:
                         </Text>
                         <View style={styles.selTime}>
-                            <Text>
+                            <Text style={styles.grayText}>
                                 from
                             </Text>
-                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this)}>
+                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this,"FROM")}>
                                 <View style={styles.setTimeIn}>
-                                    <Icon name="clock-o" />
-                                    <Text>
-                                       14
+                                    <Icon name="clock-o" style={styles.btnIcon} />
+                                    <Text style={styles.txtIcon}>
+                                        {filterFrom}
                                     </Text>
                                 </View>
                             </TouchableHighlight>
-                            <Text>
+                            <Text style={styles.grayText}>
                                 to
                             </Text>
-                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this)}>
+                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this, TO)}>
                                 <View style={styles.setTimeIn}>
-                                    <Icon name="clock-o" />
-                                    <Text>
-                                        16
+                                    <Icon name="clock-o" style={styles.btnIcon} />
+                                    <Text style={styles.txtIcon}>
+                                        {filterTo}
                                     </Text>
                                 </View>
                             </TouchableHighlight>
@@ -232,6 +245,7 @@ const styles = {
     },
     selTime: {
         display: "flex",
+        alignItems: "center",
         flexDirection: "row"
     },
     selTimeText: {
@@ -241,8 +255,32 @@ const styles = {
     setTimeIn: {
         display: "flex",
         flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#247FD2",
+        paddingTop: 4,
+        paddingBottom: 4,
+        paddingLeft: 6,
+        paddingRight: 6,
+        marginLeft: 7,
+        marginRight: 7,
+        borderRadius: 4,
+        borderWidth: 2,
+        borderColor: "#DDDDDD"
+    },
+    txtIcon: {
+        fontSize: 15,
         color: "#FFFFFF"
+    },
+    btnIcon: {
+        fontSize: 16,
+        color: "#FFFFFF",
+        marginRight: 3
+    },
+    grayText: {
+        fontSize: 16,
+        color: "#757575"
     }
+
 };
 
 export default FilterTab
