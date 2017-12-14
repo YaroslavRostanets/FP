@@ -4,9 +4,10 @@
 
 import React, { Component } from 'react';
 import { View, Text, TouchableHighlight, TimePickerAndroid } from 'react-native';
+import TimeRangeSlider from './TimeRangeSlider';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../src/config.json';
-import CheckboxField from 'react-native-checkbox-field'; // Field with label
+import CheckboxField from 'react-native-checkbox-field';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {MONFRY, SAT, SUN, FROM, TO} from '../../../constants/Filter'
@@ -178,6 +179,7 @@ class FilterTab extends Component {
                         <Text style={styles.topDescr}>
                             Hours:
                         </Text>
+                        <TimeRangeSlider />
                     </View>
                 </View>
             </View>
