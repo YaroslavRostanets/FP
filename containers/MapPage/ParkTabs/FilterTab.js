@@ -4,10 +4,10 @@
 
 import React, { Component } from 'react';
 import { View, Text, TouchableHighlight, TimePickerAndroid } from 'react-native';
-import TimeRangeSlider from './TimeRangeSlider';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../src/config.json';
 import CheckboxField from 'react-native-checkbox-field';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {MONFRY, SAT, SUN, FROM, TO} from '../../../constants/Filter'
@@ -21,7 +21,36 @@ class FilterTab extends Component {
         SAT: false,
         SUN: true,
         filterFrom: "14-00",
-        filterTo: "16-00"
+        filterTo: "16-00",
+        filterTimeFrom: "30min",
+        filterTimeTo: "12h",
+        sliderValues: [1, 6]
+    };
+
+    sliderValuesChange = (values) => {
+        this.setState({
+            sliderValues: values,
+        });
+        this.sliderConvertToTime(values);
+    };
+
+    sliderConvertToTime = (values) => {
+        let convertObj = {
+            "0":"0",
+            "1":"30min",
+            "2":"1h",
+            "3":"2h",
+            "4":"3h",
+            "5":"5h",
+            "6":"12h",
+            "7":"24h"
+        };
+
+        this.setState({
+            filterTimeFrom: convertObj[values[0]],
+            filterTimeTo: convertObj[values[1]]
+        });
+
     };
 
     selectCheckbox = (selectedDays) => {
@@ -87,6 +116,9 @@ class FilterTab extends Component {
         const sun = this.state.SUN;
         const filterFrom = this.state.filterFrom;
         const filterTo = this.state.filterTo;
+        const initValues = this.state.sliderValues;
+        const filterTimeFrom = this.state.filterTimeFrom;
+        const filterTimeTo = this.state.filterTimeTo;
 
 
         return (
@@ -179,7 +211,23 @@ class FilterTab extends Component {
                         <Text style={styles.topDescr}>
                             Hours:
                         </Text>
-                        <TimeRangeSlider />
+                        <View style={{marginBottom: 10}}>
+                            <Text style={styles.grayText}>from <Text style={styles.b}>{filterTimeFrom} </Text>
+                                 to <Text style={styles.b}>{filterTimeTo}</Text></Text>
+                        </View>
+                        <MultiSlider values={initValues} sliderLength={245}
+                                     onValuesChange={this.sliderValuesChange}
+                                     max={7}
+                                     markerStyle={{
+                                         backgroundColor: '#2182D6'
+                                     }}
+                                     selectedStyle={{
+                                        backgroundColor: '#2182D6',
+                                        }}
+                                     unselectedStyle={{
+                                        backgroundColor: 'silver',
+                                        }}
+                        />
                     </View>
                 </View>
             </View>
@@ -212,8 +260,10 @@ const styles = {
         height: "100%",
         display: "flex",
         alignItems: "center",
+        justifyContent: "center",
         flexDirection: "row",
-        marginRight: 25
+        marginRight: 20,
+        width: 45
     },
     icon: {
         fontSize: 40
@@ -281,6 +331,9 @@ const styles = {
     grayText: {
         fontSize: 16,
         color: "#757575"
+    },
+    b: {
+        fontWeight: "bold"
     }
 
 };
