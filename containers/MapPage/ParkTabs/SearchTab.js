@@ -2,7 +2,7 @@
  * Created by Yaroslav on 23.09.2017.
  */
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../src/config.json';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -54,11 +54,41 @@ class SearchTab extends Component {
 
     };
 
+    async filterSetTime(fromOrTo) {
+        try {
+            const {action, hour, minute} = await TimePickerAndroid.open({
+                hour: 12,
+                minute: 0,
+                is24Hour: true
+            });
+            if (action !== TimePickerAndroid.dismissedAction) {
+                var returnTime = `${hour}-${minute}`;
+                if(fromOrTo == FROM){
+                    this.setState({
+                        filterFrom: returnTime
+                    });
+                } else if (fromOrTo == TO) {
+                    this.setState({
+                        filterTo: returnTime
+                    });
+                }
+            }
+            if (action !== TimePickerAndroid.timeSetAction) {
+
+            }
+        } catch ({code, message}) {
+            console.warn('Cannot open time picker', message);
+        }
+
+    };
+
     render(){
 
         const monFry = this.state.MONFRY;
         const sat = this.state.SAT;
         const sun = this.state.SUN;
+        const filterFrom = this.state.filterFrom;
+        const filterTo = this.state.filterTo;
 
         return (
             <View style={styles.searchTab}>
@@ -116,6 +146,30 @@ class SearchTab extends Component {
                         <Text style={styles.topDescr}>
                             Time:
                         </Text>
+                        <View style={styles.selTime}>
+                            <Text style={styles.grayText}>
+                                from
+                            </Text>
+                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this,"FROM")}>
+                                <View style={styles.setTimeIn}>
+                                    <Icon name="clock-o" style={styles.btnIcon} />
+                                    <Text style={styles.txtIcon}>
+                                        {filterFrom}
+                                    </Text>
+                                </View>
+                            </TouchableHighlight>
+                            <Text style={styles.grayText}>
+                                to
+                            </Text>
+                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this, TO)}>
+                                <View style={styles.setTimeIn}>
+                                    <Icon name="clock-o" style={styles.btnIcon} />
+                                    <Text style={styles.txtIcon}>
+                                        {filterTo}
+                                    </Text>
+                                </View>
+                            </TouchableHighlight>
+                        </View>
                     </View>
                 </View>
                 <View style={styles.oneRow}>
@@ -158,8 +212,8 @@ const styles = {
         flexDirection: "row",
         paddingLeft: 8,
         paddingRight: 8,
-        paddingTop: 10,
-        paddingBottom: 10
+        paddingTop: 5,
+        paddingBottom: 5
     },
     iconWrap: {
         height: "100%",
@@ -184,7 +238,8 @@ const styles = {
     checkbox: {
         display: "flex",
         flexDirection: "row",
-        width: "100%"
+        width: "100%",
+        marginTop: -3
     },
     oneCheck: {
         width: 120,
@@ -199,7 +254,44 @@ const styles = {
     checkboxStyle: {
         width: 24,
         height: 24
-    }
+    },
+    selTime: {
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "row"
+    },
+    selTimeText: {
+        fontSize: 20,
+        color: "#FFFFFF"
+    },
+    setTimeIn: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#247FD2",
+        paddingTop: 4,
+        paddingBottom: 4,
+        paddingLeft: 6,
+        paddingRight: 6,
+        marginLeft: 7,
+        marginRight: 7,
+        borderRadius: 4,
+        borderWidth: 2,
+        borderColor: "#DDDDDD"
+    },
+    txtIcon: {
+        fontSize: 15,
+        color: "#FFFFFF"
+    },
+    btnIcon: {
+        fontSize: 16,
+        color: "#FFFFFF",
+        marginRight: 3
+    },
+    grayText: {
+        fontSize: 16,
+        color: "#757575"
+    },
 };
 
 export default SearchTab

@@ -15,12 +15,16 @@ class TopButtons extends Component {
         this.props.uiActions.toggleMenu(!this.props.menuOpen);
     }
 
+    btnAnimation(){
+        console.log("active");
+    }
+
     render() {
         const menuOpen = this.props.menuOpen;
 
         return (
             <View style={styles.topButtons} menuOpen={menuOpen}>
-                <TouchableHighlight onPress={this.toggleMenu.bind(this)} style={styles.stdBut}>
+                <TouchableHighlight underlayColor={"#5296E7"} onShowUnderlay={this.btnAnimation.bind(this)} onPress={this.toggleMenu.bind(this)} style={styles.stdBut}>
                     <Icon name="reorder" style={styles.ico} />
                 </TouchableHighlight>
 
