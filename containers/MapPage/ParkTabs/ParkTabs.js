@@ -19,7 +19,7 @@ class ParkTabs extends Component {
         const menuOpen = this.props.menuOpen;
 
         return (
-            <View style={styles.parkTabs}>
+            <View style={{...styles.parkTabs,display:(menuOpen)? "none" : "flex"}}>
                 <View style={styles.botCont}>
                     <View style={styles.tabCont}>
                         {((activeTab)=>{
@@ -34,7 +34,6 @@ class ParkTabs extends Component {
                                     return (<FastParking />);
                             }
                         })(activeTab)}
-
                     </View>
                     <TabSelector />
                     <TouchableHighlight style={styles.centerBut}>
@@ -105,7 +104,8 @@ const styles = {
 
 function mapStateToProps (state) {
     return {
-        activeTab: state.ui.activeTab
+        activeTab: state.ui.activeTab,
+        menuOpen: state.ui.menuOpen
     }
 }
 
