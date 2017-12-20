@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, FlatList, Text, TouchableHighlight } from 'react-native';
+import { View, FlatList, Text, TouchableHighlight, Animated } from 'react-native';
 import { connect } from 'react-redux';
 import {FAST_PARKING, FILTER, SEARCH} from '../../../constants/UI';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -14,12 +14,28 @@ import SearchTab from './SearchTab';
 
 class ParkTabs extends Component {
 
+    state = {
+      fadeOpacity:  new Animated.Value(1)
+    };
+
+    componentWillReceiveProps() {
+        let Opacity = (this.props.menuOpen)? 1 : 0;
+        Animated.timing(
+            this.state.fadeOpacity,
+            {
+                toValue: Opacity,
+                duration: 400
+            }
+        ).start();
+
+    }
+
     render() {
         const activeTab = this.props.activeTab;
-        const menuOpen = this.props.menuOpen;
+        const opacity = this.state.fadeOpacity;
 
         return (
-            <View style={{...styles.parkTabs,display:(menuOpen)? "none" : "flex"}}>
+            <Animated.View style={{...styles.parkTabs, opacity: opacity}}>
                 <View style={styles.botCont}>
                     <View style={styles.tabCont}>
                         {((activeTab)=>{
@@ -42,7 +58,7 @@ class ParkTabs extends Component {
                         </Text>
                     </TouchableHighlight>
                 </View>
-            </View>
+            </Animated.View>
         );
 
     }
