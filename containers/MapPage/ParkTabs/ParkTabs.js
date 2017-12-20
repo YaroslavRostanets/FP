@@ -1,7 +1,6 @@
 /**
  * Created by Yaroslav on 08.09.2017.
  */
-
 import React, { Component } from 'react';
 import { View, FlatList, Text, TouchableHighlight, Animated } from 'react-native';
 import { connect } from 'react-redux';
@@ -18,8 +17,9 @@ class ParkTabs extends Component {
       fadeOpacity:  new Animated.Value(1)
     };
 
-    componentWillReceiveProps() {
-        let Opacity = (this.props.menuOpen)? 1 : 0;
+    componentWillReceiveProps(nextProps) {
+        let Opacity = (nextProps.menuOpen)? 0 : 1;
+
         Animated.timing(
             this.state.fadeOpacity,
             {
