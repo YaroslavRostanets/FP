@@ -18,24 +18,26 @@ class ParkTabs extends Component {
     constructor(props){
         super(props);
         this.screenWidth = Dimensions.get('window').width;
-        this.btnWidth = this.screenWidth * 0.9;
-        console.log("width",this.screenWidth);
+        this.btnWidth = ~~( this.screenWidth * 0.85 );
+        this.btnWidthClosed = 57;
+        console.log("width",this.btnWidth);
     }
 
     toggleBarState () {
-        console.log(this.props.barOpen);
         this.props.toggleBar( !this.props.barOpen );
     }
 
     state = {
         fadeOpacity:  new Animated.Value(1),
         maxHeight: new Animated.Value(355),
+        btnWidth: new Animated.Value( ~~(Dimensions.get('window').width * 0.85) )
+        // "~~" - округляем
     };
 
     componentWillReceiveProps(nextProps) {
         let Opacity = (nextProps.menuOpen)? 0 : 1;
         let maxHeight = (nextProps.barOpen) ? 355 : 0;
-        let btnWidth = (nextProps.barOpen) ? this.btnWidth : 57;
+        let btnWidth = (nextProps.barOpen) ? this.btnWidth : this.btnWidthClosed;
 
         Animated.timing(
             this.state.fadeOpacity,
@@ -67,6 +69,7 @@ class ParkTabs extends Component {
         const activeTab = this.props.activeTab;
         const opacity = this.state.fadeOpacity;
         const maxHeight = this.state.maxHeight;
+        const barOpen = this.state.barOpen;
 
         return (
             <Animated.View style={{...styles.parkTabs, opacity: opacity}}>
@@ -91,11 +94,13 @@ class ParkTabs extends Component {
                         </View>
                         <TabSelector />
                     </Animated.View>
-                    <TouchableHighlight style={styles.centerBut}>
-                        <Text style={styles.centerButText}>
-                            Start(78)
-                        </Text>
-                    </TouchableHighlight>
+                    <Animated.View style={(this.props.barOpen)? {...styles.centerBut,width: this.state.btnWidth} : {...styles.circleStyle, width: this.state.btnWidth} }>
+                        <TouchableHighlight style={styles.touchable}>
+                            <Text style={styles.centerButText}>
+                                Start(78)
+                            </Text>
+                        </TouchableHighlight>
+                    </Animated.View>
                 </View>
             </Animated.View>
         );
@@ -153,10 +158,8 @@ const styles = {
     },
     circleStyle: {
         height: 58,
-        width: 58,
         borderRadius: 29,
-        marginRight: "auto",
-        marginLeft: "auto"
+        backgroundColor: '#FF6D64'
     },
     centerButText: {
         fontSize: 16,
@@ -177,6 +180,13 @@ const styles = {
     wrapClosed: {
         maxHeight: 0,
         overflow: "hidden"
+    },
+    touchable: {
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
     }
 
 
