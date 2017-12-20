@@ -4,7 +4,9 @@
 import React, { Component } from 'react';
 import { View, FlatList, Text, TouchableHighlight, Animated } from 'react-native';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
 import {FAST_PARKING, FILTER, SEARCH} from '../../../constants/UI';
+import {toggleBar} from '../../../actions/uiActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import TabSelector from '../../../containers/MapPage/ParkTabs/TabSelector';
 import  FastParking from './FastParkingTab';
@@ -13,12 +15,19 @@ import SearchTab from './SearchTab';
 
 class ParkTabs extends Component {
 
+    toggleBarState () {
+        console.log(this.props.barOpen);
+        this.props.toggleBar( !this.props.barOpen );
+    }
+
     state = {
-      fadeOpacity:  new Animated.Value(1)
+        fadeOpacity:  new Animated.Value(1),
+        maxHeight: new Animated.Value(355)
     };
 
     componentWillReceiveProps(nextProps) {
         let Opacity = (nextProps.menuOpen)? 0 : 1;
+        let maxHeight = (nextProps.barOpen) ? 355 : 0;
 
         Animated.timing(
             this.state.fadeOpacity,
@@ -27,33 +36,44 @@ class ParkTabs extends Component {
                 duration: 400
             }
         ).start();
+
+        Animated.timing(
+            this.state.maxHeight,
+            {
+                toValue: maxHeight,
+                duration: 400
+            }
+        ).start();
     }
 
     render() {
         const activeTab = this.props.activeTab;
         const opacity = this.state.fadeOpacity;
+        const maxHeight = this.state.maxHeight;
 
         return (
             <Animated.View style={{...styles.parkTabs, opacity: opacity}}>
                 <View style={styles.botCont}>
-                    <TouchableHighlight style={styles.tabChevron}>
-                        <Icon name="chevron-down"/>
+                    <TouchableHighlight style={styles.tabChevron} onPress={this.toggleBarState.bind(this)}>
+                        <Icon style={styles.chevronIcon} name="chevron-down"/>
                     </TouchableHighlight>
-                    <View style={styles.tabCont}>
-                        {((activeTab)=>{
-                            switch(activeTab) {
-                                case FAST_PARKING:
-                                    return (<FastParking />);
-                                case FILTER:
-                                    return (<FilterTab/>);
-                                case SEARCH:
-                                    return (<SearchTab/>);
-                                default:
-                                    return (<FastParking />);
-                            }
-                        })(activeTab)}
-                    </View>
-                    <TabSelector />
+                    <Animated.View style={{...styles.wrapClosed, maxHeight: maxHeight}}>
+                        <View style={ styles.tabCont }>
+                            {((activeTab)=>{
+                                switch(activeTab) {
+                                    case FAST_PARKING:
+                                        return (<FastParking />);
+                                    case FILTER:
+                                        return (<FilterTab/>);
+                                    case SEARCH:
+                                        return (<SearchTab/>);
+                                    default:
+                                        return (<FastParking />);
+                                }
+                            })(activeTab)}
+                        </View>
+                        <TabSelector />
+                    </Animated.View>
                     <TouchableHighlight style={styles.centerBut}>
                         <Text style={styles.centerButText}>
                             Start(78)
@@ -120,24 +140,36 @@ const styles = {
     tabChevron: {
         position: "absolute",
         left: "50%",
+        top: -1,
         height: 16,
         width: 16,
         marginLeft: -8
     },
     chevronIcon: {
         color: "#FE6D64",
-        fontSize: 20
+        fontSize: 16
+    },
+    wrapClosed: {
+        maxHeight: 0,
+        overflow: "hidden"
     }
 
 };
 
-function mapStateToProps (state) {
+function mapStateToProps (store) {
     return {
-        activeTab: state.ui.activeTab,
-        menuOpen: state.ui.menuOpen
+        activeTab: store.ui.activeTab,
+        menuOpen: store.ui.menuOpen,
+        barOpen: store.ui.barOpen
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    return {
+        toggleBar: bindActionCreators(toggleBar, dispatch)
     }
 }
 
 
-export default connect(mapStateToProps)(ParkTabs)
+export default connect(mapStateToProps,mapDispatchToProps)(ParkTabs)
 

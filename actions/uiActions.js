@@ -3,6 +3,7 @@
  */
 import {
     TOGGLE_MENU,
+    TOGGLE_BAR,
     TOGGLE_TAB
 } from '../constants/UI'
 
@@ -13,6 +14,14 @@ export function toggleMenu(menuState) {
         payload: menuState
     }
 
+}
+
+export function toggleBar(barState) {
+
+    return {
+        type: TOGGLE_BAR,
+        payload: barState
+    }
 }
 
 export function toggleTab(activeTab) {

@@ -4,12 +4,14 @@
 import {
     TOGGLE_MENU,
     TOGGLE_TAB,
-    FAST_PARKING
+    FAST_PARKING,
+    TOGGLE_BAR
 } from '../constants/UI'
 
 const initialState = {
     menuOpen: false,
-    activeTab: FAST_PARKING
+    barOpen: true,
+    activeTab: FAST_PARKING,
 };
 
 export default function ui(state = initialState, action) {
@@ -18,6 +20,8 @@ export default function ui(state = initialState, action) {
             return { ...state, menuOpen: action.payload };
         case TOGGLE_TAB:
             return { ...state, activeTab: action.payload };
+        case TOGGLE_BAR:
+            return { ...state, barOpen: action.payload };
         default:
             return state;
     }

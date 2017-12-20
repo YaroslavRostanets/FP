@@ -10,3 +10,7 @@ export const FAST_PARKING = 'FAST_PARKING';
 export const FILTER = 'FILTER';
 export const SEARCH = 'SEARCH';
 /*----------------*/
+
+/*--UI BAR State--*/
+export const TOGGLE_BAR = 'TOGGLE_BAR';
+/*----------------*/
