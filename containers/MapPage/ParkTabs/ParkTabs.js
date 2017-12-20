@@ -2,7 +2,7 @@
  * Created by Yaroslav on 08.09.2017.
  */
 import React, { Component } from 'react';
-import { View, FlatList, Text, TouchableHighlight, Animated } from 'react-native';
+import { View, FlatList, Text, TouchableHighlight, Animated, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import {FAST_PARKING, FILTER, SEARCH} from '../../../constants/UI';
@@ -15,6 +15,13 @@ import SearchTab from './SearchTab';
 
 class ParkTabs extends Component {
 
+    constructor(props){
+        super(props);
+        this.screenWidth = Dimensions.get('window').width;
+        this.btnWidth = this.screenWidth * 0.9;
+        console.log("width",this.screenWidth);
+    }
+
     toggleBarState () {
         console.log(this.props.barOpen);
         this.props.toggleBar( !this.props.barOpen );
@@ -22,12 +29,13 @@ class ParkTabs extends Component {
 
     state = {
         fadeOpacity:  new Animated.Value(1),
-        maxHeight: new Animated.Value(355)
+        maxHeight: new Animated.Value(355),
     };
 
     componentWillReceiveProps(nextProps) {
         let Opacity = (nextProps.menuOpen)? 0 : 1;
         let maxHeight = (nextProps.barOpen) ? 355 : 0;
+        let btnWidth = (nextProps.barOpen) ? this.btnWidth : 57;
 
         Animated.timing(
             this.state.fadeOpacity,
@@ -44,6 +52,15 @@ class ParkTabs extends Component {
                 duration: 400
             }
         ).start();
+
+        Animated.timing(
+            this.state.btnWidth,
+            {
+                toValue: btnWidth,
+                duration: 400
+            }
+        ).start();
+
     }
 
     render() {
@@ -123,8 +140,9 @@ const styles = {
     centerBut: {
         height: 48,
         marginTop: 7,
-        marginLeft: 5,
-        marginRight: 5,
+        width: this.btnWidth,
+        marginLeft: "auto",
+        marginRight: "auto",
         marginBottom: 0,
         backgroundColor: '#FF6D64',
         borderRadius: 3,
@@ -132,6 +150,13 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         flexGrow: 1
+    },
+    circleStyle: {
+        height: 58,
+        width: 58,
+        borderRadius: 29,
+        marginRight: "auto",
+        marginLeft: "auto"
     },
     centerButText: {
         fontSize: 16,
@@ -153,6 +178,7 @@ const styles = {
         maxHeight: 0,
         overflow: "hidden"
     }
+
 
 };
 
