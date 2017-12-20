@@ -27,7 +27,6 @@ class ParkTabs extends Component {
                 duration: 400
             }
         ).start();
-
     }
 
     render() {
@@ -37,6 +36,9 @@ class ParkTabs extends Component {
         return (
             <Animated.View style={{...styles.parkTabs, opacity: opacity}}>
                 <View style={styles.botCont}>
+                    <TouchableHighlight style={styles.tabChevron}>
+                        <Icon name="chevron-down"/>
+                    </TouchableHighlight>
                     <View style={styles.tabCont}>
                         {((activeTab)=>{
                             switch(activeTab) {
@@ -114,6 +116,17 @@ const styles = {
     centerButText: {
         fontSize: 16,
         color: '#FFFFFF'
+    },
+    tabChevron: {
+        position: "absolute",
+        left: "50%",
+        height: 16,
+        width: 16,
+        marginLeft: -8
+    },
+    chevronIcon: {
+        color: "#FE6D64",
+        fontSize: 20
     }
 
 };
