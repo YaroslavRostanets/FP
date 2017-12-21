@@ -35,18 +35,23 @@ class ParkTabs extends Component {
 
     state = {
         fadeOpacity:  new Animated.Value(1),
+        tabsOpacity: new Animated.Value( 1 ),
         maxHeight: new Animated.Value(355),
-        maxWidth:  new Animated.Value( ~~(Dimensions.get('window').width - 20) ),
+        maxWidth:  new Animated.Value( ~~(Dimensions.get('window').width - 20) ), // "~~" - округляем
         btnWidth: new Animated.Value( ~~(Dimensions.get('window').width * 0.9) ),
+        btnHeight: new Animated.Value( 48 ),
+        btnRadius: new Animated.Value( 3 ),
         showTabs: true
-        // "~~" - округляем
     };
 
     componentWillReceiveProps(nextProps) {
         let Opacity = (nextProps.menuOpen)? 0 : 1;
+        let tabsOpacity = (nextProps.barOpen)? 1 : 0;
         let maxHeight = (nextProps.barOpen) ? 355 : 0;
         let maxWidth = (nextProps.barOpen) ? ~~(Dimensions.get('window').width - 20) : this.btnWidthClosed;
         let btnWidth = (nextProps.barOpen) ? this.btnWidth : this.btnWidthClosed;
+        let btnHeight = (nextProps.barOpen) ? 48 : 58;
+        let btnRadius = (nextProps.barOpen) ? 3 : 28;
         let self = this;
 
         Animated.timing(
@@ -87,6 +92,29 @@ class ParkTabs extends Component {
             }
         ).start();
 
+        Animated.timing(
+            this.state.btnHeight,
+            {
+                toValue: btnHeight,
+                duration: 400
+            }
+        ).start();
+
+        Animated.timing(
+            this.state.btnRadius,
+            {
+                toValue: btnRadius,
+                duration: 400
+            }
+        ).start();
+
+        Animated.timing(
+            this.state.tabsOpacity,
+            {
+                toValue: tabsOpacity,
+                duration: 300
+            }
+        ).start();
 
     }
 
@@ -96,15 +124,18 @@ class ParkTabs extends Component {
         const maxHeight = this.state.maxHeight;
         const maxWidth = this.state.maxWidth;
         const showTabs = this.state.showTabs;
+        const tabsOpacity = this.state.tabsOpacity;
+        const btnRadius = this.state.btnRadius;
+        const btnHeight = this.state.btnHeight;
 
         return (
             <Animated.View
                 style={{...styles.parkTabs, opacity: opacity}}>
                 <Animated.View style={{...(this.props.barOpen) ? styles.botCont : styles.botContClosed, width: maxWidth}}>
-                    <TouchableHighlight style={styles.tabChevron} onPress={this.toggleBarState.bind(this)}>
+                    <TouchableHighlight style={{...styles.tabChevron,display: (this.props.barOpen)?"flex":"none" }} onPress={this.toggleBarState.bind(this)}>
                         <Icon style={styles.chevronIcon} name="chevron-down"/>
                     </TouchableHighlight>
-                    <Animated.View style={{maxHeight: maxHeight}}>
+                    <Animated.View style={{maxHeight: maxHeight, opacity: tabsOpacity}}>
                         <View style={ styles.tabCont }>
                             {((activeTab)=>{
                                 switch(activeTab) {
@@ -124,7 +155,7 @@ class ParkTabs extends Component {
                         </View>
                     </Animated.View>
                     <Animated.View
-                        style={styles.centerBut}>
+                        style={{...styles.centerBut, borderRadius: btnRadius, height: btnHeight}}>
                         <TouchableHighlight style={styles.touchable} onPress={this.redButtonPress.bind(this)}>
                             {((barOpen) => {
                                 switch (barOpen){
@@ -138,7 +169,6 @@ class ParkTabs extends Component {
                                         );
                                 }
                             })(this.props.barOpen)}
-
                         </TouchableHighlight>
                     </Animated.View>
                 </Animated.View>
@@ -161,7 +191,7 @@ const styles = {
         overflow: "hidden",
         marginRight: "auto",
         marginLeft: "auto",
-        backgroundColor: "red"
+        //backgroundColor: "red"
     },
     botCont: {
         backgroundColor: 'rgba(243, 246, 248, 0.7)',
@@ -210,13 +240,6 @@ const styles = {
         flexGrow: 1,
         width: "100%"
     },
-    circleStyle: {
-        height: 58,
-        borderRadius: 29,
-        backgroundColor: '#FF6D64',
-        marginLeft: "auto",
-        marginRight: "auto"
-    },
     centerButText: {
         fontSize: 16,
         color: '#FFFFFF'
@@ -239,7 +262,8 @@ const styles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        overflow: "hidden"
+        overflow: "hidden",
+        borderRadius: 4
     },
     chevronUp: {
         fontSize: 16,
