@@ -17,33 +17,43 @@ class ParkTabs extends Component {
 
     constructor(props){
         super(props);
-        this.screenWidth = Dimensions.get('window').width;
-        this.btnWidth = ~~( this.screenWidth * 0.85 );
-        this.btnWidthClosed = 57;
-        console.log("width",this.btnWidth);
+        this.btnWidthClosed = 58;
     }
 
     toggleBarState () {
         this.props.toggleBar( !this.props.barOpen );
     }
 
+    redButtonPress () {
+        if( !this.props.barOpen ){ //Если бар свернут
+            this.props.toggleBar( !this.props.barOpen ); // открываем его
+            this.setState({
+                showTabs: true
+            })
+        }
+    }
+
     state = {
         fadeOpacity:  new Animated.Value(1),
         maxHeight: new Animated.Value(355),
-        btnWidth: new Animated.Value( ~~(Dimensions.get('window').width * 0.85) )
+        maxWidth:  new Animated.Value( ~~(Dimensions.get('window').width - 20) ),
+        btnWidth: new Animated.Value( ~~(Dimensions.get('window').width * 0.9) ),
+        showTabs: true
         // "~~" - округляем
     };
 
     componentWillReceiveProps(nextProps) {
         let Opacity = (nextProps.menuOpen)? 0 : 1;
         let maxHeight = (nextProps.barOpen) ? 355 : 0;
+        let maxWidth = (nextProps.barOpen) ? ~~(Dimensions.get('window').width - 20) : this.btnWidthClosed;
         let btnWidth = (nextProps.barOpen) ? this.btnWidth : this.btnWidthClosed;
+        let self = this;
 
         Animated.timing(
             this.state.fadeOpacity,
             {
                 toValue: Opacity,
-                duration: 400
+                duration: 300
             }
         ).start();
 
@@ -56,6 +66,20 @@ class ParkTabs extends Component {
         ).start();
 
         Animated.timing(
+            this.state.maxWidth,
+            {
+                toValue: maxWidth,
+                duration: 400
+            }
+        ).start(function(){
+            if ( !self.props.barOpen ) {
+                self.setState({
+                    showTabs: false
+                });
+            }
+        });
+
+        Animated.timing(
             this.state.btnWidth,
             {
                 toValue: btnWidth,
@@ -63,21 +87,24 @@ class ParkTabs extends Component {
             }
         ).start();
 
+
     }
 
     render() {
         const activeTab = this.props.activeTab;
         const opacity = this.state.fadeOpacity;
         const maxHeight = this.state.maxHeight;
-        const barOpen = this.state.barOpen;
+        const maxWidth = this.state.maxWidth;
+        const showTabs = this.state.showTabs;
 
         return (
-            <Animated.View style={{...styles.parkTabs, opacity: opacity}}>
-                <View style={styles.botCont}>
+            <Animated.View
+                style={{...styles.parkTabs, opacity: opacity}}>
+                <Animated.View style={{...(this.props.barOpen) ? styles.botCont : styles.botContClosed, width: maxWidth}}>
                     <TouchableHighlight style={styles.tabChevron} onPress={this.toggleBarState.bind(this)}>
                         <Icon style={styles.chevronIcon} name="chevron-down"/>
                     </TouchableHighlight>
-                    <Animated.View style={{...styles.wrapClosed, maxHeight: maxHeight}}>
+                    <Animated.View style={{maxHeight: maxHeight}}>
                         <View style={ styles.tabCont }>
                             {((activeTab)=>{
                                 switch(activeTab) {
@@ -92,16 +119,29 @@ class ParkTabs extends Component {
                                 }
                             })(activeTab)}
                         </View>
-                        <TabSelector />
+                        <View style={{display: (showTabs)? "flex" : "none"}}>
+                            <TabSelector />
+                        </View>
                     </Animated.View>
-                    <Animated.View style={(this.props.barOpen)? {...styles.centerBut,width: this.state.btnWidth} : {...styles.circleStyle, width: this.state.btnWidth} }>
-                        <TouchableHighlight style={styles.touchable}>
-                            <Text style={styles.centerButText}>
-                                Start(78)
-                            </Text>
+                    <Animated.View
+                        style={styles.centerBut}>
+                        <TouchableHighlight style={styles.touchable} onPress={this.redButtonPress.bind(this)}>
+                            {((barOpen) => {
+                                switch (barOpen){
+                                    case true:
+                                        return (<Text style={styles.centerButText}>
+                                                    Start(78)
+                                                </Text>);
+                                    default:
+                                        return (
+                                            <Icon name="chevron-up" style={styles.chevronUp} />
+                                        );
+                                }
+                            })(this.props.barOpen)}
+
                         </TouchableHighlight>
                     </Animated.View>
-                </View>
+                </Animated.View>
             </Animated.View>
         );
 
@@ -112,12 +152,16 @@ const styles = {
     parkTabs: {
         position: "absolute",
         bottom: 15,
+        left: 0,
         width: "100%",
-        paddingRight: "3.5%",
-        paddingLeft: "3.5%",
+        paddingRight: 10,
+        paddingLeft: 10,
         zIndex: 9,
         display: "flex",
-
+        overflow: "hidden",
+        marginRight: "auto",
+        marginLeft: "auto",
+        backgroundColor: "red"
     },
     botCont: {
         backgroundColor: 'rgba(243, 246, 248, 0.7)',
@@ -125,7 +169,17 @@ const styles = {
         paddingRight: 4,
         paddingBottom: 7,
         paddingLeft: 4,
-        width: '100%'
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    botContClosed: {
+        paddingTop: 0,
+        paddingRight: 0,
+        paddingBottom: 0,
+        paddingLeft: 0,
+        marginLeft: "auto",
+        marginRight: "auto"
     },
     tabCont: {
         borderStyle: 'solid',
@@ -145,7 +199,6 @@ const styles = {
     centerBut: {
         height: 48,
         marginTop: 7,
-        width: this.btnWidth,
         marginLeft: "auto",
         marginRight: "auto",
         marginBottom: 0,
@@ -154,12 +207,15 @@ const styles = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        flexGrow: 1
+        flexGrow: 1,
+        width: "100%"
     },
     circleStyle: {
         height: 58,
         borderRadius: 29,
-        backgroundColor: '#FF6D64'
+        backgroundColor: '#FF6D64',
+        marginLeft: "auto",
+        marginRight: "auto"
     },
     centerButText: {
         fontSize: 16,
@@ -177,16 +233,17 @@ const styles = {
         color: "#FE6D64",
         fontSize: 16
     },
-    wrapClosed: {
-        maxHeight: 0,
-        overflow: "hidden"
-    },
     touchable: {
         width: "100%",
         height: "100%",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        overflow: "hidden"
+    },
+    chevronUp: {
+        fontSize: 16,
+        color: "#FFFFFF"
     }
 
 

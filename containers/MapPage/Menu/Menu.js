@@ -34,7 +34,7 @@ class Menu extends Component {
             this.state.fadeAnim,
             {
                 toValue: marginLeft,
-                duration: 400
+                duration: 300
             }
         ).start();
     }
