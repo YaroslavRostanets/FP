@@ -12,12 +12,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 class TopButtons extends Component {
 
     toggleMenu(){
-        console.log(this.props);
+
         this.props.uiActions.toggleMenu(!this.props.menuOpen);
     }
 
     btnAnimation(){
-        console.log("active");
+
     }
 
     render() {

@@ -2,7 +2,7 @@
  * Created by Yaroslav on 25.08.2017.
  */
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Animated, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Animated, Dimensions, Button } from 'react-native';
 import { connect } from 'react-redux'
 import store from '../../../store/configureStore'
 import UserInfo from './UserInfo'
@@ -39,16 +39,17 @@ class Menu extends Component {
         ).start();
     }
 
+
+
     render(){
 
         let { fadeAnim } = this.state;
-
         const menuOpen = this.props.menuOpen;
 
         return (
             <Animated.View style={{...this.menuStyles,marginLeft: fadeAnim}} menuOpen={menuOpen}>
                 <UserInfo/>
-                <MenuList />
+                <MenuList navigator={this.props.navigator} />
                     <Text>Menu2</Text>
                     <Text>{+menuOpen}</Text>
                     <Text>
