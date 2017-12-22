@@ -12,7 +12,7 @@ class MenuList extends Component {
 
     goToScreen(screenTitle) {
         this.props.navigator.push({
-            title:'Info',
+            title: screenTitle,
             animationType: 'FloatFromBottom'
         })
     }
@@ -42,12 +42,12 @@ class MenuList extends Component {
                 </View>
 
                 <View style={styles.botMenu}>
-                    <View style={styles.botMenuItem}>
+                    <TouchableHighlight onPress={this.goToScreen.bind(this, 'Options')} style={styles.botMenuItem}>
                         <Text style={styles.menuItem}>
                             Option
                         </Text>
-                    </View>
-                    <TouchableHighlight onPress={this.goToScreen.bind(this)} style={styles.botMenuItem}>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={this.goToScreen.bind(this, 'Info')} style={styles.botMenuItem}>
                         <Text style={styles.menuItem}>
                             Info
                         </Text>

@@ -10,6 +10,7 @@ import { Navigator } from 'react-native-deprecated-custom-components'
 import MapPage from '../components/MapPage/MapPage';
 import ParkDetail from '../containers/ParkDetail';
 import Info from '../components/Info/Info'
+import Options from '../components/Options/Options'
 import * as uiActions from '../actions/uiActions'
 
 class App extends Component {
@@ -35,6 +36,10 @@ class App extends Component {
             case 'Info':
                 return (
                     <Info navigator={navigator}/>
+                );
+            case 'Options':
+                return (
+                    <Options navigator={navigator}/>
                 );
             default:
                 return (
