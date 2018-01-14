@@ -16,10 +16,11 @@ class MapPage extends Component {
     }
 
     render() {
+        const navigator = this.props.navigator;
 
         return (
             <View style={styles.mapPage}>
-                <Menu style={styles.menu}/>
+                <Menu navigator={navigator} style={styles.menu}/>
                 <View style={{position: 'relative'}}>
                     <TopButtons />
                     <MapView style={styles.map}

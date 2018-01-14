@@ -78,7 +78,7 @@ class SearchTab extends Component {
             sliderDistanceValue: values,
         });
         this.sliderConvertDistance(values);
-        console.log(values);
+
     };
 
     selectCheckbox = (selectedDays) => {

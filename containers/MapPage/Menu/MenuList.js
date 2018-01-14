@@ -2,13 +2,20 @@
  * Created by Yaroslav on 27.08.2017.
  */
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Animated, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Animated, Dimensions, TouchableHighlight } from 'react-native';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../src/config.json';
 
 const Icon = createIconSetFromFontello(fontelloConfig);
 
 class MenuList extends Component {
+
+    goToScreen(screenTitle) {
+        this.props.navigator.push({
+            title: screenTitle,
+            animationType: 'FloatFromBottom'
+        })
+    }
 
     render(){
 
@@ -35,16 +42,16 @@ class MenuList extends Component {
                 </View>
 
                 <View style={styles.botMenu}>
-                    <View style={styles.botMenuItem}>
+                    <TouchableHighlight onPress={this.goToScreen.bind(this, 'Options')} style={styles.botMenuItem}>
                         <Text style={styles.menuItem}>
                             Option
                         </Text>
-                    </View>
-                    <View style={styles.botMenuItem}>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={this.goToScreen.bind(this, 'Info')} style={styles.botMenuItem}>
                         <Text style={styles.menuItem}>
                             Info
                         </Text>
-                    </View>
+                    </TouchableHighlight>
                 </View>
             </View>
         )
