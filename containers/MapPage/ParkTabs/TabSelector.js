@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import store from '../../../store/configureStore'
 import * as uiActions from '../../../actions/uiActions'
 import {FAST_PARKING, FILTER, SEARCH} from '../../../constants/UI'
 import { createIconSetFromFontello } from 'react-native-vector-icons';
