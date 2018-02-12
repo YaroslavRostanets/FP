@@ -5,6 +5,7 @@ import { combineReducers } from 'redux'
 import ui from './ui'
 import user from './user'
 import location from './location'
+import places from './places'
 
 const initialState = {
     user: 'Unknown User',
@@ -13,6 +14,7 @@ const initialState = {
 export default combineReducers({
     ui,
     user,
-    location
+    location,
+    places
 })
 

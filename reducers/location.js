@@ -1,13 +1,16 @@
 import {
-    SET_NEW_LOCATION
-} from '../constants/Location'
+    SET_NEW_LOCATION,
+    LAT,
+    LON
+} from '../constants/Location';
 
 const initialState = {
-    lat: 60.16817554863811,
-    lon: 24.94085311889611
+    lat: LAT,
+    lon: LON
 };
 
 export default function location(state = initialState, action) {
+    console.log('action: ', action);
     switch (action.type) {
         case SET_NEW_LOCATION:
             return { ...state, lat: action.payload.lat, lon: action.payload.lon };

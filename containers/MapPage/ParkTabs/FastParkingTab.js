@@ -3,6 +3,9 @@
  */
 
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import * as placesActions from '../../../actions/placesActions';
+import { connect } from 'react-redux';
 import { View, Text, FlatList } from 'react-native';
 //import { createIconSetFromFontello } from 'react-native-vector-icons';
 //import fontelloConfig from '../../../src/config.json';
@@ -143,4 +146,19 @@ const styles = {
     }
 };
 
-export default FastParking
+function mapStateToProps (store) {
+    console.log(store);
+    return {
+        places: store.places
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        placesActions: bindActionCreators(placesActions, dispatch)
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(FastParking)
+

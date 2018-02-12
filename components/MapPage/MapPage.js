@@ -11,6 +11,7 @@ import { Marker } from 'react-native-maps';
 import Menu from '../../containers/MapPage/Menu/Menu';
 import TopButtons from '../../containers/MapPage/TopButtons';
 import ParkTabs from '../../containers/MapPage/ParkTabs/ParkTabs';
+import {AsyncStorage} from 'react-native';
 
 
 class MapPage extends Component {
@@ -21,34 +22,26 @@ class MapPage extends Component {
         })
     }
 
-    setCoords(){
-        this.props.locationActions.setNewLocation(true);
-    }
-
     componentDidMount(){
-        console.log("-location-");
-        this.props.locationActions.setNewLocation({
-            lat: 60.16817554863222,
-            lon: 24.94085311889222
-        });
+        const self = this;
         let options = {
             enableHighAccuracy: true,
-            timeout: 10000,
+            timeout: 5000,
             maximumAge: 0
         };
 
         function success(position) {
-            let coordinates = position.coords;
-            this.props.locationActions.setNewLocation({
-                lat: coordinates.lat,
-                lon: coordinates.lon
+            self.props.locationActions.setNewLocation({
+                lat: position.coords.latitude,
+                lon: position.coords.longitude
             });
         }
 
         function error(err) {
-
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-
+            self.props.locationActions.setNewLocation({
+                lat: 60.1681755487777,
+                lon: 24.9408531187777
+            });
         }
 
         navigator.geolocation.getCurrentPosition(success, error, options);
@@ -63,12 +56,6 @@ class MapPage extends Component {
                 <Menu navigator={navigator} style={styles.menu}/>
                 <View style={{position: 'relative'}}>
                     <TopButtons />
-                    <Button
-                        onPress={this.setCoords}
-                        title="Learn More"
-                        color="#841584"
-                        accessibilityLabel="Learn more about this purple button"
-                    />
                     <MapView style={styles.map}
                              initialRegion={{
                         latitude: location.lat,
