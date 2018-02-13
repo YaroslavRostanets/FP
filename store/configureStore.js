@@ -8,8 +8,7 @@ import thunk from 'redux-thunk';
 
 function configureStore(initialState) {
     const logger = createLogger();
-    const store = createStore(rootReducer, initialState);
-    applyMiddleware(thunk, logger);
+    const store = createStore(rootReducer, initialState, applyMiddleware(thunk, logger));
 
     return store;
 }

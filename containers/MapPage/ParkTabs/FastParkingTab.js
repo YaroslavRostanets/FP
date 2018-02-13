@@ -14,8 +14,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 //const CustIcon = createIconSetFromFontello(fontelloConfig);
 
 class FastParking extends Component {
+    componentDidMount(){
+        console.log(this.props.location);
+        this.props.placesActions.getPlaces({});
+    }
 
     render(){
+
         const parkExample = [{
             key: 1,
             lat: 52,
@@ -147,8 +152,9 @@ const styles = {
 };
 
 function mapStateToProps (store) {
-    console.log(store);
+
     return {
+        location: store.location,
         places: store.places
     }
 }

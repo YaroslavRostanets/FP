@@ -2,16 +2,17 @@
  * Created by Yaroslav on 25.08.2017.
  */
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { routes } from '../constants/routes'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { routes } from '../constants/routes';
 import { Text } from 'react-native';
-import { Navigator } from 'react-native-deprecated-custom-components'
+import { Navigator } from 'react-native-deprecated-custom-components';
 import MapPage from '../components/MapPage/MapPage';
 import ParkDetail from '../containers/ParkDetail';
-import Info from '../components/Info/Info'
-import Options from '../components/Options/Options'
-import * as uiActions from '../actions/uiActions'
+import Info from '../components/Info/Info';
+import Options from '../components/Options/Options';
+import PreLoader from '../components/PreLoader/PreLoader';
+import * as uiActions from '../actions/uiActions';
 
 class App extends Component {
     constructor(props){
@@ -24,7 +25,12 @@ class App extends Component {
     }
 
     navigatorRenderScene(route, navigator){
+        console.log('route: ',navigator.title);
         switch (route.title){
+            case 'PreLoader':
+                return (
+                    <PreLoader navigator={navigator}/>
+                );
             case 'MapPage':
                 return (
                     <MapPage navigator={navigator}/>
@@ -51,10 +57,11 @@ class App extends Component {
     render() {
 
         const routes = this.routes;
+        console.log('initial: ',routes[4]);
         return (
             <Navigator
                 renderScene={this.navigatorRenderScene}
-                initialRoute={routes[0]}
+                initialRoute={routes[4]}
                 initialRouteStack={routes}
                 configureScene = {this.configureScene}
             />
@@ -65,7 +72,6 @@ class App extends Component {
 
 
 function mapStateToProps (state) {
-    console.log(state);
     return {
         state: state
     }

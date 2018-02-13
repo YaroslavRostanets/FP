@@ -11,7 +11,6 @@ import { Marker } from 'react-native-maps';
 import Menu from '../../containers/MapPage/Menu/Menu';
 import TopButtons from '../../containers/MapPage/TopButtons';
 import ParkTabs from '../../containers/MapPage/ParkTabs/ParkTabs';
-import {AsyncStorage} from 'react-native';
 
 
 class MapPage extends Component {
@@ -20,31 +19,6 @@ class MapPage extends Component {
         this.props.navigator.push({
             title:'ParkDetail'
         })
-    }
-
-    componentDidMount(){
-        const self = this;
-        let options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-        };
-
-        function success(position) {
-            self.props.locationActions.setNewLocation({
-                lat: position.coords.latitude,
-                lon: position.coords.longitude
-            });
-        }
-
-        function error(err) {
-            self.props.locationActions.setNewLocation({
-                lat: 60.1681755487777,
-                lon: 24.9408531187777
-            });
-        }
-
-        navigator.geolocation.getCurrentPosition(success, error, options);
     }
 
     render() {
@@ -91,7 +65,7 @@ const styles = {
 };
 
 function mapStateToProps (store) {
-    console.log(store);
+
     return {
         location: store.location
     }

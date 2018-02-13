@@ -10,7 +10,7 @@ const initialState = {
 };
 
 export default function location(state = initialState, action) {
-    console.log('action: ', action);
+
     switch (action.type) {
         case SET_NEW_LOCATION:
             return { ...state, lat: action.payload.lat, lon: action.payload.lon };
