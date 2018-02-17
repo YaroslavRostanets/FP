@@ -51,7 +51,7 @@ const styles = {
     map: {
         width: "100%",
         minWidth: "100%",
-        height: "103%"
+        height: "100%"
     },
     mapPage: {
         overflow: "hidden",

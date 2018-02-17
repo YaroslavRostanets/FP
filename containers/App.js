@@ -25,7 +25,7 @@ class App extends Component {
     }
 
     navigatorRenderScene(route, navigator){
-        console.log('route: ',navigator.title);
+        //console.log('route: ',navigator.title);
         switch (route.title){
             case 'PreLoader':
                 return (
@@ -57,7 +57,7 @@ class App extends Component {
     render() {
 
         const routes = this.routes;
-        console.log('initial: ',routes[4]);
+        //console.log('initial: ',routes[4]);
         return (
             <Navigator
                 renderScene={this.navigatorRenderScene}

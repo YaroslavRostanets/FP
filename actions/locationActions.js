@@ -3,7 +3,7 @@
  */
 import {
     SET_NEW_LOCATION
-} from '../constants/Location'
+} from '../constants/Location';
 
 export function setNewLocation(locationObject) {
 

@@ -14,10 +14,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 //const CustIcon = createIconSetFromFontello(fontelloConfig);
 
 class FastParking extends Component {
-    componentDidMount(){
-        console.log(this.props.location);
-        this.props.placesActions.getPlaces({});
-    }
 
     render(){
 
