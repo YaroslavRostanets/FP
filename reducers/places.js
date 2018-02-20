@@ -7,15 +7,16 @@ import {
 } from '../constants/Places';
 
 const initialState = {
-    fastParkingPlaces: []
+    fastParkingPlaces: [],
+    markersOnMap: []
 };
 
 export default function places(state = initialState, action) {
-    console.log("action.payload___________________________: ", action.payload);
+
     switch (action.type) {
         //case GET_FASTPLACES_REQUEST:
         case FAST_PLACES_RESULT:
-            return { ...state , fastParkingPlaces: action.payload };
+            return { ...state , fastParkingPlaces: action.payload, markersOnMap: action.payload };
         default:
             return state;
     }

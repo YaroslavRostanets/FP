@@ -15,7 +15,32 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 class FastParking extends Component {
 
+    _keyExtractor = (item, index) => item.id;
+
+    timeWithoutMin(time) {
+        return time.split(':')[0]; //Возвращаем только часы
+    }
+
+    timeIntervalConvert(interval) {
+        if(interval >= 60) return interval / 60 + "h";
+        else return interval + "m"
+    }
+
+    distanceConvert(distance) {
+        const dist = Number(distance);
+
+        if( distance <= 1 ){
+            return dist * 1000 + ' m';
+        } else {
+            return dist + ' km';
+        }
+    }
+
     render(){
+        const fastPlaces = this.props.places;
+        const h = this.timeWithoutMin;
+        const i = this.timeIntervalConvert;
+        const d = this.distanceConvert;
 
         const parkExample = [{
             key: 1,
@@ -25,62 +50,26 @@ class FastParking extends Component {
             onSaturday: '12-15',
             onSunday: '15-19',
             time: '2h'
-        }, {
-                key: 3,
-                lat: 53,
-                lon: 54,
-                onWeekdays: '8-22',
-                onSaturday: '12-15',
-                onSunday: '15-19',
-                time: '2h'
-            },
-            {
-                key: 4,
-                lat: 53,
-                lon: 54,
-                onWeekdays: '8-22',
-                onSaturday: '12-15',
-                onSunday: '15-19',
-                time: '2h'
-            },
-            {
-                key: 5,
-                lat: 53,
-                lon: 54,
-                onWeekdays: '8-22',
-                onSaturday: '10-15',
-                onSunday: '15-17',
-                time: '2h'
-            },
-            {
-                key: 6,
-                lat: 53,
-                lon: 54,
-                onWeekdays: '7-15',
-                onSaturday: '12-15',
-                onSunday: '15-19',
-                time: '2h'
-            }
-
-        ];
+        }];
 
         return (
             <FlatList style={styles.fastParking}
-                data={parkExample}
+                keyExtractor={this._keyExtractor}
+                data={fastPlaces}
                 renderItem={({item}) => (
-                    <View id={item.key} style={styles.oneRow}>
+                    <View id={item.id} style={styles.oneRow}>
                         <View style={styles.imgCont}>
                             <Icon style={styles.timer} name="circle-thin"/>
-                            <Text style={styles.icoTime}>2h</Text>
+                            <Text style={styles.icoTime}>{i( item['time_interval'] )}</Text>
                         </View>
                         <View style={styles.content}>
                             <Text style={styles.distance}>
-                                200m
+                                {d(item.geodist_pt)}
                             </Text>
                             <View style={styles.time}>
-                                <Text style={styles.onDays}>{item.onWeekdays}</Text>
-                                <Text style={styles.onDays}>({item.onSaturday})</Text>
-                                <Text style={styles.onSunday}>{item.onSunday}</Text>
+                                <Text style={styles.onDays}>{h(item['weekday_from'])}-{h(item['weekday_to'])}</Text>
+                                <Text style={styles.onDays}>({h(item['saturday_from'])}-{h(item['saturday_to'])})</Text>
+                                <Text style={styles.onSunday}>{h(item['sunday_from'])}-{h(item['sunday_to'])}</Text>
                             </View>
                         </View>
                     </View>
@@ -151,7 +140,7 @@ function mapStateToProps (store) {
 
     return {
         location: store.location,
-        places: store.places
+        places: store.places.fastParkingPlaces
     }
 }
 

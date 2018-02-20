@@ -15,15 +15,10 @@ import ParkTabs from '../../containers/MapPage/ParkTabs/ParkTabs';
 
 class MapPage extends Component {
 
-    goToDetail(){
-        this.props.navigator.push({
-            title:'ParkDetail'
-        })
-    }
-
     render() {
         const navigator = this.props.navigator;
         const location = this.props.location;
+        const markers = this.props.markersOnMap;
 
         return (
             <View style={styles.mapPage}>
@@ -36,9 +31,12 @@ class MapPage extends Component {
                         longitude: location.lon,
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421}}>
-                        <Marker
-                            coordinate={{latitude: location.lat, longitude: location.lon}}
-                        />
+                        {Array.prototype.map.call(markers,(marker)=>(
+                            <Marker
+                                key={marker.id}
+                                coordinate={{latitude: Number(marker.lat) , longitude: Number(marker.lon)}}
+                            />
+                        ))}
                     </MapView>
                     <ParkTabs/>
                 </View>
@@ -67,7 +65,9 @@ const styles = {
 function mapStateToProps (store) {
 
     return {
-        location: store.location
+        location: store.location,
+        fastPlaces: store.places.fastParkingPlaces,
+        markersOnMap: store.places.markersOnMap
     }
 }
 

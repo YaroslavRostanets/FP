@@ -28,11 +28,14 @@ export function getPlaces(findOptionsObj) {
                 }
             })
             .then(response => {
-
                 dispatch({
                     type: FAST_PLACES_RESULT,
                     payload: response
                         });
+                findOptionsObj.navigator.push({
+                    title: 'MapPage',
+                    animationType: 'FloatFromBottomAndroid'
+                });
             }).catch(error => {
             console.error('placesActions: ', error);
         });

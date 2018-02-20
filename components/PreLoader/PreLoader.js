@@ -21,8 +21,12 @@ class PreLoader extends Component {
     goToMapPage(screenTitle){
         this.props.navigator.push({
             title: screenTitle,
-            animationType: 'FloatFromBottomAndroid'
+            animationType: 'VerticalDownSwipeJump'
         })
+    }
+
+    componentWillReceiveProps(nextProps){
+        //this.goToMapPage('MapPage');
     }
 
     componentDidMount() {
@@ -38,7 +42,14 @@ class PreLoader extends Component {
                 lat: position.coords.latitude,
                 lon: position.coords.longitude
             });
-            self.goToMapPage('MapPage');
+
+            self.props.placesActions.getPlaces(
+                {   "lat":position.coords.latitude,
+                    "lon":position.coords.longitude,
+                    "dayIndex": self.getDayIndex(),
+                    "navigator": self.props.navigator }
+            );
+
         }
 
         function error(err) {
@@ -56,7 +67,7 @@ class PreLoader extends Component {
                 .then(response => {
                     /*--Включаем для разработки в Киеве--*/
                     setDefaultLocation();
-                    self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex() });
+                    self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex(), "navigator": self.props.navigator });
                     /*--конец Включаем для разработки в Киеве--*/
 
                     /*--Отключаем для разработки--*/
@@ -70,7 +81,7 @@ class PreLoader extends Component {
                 console.error(error);
                 setDefaultLocation();
                 self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex() });
-                //self.goToMapPage('MapPage');
+
             });
             function setDefaultLocation(){
                 self.props.locationActions.setNewLocation({
