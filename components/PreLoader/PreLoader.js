@@ -30,6 +30,7 @@ class PreLoader extends Component {
     }
 
     componentDidMount() {
+        return false;
         const self = this;
         let options = {
             enableHighAccuracy: true,

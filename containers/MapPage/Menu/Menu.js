@@ -47,7 +47,7 @@ class Menu extends Component {
         const menuOpen = this.props.menuOpen;
 
         return (
-            <Animated.View style={{...this.menuStyles,marginLeft: fadeAnim}} menuOpen={menuOpen}>
+            <View style={{...this.menuStyles,marginLeft: 0}} menuOpen={menuOpen}>
                 <UserInfo/>
                 <MenuList navigator={this.props.navigator} />
                     <Text>Menu2</Text>
@@ -56,7 +56,7 @@ class Menu extends Component {
                         {this.width}
                     </Text>
 
-            </Animated.View>
+            </View>
 
         )
     }

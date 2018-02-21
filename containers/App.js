@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import { routes } from '../constants/routes';
 import { Text } from 'react-native';
 import { Navigator } from 'react-native-deprecated-custom-components';
-import MapPage from '../components/MapPage/MapPage';
+import MapPage from '../components/MapPage/MapPageNew';
 import ParkDetail from '../containers/ParkDetail';
 import Info from '../components/Info/Info';
 import Options from '../components/Options/Options';
@@ -31,7 +31,7 @@ class App extends Component {
                 return (
                     <PreLoader navigator={navigator}/>
                 );
-            case 'MapPage':
+            case 'MapPageNew':
                 return (
                     <MapPage navigator={navigator}/>
                 );
@@ -61,7 +61,7 @@ class App extends Component {
         return (
             <Navigator
                 renderScene={this.navigatorRenderScene}
-                initialRoute={routes[4]}
+                initialRoute={routes[0]}
                 initialRouteStack={routes}
                 configureScene = {this.configureScene}
             />
