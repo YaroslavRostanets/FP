@@ -4,12 +4,14 @@ import Interactable from 'react-native-interactable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as locationActions from '../../actions/locationActions';
+import * as uiActions from '../../actions/uiActions'
 import Menu from '../../containers/MapPage/Menu/Menu';
 import UserInfo from '../../containers/MapPage/Menu/UserInfo';
 import MenuList from '../../containers/MapPage/Menu/MenuList';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 import ParkTabs from '../../containers/MapPage/ParkTabs/ParkTabs';
+import TopButtons from '../../containers/MapPage/TopButtons';
 
 const Screen = Dimensions.get('window');
 const SideMenuWidth = Math.floor( Screen.width * 0.8 );
@@ -38,21 +40,11 @@ class MapPage extends Component {
                     </Interactable.View>
                 </View>
 
-                <View style={styles.header}>
-                    <TouchableOpacity onPress={this.onMenuPress.bind(this)}>
-                        <Text>
-                            Icon
-                        </Text>
-                    </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Side Menu Example</Text>
-                </View>
-
                 <View style={styles.body}>
                     <Interactable.View ref="mapInstance"
                                        horizontalOnly={true}
-                                       snapPoints={[{x: 0}, {x: -SideMenuWidth}]}
-                                       initialPosition={{x: 0}}
-                    >
+                                       snapPoints={[{x: 0}, {x: SideMenuWidth}]}
+                                       initialPosition={{x: 0}}>
                         <MapView style={styles.map}
                                  initialRegion={{
                         latitude: location.lat,
@@ -66,19 +58,25 @@ class MapPage extends Component {
                                 />
                             ))}
                         </MapView>
+                        <TopButtons menuActions={{
+                            openMenu: this.openMenu.bind(this),
+                            closeMenu: this.closeMenu.bind(this)
+                        }} style={styles.header} />
+                        <ParkTabs/>
                     </Interactable.View>
-                    <ParkTabs/>
                 </View>
+
+
 
             </View>
         );
     }
-    onMenuPress() {
-        //this.refs['menuInstance'].setVelocity({x: 2000});
+    openMenu() {
+        this.refs['menuInstance'].setVelocity({x: 2000});
         this.refs['mapInstance'].setVelocity({x: 2000});
     }
-    onClosePress() {
-        //this.refs['menuInstance'].setVelocity({x: -2000});
+    closeMenu() {
+        this.refs['menuInstance'].setVelocity({x: -2000});
         this.refs['mapInstance'].setVelocity({x: -2000});
     }
 }
@@ -139,7 +137,8 @@ const styles = StyleSheet.create({
     map: {
         width: "100%",
         minWidth: "100%",
-        height: "100%"
+        height: "100%",
+        backgroundColor: "#3FDFFF"
     },
 });
 
@@ -148,13 +147,15 @@ function mapStateToProps (store) {
     return {
         location: store.location,
         fastPlaces: store.places.fastParkingPlaces,
-        markersOnMap: store.places.markersOnMap
+        markersOnMap: store.places.markersOnMap,
+        menuOpen: store.ui.menuOpen
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        locationActions: bindActionCreators(locationActions, dispatch)
+        locationActions: bindActionCreators(locationActions, dispatch),
+        uiActions: bindActionCreators(uiActions, dispatch)
     }
 }
 
