@@ -9,8 +9,8 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 import Menu from '../../containers/MapPage/Menu/Menu';
-import TopButtons from '../../containers/MapPage/TopButtons';
-import ParkTabs from '../../containers/MapPage/ParkTabs/ParkTabs';
+import TopButtons from './parts/TopButtons';
+import ParkTabs from './parts/ParkTabs/ParkTabs';
 
 
 class MapPage extends Component {

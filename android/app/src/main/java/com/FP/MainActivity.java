@@ -1,4 +1,4 @@
-package com.FP;
+package com.fp;
 
 import com.facebook.react.ReactActivity;
 

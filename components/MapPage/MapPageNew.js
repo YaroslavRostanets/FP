@@ -10,74 +10,75 @@ import UserInfo from '../../containers/MapPage/Menu/UserInfo';
 import MenuList from '../../containers/MapPage/Menu/MenuList';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
-import ParkTabs from '../../containers/MapPage/ParkTabs/ParkTabs';
-import TopButtons from '../../containers/MapPage/TopButtons';
+import PlaceMarker from './parts/PlaceMarker';
+import ParkTabs from './parts/ParkTabs/ParkTabs';
+import TopButtons from './parts/TopButtons';
 
 const Screen = Dimensions.get('window');
 const SideMenuWidth = Math.floor( Screen.width * 0.8 );
 const RemainingWidth = Screen.width - SideMenuWidth;
 
 class MapPage extends Component {
+    onSnapEvent(event) {
+        console.log("state: ", event.nativeEvent);
+        console.log("isMenuOpen", this.props.menuOpen);
+        if(this.props.menuOpen && event.nativeEvent.index){
+            this.props.uiActions.toggleMenu(!this.props.menuOpen);
+        }
+
+    }
+
     render() {
         const navigator = this.props.navigator;
         const location = this.props.location;
         const markers = this.props.markersOnMap;
 
         return (
-            <View style={styles.container}>
 
-                <View style={styles.sideMenuContainer} pointerEvents='box-none'>
-                    <Interactable.View
-                        ref='menuInstance'
-                        horizontalOnly={true}
-                        snapPoints={[{x: 0}, {x: -SideMenuWidth}]}
-                        boundaries={{right: RemainingWidth/4}}
-                        initialPosition={{x: -SideMenuWidth}}>
+                <Interactable.View
+                    style={styles.interactable}
+                    onSnap={this.onSnapEvent.bind(this)}
+                    ref='menuInstance'
+                    horizontalOnly={true}
+                    snapPoints={[{x: 0}, {x: -SideMenuWidth}]}
+                    initialPosition={{x: -SideMenuWidth}}>
+                    <View style={styles.mapPage}>
                         <View style={styles.sideMenu}>
                             <UserInfo/>
                             <MenuList navigator={this.props.navigator} />
                         </View>
-                    </Interactable.View>
-                </View>
-
-                <View style={styles.body}>
-                    <Interactable.View ref="mapInstance"
-                                       horizontalOnly={true}
-                                       snapPoints={[{x: 0}, {x: SideMenuWidth}]}
-                                       initialPosition={{x: 0}}>
-                        <MapView style={styles.map}
-                                 initialRegion={{
-                        latitude: location.lat,
-                        longitude: location.lon,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421}}>
-                            {Array.prototype.map.call(markers,(marker)=>(
-                                <Marker
-                                    key={marker.id}
-                                    coordinate={{latitude: Number(marker.lat) , longitude: Number(marker.lon)}}
-                                />
-                            ))}
-                        </MapView>
-                        <TopButtons menuActions={{
+                        <View style={styles.mapContainer}>
+                            <MapView style={styles.map}
+                                     initialRegion={{
+                                            latitude: location.lat,
+                                            longitude: location.lon,
+                                            latitudeDelta: 0.0922,
+                                            longitudeDelta: 0.0421}}>
+                                {Array.prototype.map.call(markers,(marker)=>(
+                                    <Marker
+                                        key={marker.id}
+                                        coordinate={{latitude: Number(marker.lat) , longitude: Number(marker.lon)}}>
+                                        <PlaceMarker marker={marker} />
+                                    </Marker>
+                                ))}
+                            </MapView>
+                            <TopButtons toggleMenu={{
                             openMenu: this.openMenu.bind(this),
                             closeMenu: this.closeMenu.bind(this)
                         }} style={styles.header} />
-                        <ParkTabs/>
-                    </Interactable.View>
-                </View>
-
-
-
-            </View>
+                            <ParkTabs/>
+                        </View>
+                    </View>
+                </Interactable.View>
         );
     }
+
+
     openMenu() {
         this.refs['menuInstance'].setVelocity({x: 2000});
-        this.refs['mapInstance'].setVelocity({x: 2000});
     }
     closeMenu() {
         this.refs['menuInstance'].setVelocity({x: -2000});
-        this.refs['mapInstance'].setVelocity({x: -2000});
     }
 }
 
@@ -85,23 +86,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'stretch',
-        backgroundColor: 'white',
+        backgroundColor: 'red',
+        height: '100%'
     },
-    sideMenuContainer: {
-        position: 'absolute',
-        top: 0,
-        left: -RemainingWidth,
-        right: 0,
-        bottom: 0,
-        flexDirection: 'row',
-        zIndex: 1002
+    interactable: {
+        height: "100%",
+        width: "180%"
     },
     sideMenu: {
         left: 0,
-        width: Screen.width,
-        paddingLeft: RemainingWidth,
-        flex: 1,
-        backgroundColor: '#aaa'
+        width: SideMenuWidth,
+        paddingLeft: 0,
+        backgroundColor: "#FFFFFF",
+        flex: 0,
+        position: "relative",
+        zIndex: 9,
     },
     sideMenuTitle: {
         fontSize: 20,
@@ -135,11 +134,22 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     map: {
-        width: "100%",
-        minWidth: "100%",
-        height: "100%",
-        backgroundColor: "#3FDFFF"
+        width: Screen.width,
+        height: "100%"
     },
+    mapPage: {
+        overflow: "hidden",
+        width: "100%",
+        flex: 1,
+        flexWrap: "nowrap",
+        flexDirection: "row",
+        position: "relative"
+    },
+    mapContainer: {
+        height: "100%",
+        width: 380,
+        display: "flex"
+    }
 });
 
 function mapStateToProps (store) {

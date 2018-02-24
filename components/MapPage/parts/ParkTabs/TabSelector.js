@@ -5,10 +5,10 @@ import React, { Component } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as uiActions from '../../../actions/uiActions'
-import {FAST_PARKING, FILTER, SEARCH} from '../../../constants/UI'
+import * as uiActions from '../../../../actions/uiActions'
+import {FAST_PARKING, FILTER, SEARCH} from '../../../../constants/UI'
 import { createIconSetFromFontello } from 'react-native-vector-icons';
-import fontelloConfig from '../../../src/config.json';
+import fontelloConfig from '../../../../src/config.json';
 
 
 const CustIcon = createIconSetFromFontello(fontelloConfig);

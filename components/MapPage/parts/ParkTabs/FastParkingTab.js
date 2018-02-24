@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import * as placesActions from '../../../actions/placesActions';
+import * as placesActions from '../../../../actions/placesActions';
 import { connect } from 'react-redux';
 import { View, Text, FlatList } from 'react-native';
 //import { createIconSetFromFontello } from 'react-native-vector-icons';

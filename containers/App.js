@@ -31,7 +31,7 @@ class App extends Component {
                 return (
                     <PreLoader navigator={navigator}/>
                 );
-            case 'MapPageNew':
+            case 'MapPage':
                 return (
                     <MapPage navigator={navigator}/>
                 );
@@ -61,7 +61,7 @@ class App extends Component {
         return (
             <Navigator
                 renderScene={this.navigatorRenderScene}
-                initialRoute={routes[0]}
+                initialRoute={routes[4]}
                 initialRouteStack={routes}
                 configureScene = {this.configureScene}
             />

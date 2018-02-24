@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import * as locationActions from '../../actions/locationActions';
 import * as placesActions from '../../actions/placesActions';
 import { API } from '../../constants/appConfig';
-import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
+import { Bars } from 'react-native-loader';
 import { LAT, LON } from '../../constants/Location'
 
 const loaderWidth = Dimensions.get('window').width * 0.635;
@@ -30,11 +30,11 @@ class PreLoader extends Component {
     }
 
     componentDidMount() {
-        return false;
+        //return false;
         const self = this;
         let options = {
             enableHighAccuracy: true,
-            timeout: 5000,
+            timeout: 500,
             maximumAge: 0
         };
 
@@ -79,9 +79,9 @@ class PreLoader extends Component {
                     // self.props.placesActions.getPlaces({"lat":response.latitude, "lon":response.longitude, "dayIndex": this.getDayIndex() });
                     //self.goToMapPage('MapPage');
                 }).catch(error => {
-                console.error(error);
-                setDefaultLocation();
-                self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex() });
+                    console.error(error);
+                    setDefaultLocation();
+                    self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex() });
 
             });
             function setDefaultLocation(){

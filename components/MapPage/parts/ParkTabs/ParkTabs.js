@@ -5,10 +5,10 @@ import React, { Component } from 'react';
 import { View, FlatList, Text, TouchableHighlight, Animated, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import {FAST_PARKING, FILTER, SEARCH} from '../../../constants/UI';
-import {toggleBar} from '../../../actions/uiActions';
+import {FAST_PARKING, FILTER, SEARCH} from '../../../../constants/UI';
+import {toggleBar} from '../../../../actions/uiActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import TabSelector from '../../../containers/MapPage/ParkTabs/TabSelector';
+import TabSelector from './TabSelector';
 import  FastParking from './FastParkingTab';
 import  FilterTab from './FilterTab';
 import SearchTab from './SearchTab';
@@ -58,7 +58,7 @@ class ParkTabs extends Component {
             this.state.fadeOpacity,
             {
                 toValue: Opacity,
-                duration: 300
+                duration: 200
             }
         ).start();
 

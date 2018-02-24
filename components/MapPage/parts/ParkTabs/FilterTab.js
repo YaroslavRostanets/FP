@@ -1,20 +1,20 @@
 /**
  * Created by Yaroslav on 23.09.2017.
  */
+
 import React, { Component } from 'react';
 import { View, Text, TouchableHighlight, TimePickerAndroid } from 'react-native';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
-import fontelloConfig from '../../../src/config.json';
+import fontelloConfig from '../../../../src/config.json';
+import CheckboxField from 'react-native-checkbox-field';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import {MONFRY, SAT, SUN, FROM, TO} from '../../../constants/Filter'
-
-import CheckboxField from 'react-native-checkbox-field';
+import {MONFRY, SAT, SUN, FROM, TO} from '../../../../constants/Filter'
 
 const CustIcon = createIconSetFromFontello(fontelloConfig);
 
-class SearchTab extends Component {
+class FilterTab extends Component {
 
     state = {
         MONFRY: true,
@@ -24,9 +24,7 @@ class SearchTab extends Component {
         filterTo: "16-00",
         filterTimeFrom: "30min",
         filterTimeTo: "12h",
-        sliderValues: [1, 6],
-        sliderDistanceValue: [3],
-        distance: 8
+        sliderValues: [1, 6]
     };
 
     sliderValuesChange = (values) => {
@@ -52,32 +50,6 @@ class SearchTab extends Component {
             filterTimeFrom: convertObj[values[0]],
             filterTimeTo: convertObj[values[1]]
         });
-    };
-
-    sliderConvertDistance = (values) => {
-        let convertObj = {
-            "0":"2",
-            "1":"4",
-            "2":"6",
-            "3":"8",
-            "4":"10",
-            "5":"12",
-            "6":"14",
-            "7":"16",
-            "8":"18",
-            "9":"19",
-            "10":"20"
-        };
-        this.setState({
-            distance: convertObj[values]
-        });
-    };
-
-    sliderDistanceChange = (values) => {
-        this.setState({
-            sliderDistanceValue: values,
-        });
-        this.sliderConvertDistance(values);
 
     };
 
@@ -147,11 +119,10 @@ class SearchTab extends Component {
         const initValues = this.state.sliderValues;
         const filterTimeFrom = this.state.filterTimeFrom;
         const filterTimeTo = this.state.filterTimeTo;
-        const initDistance = this.state.sliderDistanceValue;
-        const distance = this.state.distance;
+
 
         return (
-            <View style={styles.searchTab}>
+            <View style={styles.filterTab}>
                 <View style={styles.oneRow}>
                     <View style={styles.iconWrap}>
                         <CustIcon name="calendar" style={styles.icon} />
@@ -198,7 +169,7 @@ class SearchTab extends Component {
                         </View>
                     </View>
                 </View>
-                <View style={styles.oneRow}>
+                <View style={{...styles.oneRow}}>
                     <View style={styles.iconWrap}>
                         <CustIcon name="clock" style={styles.icon} />
                     </View>
@@ -232,15 +203,18 @@ class SearchTab extends Component {
                         </View>
                     </View>
                 </View>
-                <View style={styles.oneRow}>
+                <View style={{...styles.oneRow,borderBottomWidth:0}}>
                     <View style={styles.iconWrap}>
                         <Icon name="hourglass-o" style={styles.icon} />
                     </View>
                     <View style={styles.rightPart}>
-                        <Text style={{...styles.topDescr, marginBottom: 15}}>
-                            Hours:<Text style={styles.grayText}> from <Text style={styles.b}>{filterTimeFrom} </Text>
-                            to <Text style={styles.b}>{filterTimeTo}</Text></Text>
+                        <Text style={styles.topDescr}>
+                            Hours:
                         </Text>
+                        <View style={{marginBottom: 10}}>
+                            <Text style={styles.grayText}>from <Text style={styles.b}>{filterTimeFrom} </Text>
+                                 to <Text style={styles.b}>{filterTimeTo}</Text></Text>
+                        </View>
                         <MultiSlider values={initValues} sliderLength={245}
                                      onValuesChange={this.sliderValuesChange}
                                      max={7}
@@ -248,51 +222,29 @@ class SearchTab extends Component {
                                          backgroundColor: '#2182D6'
                                      }}
                                      selectedStyle={{
-                                         backgroundColor: '#2182D6',
-                                     }}
+                                        backgroundColor: '#2182D6',
+                                        }}
                                      unselectedStyle={{
-                                         backgroundColor: 'silver',
-                                     }}
-                        />
-                    </View>
-                </View>
-                <View style={{...styles.oneRow,borderBottomWidth: 0}}>
-                    <View style={styles.iconWrap}>
-                        <CustIcon name="distance-parking" style={styles.icon} />
-                    </View>
-                    <View style={styles.rightPart}>
-                        <Text style={{...styles.topDescr, marginBottom: 15}}>
-                            Distance: <Text style={styles.grayText}>{distance} km</Text>
-                        </Text>
-                        <MultiSlider
-                            values={initDistance}
-                            sliderLength={245}
-                            onValuesChange={this.sliderDistanceChange}
-                            markerStyle={{
-                                backgroundColor: '#2182D6'
-                            }}
-                            selectedStyle={{
-                                backgroundColor: '#2182D6',
-                            }}
-                            unselectedStyle={{
-                                backgroundColor: 'silver',
-                            }}
+                                        backgroundColor: 'silver',
+                                        }}
                         />
                     </View>
                 </View>
             </View>
         )
+
     }
 }
 
+
 const styles = {
-    searchTab: {
+    filterTab: {
         paddingLeft: 12,
         paddingRight: 12,
         height: 250
     },
     oneRow: {
-        height: "25%",
+        height: "33%",
         borderBottomWidth: 1,
         borderBottomColor: "#EAEAEA",
         borderStyle: "solid",
@@ -300,20 +252,21 @@ const styles = {
         flexDirection: "row",
         paddingLeft: 8,
         paddingRight: 8,
-        paddingTop: 5,
-        paddingBottom: 5
-    },
+        paddingTop: 14,
+        paddingBottom: 14
+    }
+    ,
     iconWrap: {
         height: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
-        marginRight: 18,
-        width: 40
+        marginRight: 20,
+        width: 45
     },
     icon: {
-        fontSize: 37
+        fontSize: 40
     },
     rightPart: {
         display: "flex",
@@ -321,13 +274,12 @@ const styles = {
     },
     topDescr: {
         color: "#5093DF",
-        fontSize: 15
+        fontSize: 16
     },
     checkbox: {
         display: "flex",
         flexDirection: "row",
-        width: "100%",
-        marginTop: -3
+        width: "100%"
     },
     oneCheck: {
         width: 120,
@@ -383,8 +335,8 @@ const styles = {
     b: {
         fontWeight: "bold"
     }
+
 };
 
-export default SearchTab
-
+export default FilterTab
 
