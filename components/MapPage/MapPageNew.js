@@ -19,14 +19,6 @@ const SideMenuWidth = Math.floor( Screen.width * 0.8 );
 const RemainingWidth = Screen.width - SideMenuWidth;
 
 class MapPage extends Component {
-    onSnapEvent(event) {
-        console.log("state: ", event.nativeEvent);
-        console.log("isMenuOpen", this.props.menuOpen);
-        if(this.props.menuOpen && event.nativeEvent.index){
-            this.props.uiActions.toggleMenu(!this.props.menuOpen);
-        }
-
-    }
 
     render() {
         const navigator = this.props.navigator;
@@ -37,10 +29,10 @@ class MapPage extends Component {
 
                 <Interactable.View
                     style={styles.interactable}
-                    onSnap={this.onSnapEvent.bind(this)}
                     ref='menuInstance'
                     horizontalOnly={true}
                     snapPoints={[{x: 0}, {x: -SideMenuWidth}]}
+                    boundaries={{right: 0}}
                     initialPosition={{x: -SideMenuWidth}}>
                     <View style={styles.mapPage}>
                         <View style={styles.sideMenu}>
@@ -91,7 +83,7 @@ const styles = StyleSheet.create({
     },
     interactable: {
         height: "100%",
-        width: "180%"
+        width: Screen.width + SideMenuWidth
     },
     sideMenu: {
         left: 0,
@@ -139,7 +131,7 @@ const styles = StyleSheet.create({
     },
     mapPage: {
         overflow: "hidden",
-        width: "100%",
+        width: Screen.width,
         flex: 1,
         flexWrap: "nowrap",
         flexDirection: "row",
@@ -147,7 +139,7 @@ const styles = StyleSheet.create({
     },
     mapContainer: {
         height: "100%",
-        width: 380,
+        width: Screen.width,
         display: "flex"
     }
 });

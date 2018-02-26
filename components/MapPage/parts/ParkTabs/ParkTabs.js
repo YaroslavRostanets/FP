@@ -45,7 +45,6 @@ class ParkTabs extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        let Opacity = (nextProps.menuOpen)? 0 : 1;
         let tabsOpacity = (nextProps.barOpen)? 1 : 0;
         let maxHeight = (nextProps.barOpen) ? 355 : 0;
         let maxWidth = (nextProps.barOpen) ? ~~(Dimensions.get('window').width - 20) : this.btnWidthClosed;
@@ -53,14 +52,6 @@ class ParkTabs extends Component {
         let btnHeight = (nextProps.barOpen) ? 48 : 58;
         let btnRadius = (nextProps.barOpen) ? 3 : 28;
         let self = this;
-
-        Animated.timing(
-            this.state.fadeOpacity,
-            {
-                toValue: Opacity,
-                duration: 200
-            }
-        ).start();
 
         Animated.timing(
             this.state.maxHeight,
@@ -120,7 +111,6 @@ class ParkTabs extends Component {
 
     render() {
         const activeTab = this.props.activeTab;
-        const opacity = this.state.fadeOpacity;
         const maxHeight = this.state.maxHeight;
         const maxWidth = this.state.maxWidth;
         const showTabs = this.state.showTabs;
@@ -130,7 +120,7 @@ class ParkTabs extends Component {
 
         return (
             <Animated.View
-                style={{...styles.parkTabs, opacity: opacity}}>
+                style={styles.parkTabs}>
                 <Animated.View style={{...(this.props.barOpen) ? styles.botCont : styles.botContClosed, width: maxWidth}}>
                     <TouchableHighlight style={{...styles.tabChevron,display: (this.props.barOpen)?"flex":"none" }} onPress={this.toggleBarState.bind(this)}>
                         <Icon style={styles.chevronIcon} name="chevron-down"/>
