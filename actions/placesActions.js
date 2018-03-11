@@ -37,7 +37,7 @@ export function getPlaces(findOptionsObj) {
                     animationType: 'FloatFromBottomAndroid'
                 });
             }).catch(error => {
-            console.error('placesActions: ', error);
+            //console.error('placesActions: ', error);
         });
 
     };

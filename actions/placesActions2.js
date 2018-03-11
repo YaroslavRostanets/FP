@@ -12,7 +12,7 @@ import {
 import { API } from '../constants/appConfig';
 
 export function getPlaces(findOptionsObject) {
-    console.log('findObj_________________________________________________-: ',findOptionsObject);
+    //console.log('findObj_________________________________________________-: ',findOptionsObject);
     // return {
     //     type: GET_PLACES_SUCCESS,
     //     payload: [{'id':1},{'id':2},{'id':3}]
@@ -36,7 +36,7 @@ export function getPlaces(findOptionsObject) {
                 //console.debug(response);
                 // ...
             }).catch(error => {
-            console.error(error);
+            //console.error(error);
         });
         // setTimeout(() => {
         //     dispatch({

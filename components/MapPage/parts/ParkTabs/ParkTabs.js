@@ -12,92 +12,25 @@ import TabSelector from './TabSelector';
 import  FastParking from './FastParkingTab';
 import  FilterTab from './FilterTab';
 import SearchTab from './SearchTab';
+import Interactable from 'react-native-interactable';
 
 class ParkTabs extends Component {
 
     constructor(props){
         super(props);
-        this.btnWidthClosed = 58;
-    }
-
-    toggleBarState () {
-        this.props.toggleBar( !this.props.barOpen );
-    }
-
-    redButtonPress () {
-        if( !this.props.barOpen ){ //Если бар свернут
-            this.props.toggleBar( !this.props.barOpen ); // открываем его
-            this.setState({
-                showTabs: true
-            })
-        }
     }
 
     state = {
+        height: 425,
         fadeOpacity:  new Animated.Value(1),
         tabsOpacity: new Animated.Value( 1 ),
-        maxHeight: new Animated.Value(355),
-        maxWidth:  new Animated.Value( ~~(Dimensions.get('window').width - 20) ), // "~~" - округляем
-        btnWidth: new Animated.Value( ~~(Dimensions.get('window').width * 0.9) ),
-        btnHeight: new Animated.Value( 48 ),
-        btnRadius: new Animated.Value( 3 ),
         showTabs: true
     };
 
     componentWillReceiveProps(nextProps) {
         let tabsOpacity = (nextProps.barOpen)? 1 : 0;
-        let maxHeight = (nextProps.barOpen) ? 355 : 0;
-        let maxWidth = (nextProps.barOpen) ? ~~(Dimensions.get('window').width - 20) : this.btnWidthClosed;
-        let btnWidth = (nextProps.barOpen) ? this.btnWidth : this.btnWidthClosed;
-        let btnHeight = (nextProps.barOpen) ? 48 : 58;
-        let btnRadius = (nextProps.barOpen) ? 3 : 28;
         let self = this;
 
-        Animated.timing(
-            this.state.maxHeight,
-            {
-                toValue: maxHeight,
-                duration: 400
-            }
-        ).start();
-
-        Animated.timing(
-            this.state.maxWidth,
-            {
-                toValue: maxWidth,
-                duration: 400
-            }
-        ).start(function(){
-            if ( !self.props.barOpen ) {
-                self.setState({
-                    showTabs: false
-                });
-            }
-        });
-
-        Animated.timing(
-            this.state.btnWidth,
-            {
-                toValue: btnWidth,
-                duration: 400
-            }
-        ).start();
-
-        Animated.timing(
-            this.state.btnHeight,
-            {
-                toValue: btnHeight,
-                duration: 400
-            }
-        ).start();
-
-        Animated.timing(
-            this.state.btnRadius,
-            {
-                toValue: btnRadius,
-                duration: 400
-            }
-        ).start();
 
         Animated.timing(
             this.state.tabsOpacity,
@@ -106,63 +39,71 @@ class ParkTabs extends Component {
                 duration: 300
             }
         ).start();
+    }
 
+    heightFix(event) {
+        console.log('nativeEvent: ', event.nativeEvent);
+        getHeight = index => {
+            console.log('this.index', index);
+            switch (Number(index)){
+                case 0:
+                    return 425;
+                case 1:
+                    return 165;
+                case 2:
+                    return 0;
+            }
+        };
+        //this.setState({height: getHeight(event.nativeEvent.index)});
+        console.log('height: ', this.state.height);
     }
 
     render() {
         const activeTab = this.props.activeTab;
-        const maxHeight = this.state.maxHeight;
-        const maxWidth = this.state.maxWidth;
         const showTabs = this.state.showTabs;
-        const tabsOpacity = this.state.tabsOpacity;
-        const btnRadius = this.state.btnRadius;
-        const btnHeight = this.state.btnHeight;
+        const height = this.state.height;
 
         return (
-            <Animated.View
-                style={styles.parkTabs}>
-                <Animated.View style={{...(this.props.barOpen) ? styles.botCont : styles.botContClosed, width: maxWidth}}>
-                    <TouchableHighlight style={{...styles.tabChevron,display: (this.props.barOpen)?"flex":"none" }} onPress={this.toggleBarState.bind(this)}>
+            <View style={{display: "flex",width: "100%", alignItems: "flex-end", height: this.state.height, backgroundColor: "blue"}}>
+                <Interactable.View
+                    verticalOnly={true}
+                    snapPoints={[{y: 0}, {y: 165}, {y: 425}]}
+                    onSnap={this.heightFix.bind(this)}
+                    boundaries={{top: -300}}
+                    initialPosition={{y: 0}}
+                    style={styles.parkTabs}>
+                    <Animated.View style={styles.botCont}>
                         <Icon style={styles.chevronIcon} name="chevron-down"/>
-                    </TouchableHighlight>
-                    <Animated.View style={{maxHeight: maxHeight, opacity: tabsOpacity}}>
-                        <View style={ styles.tabCont }>
-                            {((activeTab)=>{
-                                switch(activeTab) {
-                                    case FAST_PARKING:
-                                        return (<FastParking />);
-                                    case FILTER:
-                                        return (<FilterTab/>);
-                                    case SEARCH:
-                                        return (<SearchTab/>);
-                                    default:
-                                        return (<FastParking />);
-                                }
-                            })(activeTab)}
+                        <View>
+                            <View style={ styles.tabCont }>
+                                {((activeTab)=>{
+                                    switch(activeTab) {
+                                        case FAST_PARKING:
+                                            return (<FastParking />);
+                                        case FILTER:
+                                            return (<FilterTab/>);
+                                        case SEARCH:
+                                            return (<SearchTab/>);
+                                        default:
+                                            return (<FastParking />);
+                                    }
+                                })(activeTab)}
+                            </View>
+                            <View style={{display: (showTabs)? "flex" : "none"}}>
+                                <TabSelector />
+                            </View>
                         </View>
-                        <View style={{display: (showTabs)? "flex" : "none"}}>
-                            <TabSelector />
+                        <View
+                            style={styles.centerBut}>
+                            <TouchableHighlight style={styles.touchable}>
+                                <Text style={styles.centerButText}>
+                                    Start(78)
+                                </Text>
+                            </TouchableHighlight>
                         </View>
                     </Animated.View>
-                    <Animated.View
-                        style={{...styles.centerBut, borderRadius: btnRadius, height: btnHeight}}>
-                        <TouchableHighlight style={styles.touchable} onPress={this.redButtonPress.bind(this)}>
-                            {((barOpen) => {
-                                switch (barOpen){
-                                    case true:
-                                        return (<Text style={styles.centerButText}>
-                                                    Start(78)
-                                                </Text>);
-                                    default:
-                                        return (
-                                            <Icon name="chevron-up" style={styles.chevronUp} />
-                                        );
-                                }
-                            })(this.props.barOpen)}
-                        </TouchableHighlight>
-                    </Animated.View>
-                </Animated.View>
-            </Animated.View>
+                </Interactable.View>
+            </View>
         );
 
     }
@@ -170,22 +111,24 @@ class ParkTabs extends Component {
 
 const styles = {
     parkTabs: {
-        position: "absolute",
-        bottom: 15,
-        left: 0,
+        // position: "absolute",
+        //bottom: 0,
+        //height: 425,
+        // left: 0,
+        backgroundColor: 'rgba(243, 246, 248, 0.7)',
         width: "100%",
-        paddingRight: 10,
-        paddingLeft: 10,
-        zIndex: 9,
-        display: "flex",
-        overflow: "hidden",
-        marginRight: "auto",
-        marginLeft: "auto",
+        // paddingRight: 10,
+        // paddingLeft: 10,
+        // zIndex: 9,
+        // display: "flex",
+        // overflow: "hidden",
+        // marginRight: "auto",
+        // marginLeft: "auto",
         //backgroundColor: "red"
     },
     botCont: {
         backgroundColor: 'rgba(243, 246, 248, 0.7)',
-        paddingTop: 15,
+        paddingTop: 20,
         paddingRight: 4,
         paddingBottom: 7,
         paddingLeft: 4,
@@ -244,7 +187,10 @@ const styles = {
     },
     chevronIcon: {
         color: "#FE6D64",
-        fontSize: 16
+        fontSize: 17,
+        position: "absolute",
+        left: "50%",
+
     },
     touchable: {
         width: "100%",
@@ -266,7 +212,7 @@ const styles = {
 function mapStateToProps (store) {
     return {
         activeTab: store.ui.activeTab,
-        menuOpen: store.ui.menuOpen,
+        //menuOpen: store.ui.menuOpen,
         barOpen: store.ui.barOpen
     }
 }

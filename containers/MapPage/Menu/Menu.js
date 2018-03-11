@@ -28,26 +28,14 @@ class Menu extends Component {
         fadeAnim: new Animated.Value(0)
     };
 
-    componentWillReceiveProps(){
-        let marginLeft = (this.props.menuOpen)? 0 : this.menuSlideWidth;
-        Animated.timing(
-            this.state.fadeAnim,
-            {
-                toValue: marginLeft,
-                duration: 300
-            }
-        ).start();
-    }
-
 
 
     render(){
 
-        let { fadeAnim } = this.state;
         const menuOpen = this.props.menuOpen;
 
         return (
-            <View style={{...this.menuStyles,marginLeft: 0}} menuOpen={menuOpen}>
+            <View style={this.menuStyles} >
                 <UserInfo/>
                 <MenuList navigator={this.props.navigator} />
                     <Text>Menu2</Text>

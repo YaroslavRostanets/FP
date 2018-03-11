@@ -79,7 +79,7 @@ class PreLoader extends Component {
                     // self.props.placesActions.getPlaces({"lat":response.latitude, "lon":response.longitude, "dayIndex": this.getDayIndex() });
                     //self.goToMapPage('MapPage');
                 }).catch(error => {
-                    console.error(error);
+                    //console.error(error);
                     setDefaultLocation();
                     self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex() });
 

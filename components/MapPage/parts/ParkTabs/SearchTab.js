@@ -100,7 +100,7 @@ class SearchTab extends Component {
                 });
                 break;
             default :
-                console.log("Error, Ошибка установки дней");
+                //console.log("Error, Ошибка установки дней");
         }
 
         this.setState({
@@ -132,7 +132,7 @@ class SearchTab extends Component {
 
             }
         } catch ({code, message}) {
-            console.warn('Cannot open time picker', message);
+            //console.warn('Cannot open time picker', message);
         }
 
     };

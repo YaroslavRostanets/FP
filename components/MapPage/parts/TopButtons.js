@@ -12,28 +12,20 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 class TopButtons extends Component {
 
     toggleMenu(){
-        let isMenuOpen = this.props.menuOpen;
-        if(isMenuOpen){
+        console.log("menuOpen: ", this.props.menuOpen);
+        if(this.props.menuOpen){
             this.props.toggleMenu.closeMenu();
-            this.props.uiActions.toggleMenu(!this.props.menuOpen);
         } else {
             this.props.toggleMenu.openMenu();
-            this.props.uiActions.toggleMenu(!this.props.menuOpen);
         }
-        //this.props.uiActions.toggleMenu(!this.props.menuOpen);
     }
 
-    btnAnimation(){
-
-    }
 
     render() {
-        const menuOpen = this.props.menuOpen;
 
         return (
-            <View style={styles.topButtons} menuOpen={menuOpen}>
+            <View style={styles.topButtons}>
                 <TouchableHighlight underlayColor={"#5296E7"}
-                                    onShowUnderlay={this.btnAnimation.bind(this)}
                                     onPress={this.toggleMenu.bind(this)} style={styles.stdBut}>
                     <Icon name="reorder" style={styles.ico} />
                 </TouchableHighlight>

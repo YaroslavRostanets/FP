@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Text, Button, Dimensions } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Text, Button, Dimensions, Animated } from 'react-native';
 import Interactable from 'react-native-interactable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as locationActions from '../../actions/locationActions';
 import * as uiActions from '../../actions/uiActions'
-import Menu from '../../containers/MapPage/Menu/Menu';
 import UserInfo from '../../containers/MapPage/Menu/UserInfo';
 import MenuList from '../../containers/MapPage/Menu/MenuList';
 import MapView from 'react-native-maps';
@@ -19,20 +18,27 @@ const SideMenuWidth = Math.floor( Screen.width * 0.8 );
 const RemainingWidth = Screen.width - SideMenuWidth;
 
 class MapPage extends Component {
+    constructor(props){
+        super(props);
+    }
+
 
     render() {
         const navigator = this.props.navigator;
         const location = this.props.location;
         const markers = this.props.markersOnMap;
+        this._deltaX = new Animated.Value(0);
 
         return (
 
                 <Interactable.View
                     style={styles.interactable}
                     ref='menuInstance'
+                    onSnap={this.toggleMenu.bind(this)}
                     horizontalOnly={true}
                     snapPoints={[{x: 0}, {x: -SideMenuWidth}]}
                     boundaries={{right: 0}}
+                    animatedValueX={this._deltaX}
                     initialPosition={{x: -SideMenuWidth}}>
                     <View style={styles.mapPage}>
                         <View style={styles.sideMenu}>
@@ -54,22 +60,45 @@ class MapPage extends Component {
                                     </Marker>
                                 ))}
                             </MapView>
-                            <TopButtons toggleMenu={{
-                            openMenu: this.openMenu.bind(this),
-                            closeMenu: this.closeMenu.bind(this)
-                        }} style={styles.header} />
-                            <ParkTabs/>
+                            <TopButtons
+                                toggleMenu={{openMenu: this.openMenu.bind(this), closeMenu: this.closeMenu.bind(this)}}
+                                style={styles.header} />
+                            <Animated.View style={{
+                                height: "auto",
+                                opacity: this._deltaX.interpolate({
+                                    inputRange: [-SideMenuWidth, 0],
+                                    outputRange: [1, 0]
+                                }),
+                                position: "absolute",
+                                bottom: 0,
+                                left: 0,
+                                width: "100%"
+                            }}>
+                                <ParkTabs/>
+                            </Animated.View>
                         </View>
                     </View>
                 </Interactable.View>
         );
     }
 
-
+    toggleMenu(event) {
+        if(event.nativeEvent.index == 0){
+            console.log('openMenu');
+            this.props.uiActions.toggleMenu(true);
+        } else {
+            console.log('closeMenu');
+            this.props.uiActions.toggleMenu(false);
+        }
+    }
     openMenu() {
+        this.props.uiActions.toggleMenu(true);
+        this._deltaX.setValue(0);
         this.refs['menuInstance'].setVelocity({x: 2000});
     }
     closeMenu() {
+        this.props.uiActions.toggleMenu(false);
+        this._deltaX.setValue(-SideMenuWidth);
         this.refs['menuInstance'].setVelocity({x: -2000});
     }
 }
@@ -149,8 +178,7 @@ function mapStateToProps (store) {
     return {
         location: store.location,
         fastPlaces: store.places.fastParkingPlaces,
-        markersOnMap: store.places.markersOnMap,
-        menuOpen: store.ui.menuOpen
+        markersOnMap: store.places.markersOnMap
     }
 }
 
