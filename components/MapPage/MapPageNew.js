@@ -8,8 +8,9 @@ import * as uiActions from '../../actions/uiActions'
 import UserInfo from '../../containers/MapPage/Menu/UserInfo';
 import MenuList from '../../containers/MapPage/Menu/MenuList';
 import MapView from 'react-native-maps';
-import { Marker } from 'react-native-maps';
+import { Marker, Callout } from 'react-native-maps';
 import PlaceMarker from './parts/PlaceMarker';
+import CalloutView from './parts/CalloutView';
 import ParkTabs from './parts/ParkTabs/ParkTabs';
 import TopButtons from './parts/TopButtons';
 
@@ -20,8 +21,12 @@ const RemainingWidth = Screen.width - SideMenuWidth;
 class MapPage extends Component {
     constructor(props){
         super(props);
-    }
+        this.state = {
+            top: 0,
+            left: 0
 
+        };
+    }
 
     render() {
         const navigator = this.props.navigator;
@@ -47,6 +52,7 @@ class MapPage extends Component {
                         </View>
                         <View style={styles.mapContainer}>
                             <MapView style={styles.map}
+                                     onMarkerPress={(e) => console.log(e.nativeEvent)}
                                      initialRegion={{
                                             latitude: location.lat,
                                             longitude: location.lon,
@@ -57,25 +63,32 @@ class MapPage extends Component {
                                         key={marker.id}
                                         coordinate={{latitude: Number(marker.lat) , longitude: Number(marker.lon)}}>
                                         <PlaceMarker marker={marker} />
+                                        <Callout>
+                                            <CalloutView />
+                                        </Callout>
                                     </Marker>
                                 ))}
                             </MapView>
+
                             <TopButtons
                                 toggleMenu={{openMenu: this.openMenu.bind(this), closeMenu: this.closeMenu.bind(this)}}
                                 style={styles.header} />
-                            <Animated.View style={{
-                                height: "auto",
+                            <Interactable.View
+                                verticalOnly={true}
+                                snapPoints={[{y: 0}, {y: 418}]}
+                                boundaries={{top: -300}}
+                                initialPosition={{y: 0}}
+                                style={styles.parkTabs}>
+
+                                <Animated.View style={{
                                 opacity: this._deltaX.interpolate({
                                     inputRange: [-SideMenuWidth, 0],
                                     outputRange: [1, 0]
-                                }),
-                                position: "absolute",
-                                bottom: 0,
-                                left: 0,
-                                width: "100%"
+                                })
                             }}>
-                                <ParkTabs/>
-                            </Animated.View>
+                                    <ParkTabs />
+                                </Animated.View>
+                            </Interactable.View>
                         </View>
                     </View>
                 </Interactable.View>
@@ -104,6 +117,13 @@ class MapPage extends Component {
 }
 
 const styles = StyleSheet.create({
+    parkTabs: {
+        position: 'absolute',
+        bottom: 0,
+        zIndex: 1002,
+        left: 0,
+        width: Screen.width,
+    },
     container: {
         flex: 1,
         alignItems: 'stretch',
@@ -155,7 +175,7 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     map: {
-        width: Screen.width,
+        width: Screen.width * 1.4,
         height: "100%"
     },
     mapPage: {

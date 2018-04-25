@@ -14,6 +14,8 @@ import  FilterTab from './FilterTab';
 import SearchTab from './SearchTab';
 import Interactable from 'react-native-interactable';
 
+const Screen = Dimensions.get('window');
+
 class ParkTabs extends Component {
 
     constructor(props){
@@ -41,91 +43,49 @@ class ParkTabs extends Component {
         ).start();
     }
 
-    heightFix(event) {
-        console.log('nativeEvent: ', event.nativeEvent);
-        getHeight = index => {
-            console.log('this.index', index);
-            switch (Number(index)){
-                case 0:
-                    return 425;
-                case 1:
-                    return 165;
-                case 2:
-                    return 0;
-            }
-        };
-        //this.setState({height: getHeight(event.nativeEvent.index)});
-        console.log('height: ', this.state.height);
-    }
-
     render() {
         const activeTab = this.props.activeTab;
         const showTabs = this.state.showTabs;
-        const height = this.state.height;
 
         return (
-            <View style={{display: "flex",width: "100%", alignItems: "flex-end", height: this.state.height, backgroundColor: "blue"}}>
-                <Interactable.View
-                    verticalOnly={true}
-                    snapPoints={[{y: 0}, {y: 165}, {y: 425}]}
-                    onSnap={this.heightFix.bind(this)}
-                    boundaries={{top: -300}}
-                    initialPosition={{y: 0}}
-                    style={styles.parkTabs}>
-                    <Animated.View style={styles.botCont}>
-                        <Icon style={styles.chevronIcon} name="chevron-down"/>
-                        <View>
-                            <View style={ styles.tabCont }>
-                                {((activeTab)=>{
-                                    switch(activeTab) {
-                                        case FAST_PARKING:
-                                            return (<FastParking />);
-                                        case FILTER:
-                                            return (<FilterTab/>);
-                                        case SEARCH:
-                                            return (<SearchTab/>);
-                                        default:
-                                            return (<FastParking />);
-                                    }
-                                })(activeTab)}
-                            </View>
-                            <View style={{display: (showTabs)? "flex" : "none"}}>
-                                <TabSelector />
-                            </View>
+
+                <Animated.View style={styles.botCont}>
+                    <Icon style={styles.chevronIcon} name="chevron-down"/>
+                    <View>
+                        <View style={ styles.tabCont }>
+                            {((activeTab)=>{
+                                switch(activeTab) {
+                                    case FAST_PARKING:
+                                        return (<FastParking />);
+                                    case FILTER:
+                                        return (<FilterTab/>);
+                                    case SEARCH:
+                                        return (<SearchTab/>);
+                                    default:
+                                        return (<FastParking />);
+                                }
+                            })(activeTab)}
                         </View>
-                        <View
-                            style={styles.centerBut}>
-                            <TouchableHighlight style={styles.touchable}>
-                                <Text style={styles.centerButText}>
-                                    Start(78)
-                                </Text>
-                            </TouchableHighlight>
+                        <View style={{display: (showTabs)? "flex" : "none"}}>
+                            <TabSelector />
                         </View>
-                    </Animated.View>
-                </Interactable.View>
-            </View>
+                    </View>
+                    <View
+                        style={styles.centerBut}>
+                        <TouchableHighlight style={styles.touchable}>
+                            <Text style={styles.centerButText}>
+                                Start(78)
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                </Animated.View>
+
         );
 
     }
 }
 
 const styles = {
-    parkTabs: {
-        // position: "absolute",
-        //bottom: 0,
-        //height: 425,
-        // left: 0,
-        backgroundColor: 'rgba(243, 246, 248, 0.7)',
-        width: "100%",
-        // paddingRight: 10,
-        // paddingLeft: 10,
-        // zIndex: 9,
-        // display: "flex",
-        // overflow: "hidden",
-        // marginRight: "auto",
-        // marginLeft: "auto",
-        //backgroundColor: "red"
-    },
     botCont: {
         backgroundColor: 'rgba(243, 246, 248, 0.7)',
         paddingTop: 20,
