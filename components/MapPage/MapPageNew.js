@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Text, Button, Dimensions, Animated } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Text, Button, Dimensions, Animated, PixelRatio, } from 'react-native';
 import Interactable from 'react-native-interactable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -21,11 +21,48 @@ const RemainingWidth = Screen.width - SideMenuWidth;
 class MapPage extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            top: 0,
-            left: 0
 
+        this.ratio = PixelRatio.get();
+
+        this.state = {
+            callout: {
+                visible: false,
+                top: 0,
+                left: 0
+            },
         };
+    }
+
+    showCalloutView(e,i){
+
+        this.setState({
+            callout: {
+                visible: true,
+                top: e.nativeEvent.position.y / this.ratio,
+                left: e.nativeEvent.position.x / this.ratio
+            }
+        });
+        console.log('index: ', i);
+        console.log('target: ', e.nativeEvent);
+
+    }
+    hideColloutView(){
+        console.log('map-press');
+        this.setState({
+            callout: {
+                visible: false
+            }
+        });
+    }
+
+    mapDrag(e){
+        console.log('map-drag');
+        //console.log(e.nativeEvent);
+        this.setState({
+            callout: {
+                visible: false
+            }
+        });
     }
 
     render() {
@@ -52,23 +89,31 @@ class MapPage extends Component {
                         </View>
                         <View style={styles.mapContainer}>
                             <MapView style={styles.map}
-                                     onMarkerPress={(e) => console.log(e.nativeEvent)}
+                                     onPress={() => this.hideColloutView()}
+                                     moveOnMarkerPress={false}
+                                     onPanDrag={(e) => this.mapDrag(e)}
                                      initialRegion={{
                                             latitude: location.lat,
                                             longitude: location.lon,
                                             latitudeDelta: 0.0922,
                                             longitudeDelta: 0.0421}}>
-                                {Array.prototype.map.call(markers,(marker)=>(
+                                {Array.prototype.map.call(markers,(marker, i)=>(
                                     <Marker
-                                        key={marker.id}
+                                        onPress={e => this.showCalloutView(e,i)}
+                                        key={`marker-${i}`}
                                         coordinate={{latitude: Number(marker.lat) , longitude: Number(marker.lon)}}>
                                         <PlaceMarker marker={marker} />
-                                        <Callout>
-                                            <CalloutView />
-                                        </Callout>
                                     </Marker>
                                 ))}
                             </MapView>
+
+                            <View style={{...styles.callout,
+                                display: (this.state.callout.visible)? 'flex' : 'none' ,
+                                top: this.state.callout.top,
+                                left: this.state.callout.left
+                                }}>
+                                <CalloutView  />
+                            </View>
 
                             <TopButtons
                                 toggleMenu={{openMenu: this.openMenu.bind(this), closeMenu: this.closeMenu.bind(this)}}
@@ -116,7 +161,17 @@ class MapPage extends Component {
     }
 }
 
-const styles = StyleSheet.create({
+const styles = {
+    callout: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        transform: [
+            { translateX: - 70 },
+            { translateY: - 190 },
+
+        ],
+    },
     parkTabs: {
         position: 'absolute',
         bottom: 0,
@@ -191,7 +246,7 @@ const styles = StyleSheet.create({
         width: Screen.width,
         display: "flex"
     }
-});
+};
 
 function mapStateToProps (store) {
 

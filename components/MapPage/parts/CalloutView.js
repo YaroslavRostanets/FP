@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableHighlight, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 class CalloutView extends Component {
@@ -24,20 +24,20 @@ class CalloutView extends Component {
                     </View>
                 </View>
                 <View style={styles.rowBtns}>
-                    <TouchableHighlight style={styles.stdBut}>
+                    <TouchableHighlight onPress={ () => console.log('press Btn') } style={styles.stdBut}>
                         <Icon name="info" style={styles.ico} />
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => console.log("Tap")} style={styles.stdBut}> {/* <--не сработает */}
+                    <TouchableHighlight style={styles.stdBut}>
                         <Icon name="star-o" style={styles.ico} />
                     </TouchableHighlight>
-                    <TouchableHighlight style={styles.routeMapBtn}>
-                        <View style={styles.routeMapBtnIn}>
-                            <Icon name="car" style={styles.ico} />
-                            <Text>
-                                1234m
-                            </Text>
-                        </View>
-                    </TouchableHighlight>
+                    {/*<TouchableHighlight style={styles.routeMapBtn}>*/}
+                        {/*<View style={styles.routeMapBtnIn}>*/}
+                            {/*<Icon name="car" style={styles.ico} />*/}
+                            {/*<Text>*/}
+                                {/*1234m*/}
+                            {/*</Text>*/}
+                        {/*</View>*/}
+                    {/*</TouchableHighlight>*/}
                 </View>
             </View>
         )
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
         padding: 5,
         zIndex: 1009,
         borderRadius: 4,
-        overflow: 'visible'
+        overflow: 'visible',
     },
     interval: {
 
