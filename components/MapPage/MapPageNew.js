@@ -60,7 +60,7 @@ class MapPage extends Component {
         //console.log(e.nativeEvent);
         this.setState({
             callout: {
-                visible: false
+                //visible: false
             }
         });
     }
