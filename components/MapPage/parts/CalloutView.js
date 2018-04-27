@@ -6,45 +6,85 @@ import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet, TouchableHighlight, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import {timeIntervalConvert,timeWithoutMin, distanceConvert} from '../../../helpers/helpers'
+
 class CalloutView extends Component {
 
     render (){
+        const marker = this.props.marker;
+        const h = timeWithoutMin;
+        const interval = marker['time_interval'];
+
+        let thumb = () => {switch (marker['kind_of_place']) {
+            case 'FREE':
+                return ([
+                    <Image key="1" style={styles.parkSignImg}
+                           source={require('../../../images/thumb1.png' )}
+                    />,
+                ]);
+            case 'PAY':
+                return ([
+                    <Image key="2" style={styles.parkSignImg}
+                           source={require('../../../images/thumb2.png' )}
+                    />,
+                ]);
+            case 'FORBIDDEN':
+                return ([
+                    <Image key="3" style={styles.parkSignImg}
+                           source={require('../../../images/thumb3.png' )}
+                    />,
+                ]);
+            case 'FORBIDDEN_YELLOW':
+                return ([
+                    <Image key="4" style={styles.parkSignImg}
+                           source={require('../../../images/thumb4.png' )}
+                    />,
+                ]);
+            case 'FORBIDDEN_PAY':
+                return ([
+                    <Image key="5" style={styles.parkSignImg}
+                           source={require('../../../images/thumb5.png' )}
+                    />,
+                ]);
+            }
+
+        };
 
         return(
             <View style={styles.container}>
                 <View style={styles.topInfo}>
                     <View style={styles.parkSign}>
-                        <Image style={styles.parkSignImg} source={require('../../../images/thumb1.png')}/>
-                        <Text style={styles.text}>2h</Text>
+                        {thumb()}
+                        <Text style={styles.text}>{timeIntervalConvert(interval)}</Text>
                     </View>
                     <View>
-                        <Text style={styles.text}>8-17</Text>
-                        <Text style={styles.text}>(10-15)</Text>
-                        <Text style={styles.text}>18-19</Text>
+                        <Text style={styles.text}>{h(marker['weekday_from'])}-{h(marker['weekday_to'])}</Text>
+                        <Text style={styles.text}>({h(marker['saturday_from'])}-{h(marker['saturday_to'])})</Text>
+                        <Text style={{...styles.text,color: '#FF0000'}}>{h(marker['sunday_from'])}-{h(marker['sunday_to'])}</Text>
                     </View>
                 </View>
                 <View style={styles.rowBtns}>
                     <TouchableHighlight onPress={ () => console.log('press Btn') } style={styles.stdBut}>
                         <Icon name="info" style={styles.ico} />
                     </TouchableHighlight>
-                    <TouchableHighlight style={styles.stdBut}>
+                    <TouchableHighlight onPress={ () => console.log('press Btn') } style={styles.stdBut}>
                         <Icon name="star-o" style={styles.ico} />
                     </TouchableHighlight>
-                    {/*<TouchableHighlight style={styles.routeMapBtn}>*/}
-                        {/*<View style={styles.routeMapBtnIn}>*/}
-                            {/*<Icon name="car" style={styles.ico} />*/}
-                            {/*<Text>*/}
-                                {/*1234m*/}
-                            {/*</Text>*/}
-                        {/*</View>*/}
-                    {/*</TouchableHighlight>*/}
+                    <TouchableHighlight style={styles.routeMapBtn}>
+                        <View style={styles.routeMapBtnIn}>
+                            <Icon name="car" style={{...styles.ico,...styles.icoRoute}} />
+                            <Text>
+                                {distanceConvert(marker['geodist_pt'])}
+                            </Text>
+                        </View>
+                    </TouchableHighlight>
                 </View>
             </View>
         )
     }
 }
 
-const styles = StyleSheet.create({
+const styles = {
     container: {
         flexDirection: 'column',
         alignSelf: 'flex-start',
@@ -69,11 +109,15 @@ const styles = StyleSheet.create({
         width: '50%',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     parkSignImg: {
+        width: 50,
         height: 50,
-        width: 50
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: '#6C6D6E',
+        overflow: 'hidden'
     },
     parkTime: {
         width: '50%'
@@ -124,6 +168,10 @@ const styles = StyleSheet.create({
         color: "#6F7071",
         fontSize: 26
     },
+    icoRoute: {
+        fontSize: 22,
+        marginRight: 5
+    },
     botArrow: {
         position: 'absolute',
         bottom: -15,
@@ -133,6 +181,6 @@ const styles = StyleSheet.create({
         height: 30,
         backgroundColor: '#FFFFFF'
     }
-});
+};
 
 export default CalloutView

@@ -11,36 +11,24 @@ import { View, Text, FlatList } from 'react-native';
 //import fontelloConfig from '../../../src/config.json';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import {timeWithoutMin, distanceConvert} from '../../../../helpers/helpers'
+
 //const CustIcon = createIconSetFromFontello(fontelloConfig);
 
 class FastParking extends Component {
 
     _keyExtractor = (item, index) => item.id;
 
-    timeWithoutMin(time) {
-        return time.split(':')[0]; //Возвращаем только часы
-    }
-
     timeIntervalConvert(interval) {
         if(interval >= 60) return interval / 60 + "h";
         else return interval + "m"
     }
 
-    distanceConvert(distance) {
-        const dist = Number(distance);
-
-        if( distance <= 1 ){
-            return dist * 1000 + ' m';
-        } else {
-            return dist + ' km';
-        }
-    }
-
     render(){
         const fastPlaces = this.props.places;
-        const h = this.timeWithoutMin;
+        const h = timeWithoutMin;
         const i = this.timeIntervalConvert;
-        const d = this.distanceConvert;
+        const d = distanceConvert;
 
         const parkExample = [{
             key: 1,
@@ -104,9 +92,12 @@ const styles = {
     icoTime: {
         color: '#5093DF',
         position: 'absolute',
-        left: 13,
+        left: 0,
         top: 13,
-        fontSize: 15
+        fontSize: 15,
+        textAlign: 'center',
+        width: 43,
+        //backgroundColor: '#18A15F' служебный стиль
     },
     content: {
         flexGrow: 1,

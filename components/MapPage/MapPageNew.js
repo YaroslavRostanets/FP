@@ -21,10 +21,10 @@ const RemainingWidth = Screen.width - SideMenuWidth;
 class MapPage extends Component {
     constructor(props){
         super(props);
-
         this.ratio = PixelRatio.get();
 
         this.state = {
+            markerInfo: {},
             callout: {
                 visible: false,
                 top: 0,
@@ -33,21 +33,28 @@ class MapPage extends Component {
         };
     }
 
-    showCalloutView(e,i){
+    showCalloutView(e,i,marker){
+        let self = this;
 
-        this.setState({
+        self.setState({
+            markerInfo: marker,
             callout: {
-                visible: true,
-                top: e.nativeEvent.position.y / this.ratio,
-                left: e.nativeEvent.position.x / this.ratio
+                visible: false,
             }
         });
-        console.log('index: ', i);
-        console.log('target: ', e.nativeEvent);
 
+        setTimeout(function(){
+            self.setState({
+                callout: {
+                    visible: true,
+                    top: Screen.height / 2,
+                    left: Screen.width / 2
+                }
+            });
+        },150);
     }
+
     hideColloutView(){
-        console.log('map-press');
         this.setState({
             callout: {
                 visible: false
@@ -56,19 +63,19 @@ class MapPage extends Component {
     }
 
     mapDrag(e){
-        console.log('map-drag');
-        //console.log(e.nativeEvent);
         this.setState({
             callout: {
-                //visible: false
+                visible: false
             }
         });
+
     }
 
     render() {
         const navigator = this.props.navigator;
         const location = this.props.location;
         const markers = this.props.markersOnMap;
+        const markerInfo = this.state.markerInfo;
         this._deltaX = new Animated.Value(0);
 
         return (
@@ -79,7 +86,7 @@ class MapPage extends Component {
                     onSnap={this.toggleMenu.bind(this)}
                     horizontalOnly={true}
                     snapPoints={[{x: 0}, {x: -SideMenuWidth}]}
-                    boundaries={{right: 0}}
+                    boundaries={{left: -SideMenuWidth}}
                     animatedValueX={this._deltaX}
                     initialPosition={{x: -SideMenuWidth}}>
                     <View style={styles.mapPage}>
@@ -90,7 +97,6 @@ class MapPage extends Component {
                         <View style={styles.mapContainer}>
                             <MapView style={styles.map}
                                      onPress={() => this.hideColloutView()}
-                                     moveOnMarkerPress={false}
                                      onPanDrag={(e) => this.mapDrag(e)}
                                      initialRegion={{
                                             latitude: location.lat,
@@ -99,7 +105,7 @@ class MapPage extends Component {
                                             longitudeDelta: 0.0421}}>
                                 {Array.prototype.map.call(markers,(marker, i)=>(
                                     <Marker
-                                        onPress={e => this.showCalloutView(e,i)}
+                                        onPress={e => this.showCalloutView(e,i,marker)}
                                         key={`marker-${i}`}
                                         coordinate={{latitude: Number(marker.lat) , longitude: Number(marker.lon)}}>
                                         <PlaceMarker marker={marker} />
@@ -112,7 +118,7 @@ class MapPage extends Component {
                                 top: this.state.callout.top,
                                 left: this.state.callout.left
                                 }}>
-                                <CalloutView  />
+                                <CalloutView marker={markerInfo}  />
                             </View>
 
                             <TopButtons
@@ -230,7 +236,7 @@ const styles = {
         fontSize: 18
     },
     map: {
-        width: Screen.width * 1.4,
+        width: Screen.width,
         height: "100%"
     },
     mapPage: {
