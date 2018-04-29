@@ -10,6 +10,10 @@ import {timeIntervalConvert,timeWithoutMin, distanceConvert} from '../../../help
 
 class CalloutView extends Component {
 
+    goToDetail(id){
+        this.props.getPlaceById(id);
+    }
+
     render (){
         const marker = this.props.marker;
         const h = timeWithoutMin;
@@ -64,7 +68,7 @@ class CalloutView extends Component {
                     </View>
                 </View>
                 <View style={styles.rowBtns}>
-                    <TouchableHighlight onPress={ () => console.log('press Btn') } style={styles.stdBut}>
+                    <TouchableHighlight onPress={this.goToDetail.bind(this, marker['id'])} style={styles.stdBut}>
                         <Icon name="info" style={styles.ico} />
                     </TouchableHighlight>
                     <TouchableHighlight onPress={ () => console.log('press Btn') } style={styles.stdBut}>
@@ -94,6 +98,8 @@ const styles = {
         zIndex: 1009,
         borderRadius: 4,
         overflow: 'visible',
+        borderWidth: 1,
+        borderColor: '#EDEDED'
     },
     interval: {
 

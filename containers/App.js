@@ -5,10 +5,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { routes } from '../constants/routes';
-import { Text } from 'react-native';
+import { Text,View } from 'react-native';
 import { Navigator } from 'react-native-deprecated-custom-components';
 import MapPage from '../components/MapPage/MapPageNew';
-import ParkDetail from '../containers/ParkDetail';
+import ParkDetail from '../components/ParkDetail/ParkDetail';
 import Info from '../components/Info/Info';
 import Options from '../components/Options/Options';
 import PreLoader from '../components/PreLoader/PreLoader';
@@ -61,7 +61,7 @@ class App extends Component {
         return (
             <Navigator
                 renderScene={this.navigatorRenderScene}
-                initialRoute={routes[4]}
+                initialRoute={routes[4]} //4
                 initialRouteStack={routes}
                 configureScene = {this.configureScene}
             />

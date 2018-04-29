@@ -4,7 +4,9 @@
 import {
     TOGGLE_MENU,
     TOGGLE_BAR,
-    TOGGLE_TAB
+    TOGGLE_TAB,
+    GET_PLACE_BY_ID,
+    GET_PLACE_BY_ID_SUCCESS
 } from '../constants/UI'
 
 export function toggleMenu(menuState) {
@@ -30,4 +32,17 @@ export function toggleTab(activeTab) {
         type: TOGGLE_TAB,
         payload: activeTab
     }
+}
+
+export function getPlaceById(id) {
+    console.log('__getPlaceById__', id);
+    return (dispatch) => {
+        dispatch({
+            type: GET_PLACE_BY_ID
+        });
+
+
+
+    };
+
 }

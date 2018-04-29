@@ -12,7 +12,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 class TopButtons extends Component {
 
     toggleMenu(){
-        console.log("menuOpen: ", this.props.menuOpen);
         if(this.props.menuOpen){
             this.props.toggleMenu.closeMenu();
         } else {

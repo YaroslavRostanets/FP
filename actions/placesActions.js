@@ -8,11 +8,13 @@ import {
 import { API } from '../constants/appConfig';
 
 export function getPlaces(findOptionsObj) {
-    //console.log('findObj_________________________________________________-: ',findOptionsObj);
+
     const lat = findOptionsObj.lat;
     const lon = findOptionsObj.lon;
     const dayIndex = findOptionsObj.dayIndex;
     const myRequest = new Request(`${API}fastlist?lat=${lat}&lon=${lon}&day_index=${dayIndex}`);
+
+
 
     return (dispatch) => {
         dispatch({
@@ -37,7 +39,7 @@ export function getPlaces(findOptionsObj) {
                     animationType: 'FloatFromBottomAndroid'
                 });
             }).catch(error => {
-            //console.error('placesActions: ', error);
+            console.error('__ERROR__: ', error);
         });
 
     };

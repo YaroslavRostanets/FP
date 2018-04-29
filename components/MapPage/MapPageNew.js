@@ -13,6 +13,7 @@ import PlaceMarker from './parts/PlaceMarker';
 import CalloutView from './parts/CalloutView';
 import ParkTabs from './parts/ParkTabs/ParkTabs';
 import TopButtons from './parts/TopButtons';
+import Loader from '../layers/loader'
 
 const Screen = Dimensions.get('window');
 const SideMenuWidth = Math.floor( Screen.width * 0.8 );
@@ -79,7 +80,7 @@ class MapPage extends Component {
         this._deltaX = new Animated.Value(0);
 
         return (
-
+            <View>
                 <Interactable.View
                     style={styles.interactable}
                     ref='menuInstance'
@@ -95,6 +96,7 @@ class MapPage extends Component {
                             <MenuList navigator={this.props.navigator} />
                         </View>
                         <View style={styles.mapContainer}>
+                            <Text>{this.props.showLoader? 'Show' : 'hide'}</Text>
                             <MapView style={styles.map}
                                      onPress={() => this.hideColloutView()}
                                      onPanDrag={(e) => this.mapDrag(e)}
@@ -118,7 +120,7 @@ class MapPage extends Component {
                                 top: this.state.callout.top,
                                 left: this.state.callout.left
                                 }}>
-                                <CalloutView marker={markerInfo}  />
+                                <CalloutView marker={markerInfo} getPlaceById={this.props.uiActions.getPlaceById.bind(this)} />
                             </View>
 
                             <TopButtons
@@ -143,15 +145,16 @@ class MapPage extends Component {
                         </View>
                     </View>
                 </Interactable.View>
+                {(this.props.showLoader) ? <Loader /> : null}
+            </View>
+
         );
     }
 
     toggleMenu(event) {
         if(event.nativeEvent.index == 0){
-            console.log('openMenu');
             this.props.uiActions.toggleMenu(true);
         } else {
-            console.log('closeMenu');
             this.props.uiActions.toggleMenu(false);
         }
     }
@@ -174,7 +177,7 @@ const styles = {
         left: 0,
         transform: [
             { translateX: - 70 },
-            { translateY: - 190 },
+            { translateY: - 200 },
 
         ],
     },
@@ -259,7 +262,8 @@ function mapStateToProps (store) {
     return {
         location: store.location,
         fastPlaces: store.places.fastParkingPlaces,
-        markersOnMap: store.places.markersOnMap
+        markersOnMap: store.places.markersOnMap,
+        //getPlaceById:  store.ui.getPlaceById
     }
 }
 

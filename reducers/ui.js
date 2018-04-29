@@ -5,13 +5,16 @@ import {
     TOGGLE_MENU,
     TOGGLE_TAB,
     FAST_PARKING,
-    TOGGLE_BAR
+    TOGGLE_BAR,
+    GET_PLACE_BY_ID,
+    GET_PLACE_BY_ID_SUCCESS
 } from '../constants/UI'
 
 const initialState = {
     menuOpen: false,
     barOpen: true,
     activeTab: FAST_PARKING,
+    showLoader: false
 };
 
 export default function ui(state = initialState, action) {
@@ -22,7 +25,12 @@ export default function ui(state = initialState, action) {
             return { ...state, activeTab: action.payload };
         case TOGGLE_BAR:
             return { ...state, barOpen: action.payload };
+        case GET_PLACE_BY_ID:
+            return { ...state, showLoader: 32 };
+        case GET_PLACE_BY_ID_SUCCESS:
+            return { ...state, showLoader: false };
         default:
             return state;
     }
 }
+

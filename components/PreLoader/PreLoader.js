@@ -81,7 +81,7 @@ class PreLoader extends Component {
                 }).catch(error => {
                     //console.error(error);
                     setDefaultLocation();
-                    self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex() });
+                    self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex(), "navigator": self.props.navigator });
 
             });
             function setDefaultLocation(){

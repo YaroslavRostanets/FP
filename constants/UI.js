@@ -14,3 +14,8 @@ export const SEARCH = 'SEARCH';
 /*--UI BAR State--*/
 export const TOGGLE_BAR = 'TOGGLE_BAR';
 /*----------------*/
+
+/*--UI BAR State--*/
+export const GET_PLACE_BY_ID = 'GET_PLACE_BY_ID';
+export const GET_PLACE_BY_ID_SUCCESS = 'GET_PLACE_BY_ID_SUCCESS';
+/*----------------*/
