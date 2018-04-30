@@ -3,21 +3,23 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TouchableHighlight, Dimensions } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableHighlight, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {timeIntervalConvert,timeWithoutMin, distanceConvert} from '../../../helpers/helpers'
 
 class CalloutView extends Component {
 
-    goToDetail(id){
-        this.props.getPlaceById(id);
+    goToDetail(marker, navigator){
+
+        this.props.getPlaceById(marker['id'], navigator);
     }
 
     render (){
         const marker = this.props.marker;
         const h = timeWithoutMin;
         const interval = marker['time_interval'];
+        const navigator = this.props.navigator;
 
         let thumb = () => {switch (marker['kind_of_place']) {
             case 'FREE':
@@ -68,10 +70,10 @@ class CalloutView extends Component {
                     </View>
                 </View>
                 <View style={styles.rowBtns}>
-                    <TouchableHighlight onPress={this.goToDetail.bind(this, marker['id'])} style={styles.stdBut}>
+                    <TouchableHighlight onPress={this.goToDetail.bind(this, marker, navigator)} style={styles.stdBut}>
                         <Icon name="info" style={styles.ico} />
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={ () => console.log('press Btn') } style={styles.stdBut}>
+                    <TouchableHighlight style={styles.stdBut}>
                         <Icon name="star-o" style={styles.ico} />
                     </TouchableHighlight>
                     <TouchableHighlight style={styles.routeMapBtn}>

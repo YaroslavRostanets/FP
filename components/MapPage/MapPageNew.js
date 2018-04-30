@@ -96,7 +96,6 @@ class MapPage extends Component {
                             <MenuList navigator={this.props.navigator} />
                         </View>
                         <View style={styles.mapContainer}>
-                            <Text>{this.props.showLoader? 'Show' : 'hide'}</Text>
                             <MapView style={styles.map}
                                      onPress={() => this.hideColloutView()}
                                      onPanDrag={(e) => this.mapDrag(e)}
@@ -120,7 +119,11 @@ class MapPage extends Component {
                                 top: this.state.callout.top,
                                 left: this.state.callout.left
                                 }}>
-                                <CalloutView marker={markerInfo} getPlaceById={this.props.uiActions.getPlaceById.bind(this)} />
+                                <CalloutView
+                                    marker={markerInfo}
+                                    getPlaceById={this.props.uiActions.getPlaceById.bind(this)}
+                                    navigator={this.props.navigator}
+                                />
                             </View>
 
                             <TopButtons
@@ -263,7 +266,7 @@ function mapStateToProps (store) {
         location: store.location,
         fastPlaces: store.places.fastParkingPlaces,
         markersOnMap: store.places.markersOnMap,
-        //getPlaceById:  store.ui.getPlaceById
+        showLoader:  store.ui.showLoader
     }
 }
 

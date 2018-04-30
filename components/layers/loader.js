@@ -3,26 +3,43 @@
  */
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Dimensions, Text } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, Animated } from 'react-native';
 import { Bubbles } from 'react-native-loader';
 
 const Screen = Dimensions.get('window');
 
-
 export default class Loader extends Component {
+
+    state = {
+        fadeAnim: new Animated.Value(0),
+    };
+
+    componentDidMount() {
+        Animated.timing(
+            this.state.fadeAnim,
+            {
+                toValue: 1,
+                duration: 300,
+            }
+        ).start();
+    }
+
     render() {
+
+        let { fadeAnim } = this.state;
+
         return (
-            <View style={styles.container}>
+            <Animated.View style={{...styles.container,opacity: fadeAnim}}>
                 <View style={styles.center}>
                     <Bubbles style={styles.center} size={16} color="#FF6D64" />
                 </View>
-            </View>
+            </Animated.View>
         );
     }
 
 }
 
-const styles = StyleSheet.create({
+const styles = {
     container: {
         flex: 1,
         alignItems: 'stretch',
@@ -47,4 +64,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#FF6D64'
     }
-});
+};

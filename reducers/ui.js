@@ -26,7 +26,7 @@ export default function ui(state = initialState, action) {
         case TOGGLE_BAR:
             return { ...state, barOpen: action.payload };
         case GET_PLACE_BY_ID:
-            return { ...state, showLoader: 32 };
+            return { ...state, showLoader: true };
         case GET_PLACE_BY_ID_SUCCESS:
             return { ...state, showLoader: false };
         default:
