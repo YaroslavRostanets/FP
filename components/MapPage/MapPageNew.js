@@ -3,12 +3,12 @@ import { StyleSheet, View, TouchableOpacity, Image, Text, Button, Dimensions, An
 import Interactable from 'react-native-interactable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as locationActions from '../../actions/locationActions';
-import * as uiActions from '../../actions/uiActions'
+import * as uiActions from '../../actions/uiActions';
+import * as placesActions from '../../actions/placesActions';
 import UserInfo from '../../containers/MapPage/Menu/UserInfo';
 import MenuList from '../../containers/MapPage/Menu/MenuList';
 import MapView from 'react-native-maps';
-import { Marker, Callout } from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 import PlaceMarker from './parts/PlaceMarker';
 import CalloutView from './parts/CalloutView';
 import ParkTabs from './parts/ParkTabs/ParkTabs';
@@ -121,7 +121,7 @@ class MapPage extends Component {
                                 }}>
                                 <CalloutView
                                     marker={markerInfo}
-                                    getPlaceById={this.props.uiActions.getPlaceById.bind(this)}
+                                    getPlaceById={this.props.placesActions.getPlaceById.bind(this)}
                                     navigator={this.props.navigator}
                                 />
                             </View>
@@ -266,14 +266,15 @@ function mapStateToProps (store) {
         location: store.location,
         fastPlaces: store.places.fastParkingPlaces,
         markersOnMap: store.places.markersOnMap,
-        showLoader:  store.ui.showLoader
+        showLoader:  store.places.showLoader
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        locationActions: bindActionCreators(locationActions, dispatch),
-        uiActions: bindActionCreators(uiActions, dispatch)
+        //locationActions: bindActionCreators(locationActions, dispatch),
+        uiActions: bindActionCreators(uiActions, dispatch),
+        placesActions: bindActionCreators(placesActions, dispatch)
     }
 }
 

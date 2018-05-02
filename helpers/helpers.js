@@ -20,3 +20,4 @@ export function distanceConvert(distance) {
         return dist + ' km';
     }
 }
+

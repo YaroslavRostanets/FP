@@ -3,12 +3,15 @@
  */
 import {
     FAST_PLACES_RESULT,
-    GET_FAST_PLACES
+    GET_PLACE_BY_ID,
+    GET_PLACE_BY_ID_SUCCESS
 } from '../constants/Places';
 
 const initialState = {
     fastParkingPlaces: [],
-    markersOnMap: []
+    markersOnMap: [],
+    placeDetail: {},
+    showLoader: false
 };
 
 export default function places(state = initialState, action) {
@@ -17,6 +20,10 @@ export default function places(state = initialState, action) {
         //case GET_FASTPLACES_REQUEST:
         case FAST_PLACES_RESULT:
             return { ...state , fastParkingPlaces: action.payload, markersOnMap: action.payload };
+        case GET_PLACE_BY_ID:
+            return { ...state, showLoader: true };
+        case GET_PLACE_BY_ID_SUCCESS:
+            return { ...state, showLoader: false, placeDetail: action.payload };
         default:
             return state;
     }

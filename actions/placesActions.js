@@ -3,7 +3,9 @@
  */
 import {
     GET_FASTPLACES_REQUEST,
-    FAST_PLACES_RESULT
+    FAST_PLACES_RESULT,
+    GET_PLACE_BY_ID,
+    GET_PLACE_BY_ID_SUCCESS
 } from '../constants/Places'
 import { API } from '../constants/appConfig';
 
@@ -34,10 +36,10 @@ export function getPlaces(findOptionsObj) {
                     type: FAST_PLACES_RESULT,
                     payload: response
                         });
-                findOptionsObj.navigator.push({
-                    title: 'MapPage',
-                    animationType: 'FloatFromBottomAndroid'
-                });
+                // findOptionsObj.navigator.push({
+                //     title: 'MapPage',
+                //     animationType: 'FloatFromBottomAndroid'
+                // });
             }).catch(error => {
             console.error('__ERROR__: ', error);
         });
@@ -46,3 +48,40 @@ export function getPlaces(findOptionsObj) {
 
 }
 
+export function getPlaceById(id, navigator) {
+
+    let myRequest = new Request(`${API}getplace?id=${id}`);
+
+    return (dispatch) => {
+        dispatch({
+            type: GET_PLACE_BY_ID
+        });
+
+        fetch(myRequest)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                setTimeout(function(){
+                    navigator.push({
+                        title: 'ParkDetail',
+                        animationType: 'FloatFromBottomAndroid'
+                    });
+
+                    dispatch({
+                        type: GET_PLACE_BY_ID_SUCCESS,
+                        payload: response
+                    });
+                },1000);
+            }).catch(error => {
+            console.error('__ERROR__: ', error);
+        });
+
+
+    };
+
+}

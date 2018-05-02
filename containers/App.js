@@ -61,7 +61,7 @@ class App extends Component {
         return (
             <Navigator
                 renderScene={this.navigatorRenderScene}
-                initialRoute={routes[4]} //4
+                initialRoute={routes[3]} //4
                 initialRouteStack={routes}
                 configureScene = {this.configureScene}
             />
