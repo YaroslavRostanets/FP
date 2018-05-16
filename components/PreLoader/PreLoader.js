@@ -33,8 +33,8 @@ class PreLoader extends Component {
         //return false;
         const self = this;
         let options = {
-            enableHighAccuracy: true,
-            timeout: 500,
+            enableHighAccuracy: false,
+            timeout: 10000,
             maximumAge: 0
         };
 
@@ -67,19 +67,20 @@ class PreLoader extends Component {
                 })
                 .then(response => {
                     /*--Включаем для разработки в Киеве--*/
-                    setDefaultLocation();
-                    self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex(), "navigator": self.props.navigator });
+                    // setDefaultLocation();
+                    // self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex(), "navigator": self.props.navigator });
                     /*--конец Включаем для разработки в Киеве--*/
 
                     /*--Отключаем для разработки--*/
-                    // self.props.locationActions.setNewLocation({
-                    //     lat: response.latitude,
-                    //     lon: response.longitude
-                    // });
-                    // self.props.placesActions.getPlaces({"lat":response.latitude, "lon":response.longitude, "dayIndex": this.getDayIndex() });
-                    //self.goToMapPage('MapPage');
+                    self.props.locationActions.setNewLocation({
+                        lat: response.latitude,
+                        lon: response.longitude
+                    });
+                    self.props.placesActions.getPlaces({"lat":response.latitude, "lon":response.longitude, "dayIndex": this.getDayIndex() });
+                    self.goToMapPage('MapPage');
+                    //
                 }).catch(error => {
-                    //console.error(error);
+                    console.error('error___:', error);
                     setDefaultLocation();
                     self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex(), "navigator": self.props.navigator });
 

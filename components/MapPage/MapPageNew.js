@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Text, Button, Dimensions, Animated, PixelRatio, } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Text, Button, Dimensions, Animated, PixelRatio, BackHandler } from 'react-native';
 import Interactable from 'react-native-interactable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -72,6 +72,18 @@ class MapPage extends Component {
 
     }
 
+    componentDidMount(){
+        BackHandler.addEventListener('hardwareBackPress',() => {
+            if( this.props.navigator.navigationContext.currentRoute.title == 'MapPage'){
+                BackHandler.exitApp();
+                return true;
+            } else {
+                this.props.navigator.pop();
+                return true;
+            }
+        });
+    }
+
     render() {
         const navigator = this.props.navigator;
         const location = this.props.location;
@@ -99,10 +111,11 @@ class MapPage extends Component {
                             <MapView style={styles.map}
                                      onPress={() => this.hideColloutView()}
                                      onPanDrag={(e) => this.mapDrag(e)}
+                                     showsUserLocation = {true}
                                      initialRegion={{
                                             latitude: location.lat,
                                             longitude: location.lon,
-                                            latitudeDelta: 0.0922,
+                                            latitudeDelta: 0.0920,
                                             longitudeDelta: 0.0421}}>
                                 {Array.prototype.map.call(markers,(marker, i)=>(
                                     <Marker
@@ -120,6 +133,7 @@ class MapPage extends Component {
                                 left: this.state.callout.left
                                 }}>
                                 <CalloutView
+                                    location={this.props.location}
                                     marker={markerInfo}
                                     getPlaceById={this.props.placesActions.getPlaceById.bind(this)}
                                     navigator={this.props.navigator}
@@ -162,12 +176,11 @@ class MapPage extends Component {
         }
     }
     openMenu() {
-        this.props.uiActions.toggleMenu(true);
+        console.log('__REFS__: ', this.refs);
         this._deltaX.setValue(0);
         this.refs['menuInstance'].setVelocity({x: 2000});
     }
     closeMenu() {
-        this.props.uiActions.toggleMenu(false);
         this._deltaX.setValue(-SideMenuWidth);
         this.refs['menuInstance'].setVelocity({x: -2000});
     }
@@ -180,8 +193,7 @@ const styles = {
         left: 0,
         transform: [
             { translateX: - 70 },
-            { translateY: - 200 },
-
+            { translateY: - 230 }
         ],
     },
     parkTabs: {

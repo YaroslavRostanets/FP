@@ -3,3 +3,5 @@
  */
 
 export const API = 'http://1117158.kiray92.web.hosting-test.net/api/';
+
+export const lang = ['en','ru','uk'];

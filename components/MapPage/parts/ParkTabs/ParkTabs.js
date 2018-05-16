@@ -50,7 +50,8 @@ class ParkTabs extends Component {
         return (
 
                 <Animated.View style={styles.botCont}>
-                    <Icon style={styles.chevronIcon} name="chevron-down"/>
+                    <View style={styles.line}></View>
+                    {/*<Icon style={styles.chevronIcon} name="chevron-down"/>*/}
                     <View>
                         <View style={ styles.tabCont }>
                             {((activeTab)=>{
@@ -88,7 +89,7 @@ class ParkTabs extends Component {
 const styles = {
     botCont: {
         backgroundColor: 'rgba(243, 246, 248, 0.7)',
-        paddingTop: 20,
+        paddingTop: 30,
         paddingRight: 4,
         paddingBottom: 7,
         paddingLeft: 4,
@@ -149,8 +150,17 @@ const styles = {
         color: "#FE6D64",
         fontSize: 17,
         position: "absolute",
-        left: "50%",
-
+        left: "50%"
+    },
+    line: {
+        height: 3,
+        width: 80,
+        marginLeft: -40,
+        position: 'absolute',
+        left: '50%',
+        backgroundColor: '#777879',
+        borderRadius: 2,
+        top: 15
     },
     touchable: {
         width: "100%",

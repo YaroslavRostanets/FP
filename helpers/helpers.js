@@ -21,3 +21,12 @@ export function distanceConvert(distance) {
     }
 }
 
+export function translator(langJSON, str, lang){  //Принимает обьект с переводами, строку для перевода, код языка
+    if( !lang ) {
+        lang = 'en';
+    }
+    return langJSON[lang][str];
+    //let objResult = JSON.parse(langJSON);
+    //return (objResult[lang][str]);
+}
+

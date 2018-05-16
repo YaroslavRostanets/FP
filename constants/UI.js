@@ -14,3 +14,5 @@ export const SEARCH = 'SEARCH';
 /*--UI BAR State--*/
 export const TOGGLE_BAR = 'TOGGLE_BAR';
 /*----------------*/
+
+export const TOGGLE_LANGUAGE = 'TOGGLE_LANGUAGE';

@@ -2,9 +2,9 @@
  * Created by Yaroslav on 25.08.2017.
  */
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableHighlight, Dimensions } from 'react-native';
+import { View, Text, Image, TouchableHighlight, Dimensions, BackHandler } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {timeWithoutMin, timeIntervalConvert} from '../../helpers/helpers';
+import {timeWithoutMin, timeIntervalConvert, distanceConvert} from '../../helpers/helpers';
 
 import { connect } from 'react-redux';
 
@@ -16,6 +16,12 @@ class ParkDetail extends Component {
         navigator.pop();
     }
 
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress',() => {
+            this.props.navigator.pop();
+            return true;
+        });
+    }
 
     render() {
 
@@ -24,7 +30,6 @@ class ParkDetail extends Component {
         const dayIndex = new Date().getDate();
 
         let parkTimeToDay = (dayIndex) => {
-            console.log('__dayIndex__', dayIndex);
             switch(dayIndex) {
                 case '0':
                     return `${h(place['sunday_from'])}-${h(place['sunday_to'])}`;
@@ -79,7 +84,7 @@ class ParkDetail extends Component {
                         <View style={styles.col}>
                             <Icon name="circle-thin" style={styles.ico} />
                             <Text style={styles.interval}>
-                                2h
+                                {timeIntervalConvert(place['time_interval'])}
                             </Text>
                         </View>
                         <View style={styles.col}>
@@ -121,7 +126,14 @@ class ParkDetail extends Component {
                             </View>
                             <View style={{...styles.row, paddingTop: 10}}>
                                 <Text style={styles.label}>Zone:</Text>
-                                <Text style={styles.zone}>out of zone</Text>
+                                {(() => {
+                                    switch (place['park_zone']) {
+                                        case '0':
+                                            return <Text style={styles.zone}>out of zone</Text>
+                                        default :
+                                            return <Text style={styles.cont}>{place['park_zone']}</Text>
+                                    }
+                                })()}
                             </View>
                         </View>
                     </View>
@@ -130,9 +142,14 @@ class ParkDetail extends Component {
                     <TouchableHighlight style={styles.stdBut}>
                         <Icon name="file-image-o" style={styles.icon} />
                     </TouchableHighlight>
-                    <TouchableHighlight style={styles.stdButRed}>
-                        <Icon name="car" style={{...styles.icon, color: '#FFFFFF'}} />
-                    </TouchableHighlight>
+                    <View>
+                        <TouchableHighlight style={styles.stdButRed}>
+                            <Icon name="car" style={{...styles.icon, color: '#FFFFFF'}} />
+                        </TouchableHighlight>
+                        <Text>
+                            {distanceConvert(place['geodist_pt'])}
+                        </Text>
+                    </View>
                     <TouchableHighlight style={styles.stdBut}>
                         <Icon name="star-o" style={styles.icon} />
                     </TouchableHighlight>
@@ -156,7 +173,7 @@ const styles = {
         position: 'absolute'
     },
     interval: {
-        fontSize: 28,
+        fontSize: 15,
         color: '#5093DF',
         position: 'absolute',
         left: 0,
@@ -164,7 +181,7 @@ const styles = {
         width: '100%',
         textAlign: 'center',
         transform: [
-            { translateY: -20}
+            { translateY: -5}
         ],
     },
     topBtns: {

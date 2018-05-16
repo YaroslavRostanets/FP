@@ -10,7 +10,7 @@ import { Navigator } from 'react-native-deprecated-custom-components';
 import MapPage from '../components/MapPage/MapPageNew';
 import ParkDetail from '../components/ParkDetail/ParkDetail';
 import Info from '../components/Info/Info';
-import Options from '../components/Options/Options';
+import Options from '../components/Options/Options2';
 import PreLoader from '../components/PreLoader/PreLoader';
 import * as uiActions from '../actions/uiActions';
 
@@ -61,7 +61,7 @@ class App extends Component {
         return (
             <Navigator
                 renderScene={this.navigatorRenderScene}
-                initialRoute={routes[3]} //4
+                initialRoute={routes[4]} //4
                 initialRouteStack={routes}
                 configureScene = {this.configureScene}
             />

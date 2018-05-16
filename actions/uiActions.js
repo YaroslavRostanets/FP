@@ -5,11 +5,8 @@ import {
     TOGGLE_MENU,
     TOGGLE_BAR,
     TOGGLE_TAB,
-    GET_PLACE_BY_ID,
-    GET_PLACE_BY_ID_SUCCESS
+    TOGGLE_LANGUAGE
 } from '../constants/UI';
-
-import { API } from '../constants/appConfig';
 
 export function toggleMenu(menuState) {
 
@@ -29,10 +26,18 @@ export function toggleBar(barState) {
 }
 
 export function toggleTab(activeTab) {
-    console.log('toggle_tab');
     return {
         type: TOGGLE_TAB,
         payload: activeTab
     }
 }
 
+export function toggleLanguage(language) {
+    return (dispatch) => {
+
+        dispatch({
+            type: TOGGLE_LANGUAGE,
+            payload: language
+        });
+    }
+}

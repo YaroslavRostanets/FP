@@ -1,0 +1,14 @@
+{
+  "en": {
+    "settings":"Settings",
+    "language":"Language"
+  },
+  "uk": {
+    "settings":"Налаштування",
+    "language":"Мова інтерфейсу"
+  },
+  "ru": {
+    "settings":"Настройки",
+    "language":"Язык интерфейса"
+  }
+}

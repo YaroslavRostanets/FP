@@ -11,8 +11,10 @@ import {timeIntervalConvert,timeWithoutMin, distanceConvert} from '../../../help
 class CalloutView extends Component {
 
     goToDetail(marker, navigator){
+        let lat = this.props.location.lat;
+        let lon = this.props.location.lon;
 
-        this.props.getPlaceById(marker['id'], navigator);
+        this.props.getPlaceById(marker['id'], navigator, lat, lon);
     }
 
     render (){
