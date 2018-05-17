@@ -18,35 +18,66 @@ class FastParking extends Component {
 
     constructor(){
         super();
+        this.intervalSignWidth = 60;
         this.translateX = new Animated.Value(0);
+        this.translateXinvert = new Animated.Value(0);
         this.state = {
-            activeItemId: "",
+            activeItemId: '',
+            prevActiveItemId: ''
         };
 
     }
 
-    itemRowAnimate() {
-        this.translateX = new Animated.Value(0);
-       
+    componentDidMount(){
+        console.log('__DID_MOUNT__');
+        this.itemRowAnimate();
+    }
 
-        Animated.spring(
+    itemRowAnimate() {
+
+        Animated.parallel([
+            Animated.spring(
             this.translateX,
             {
-                toValue: -60,
-                duration: 1000,
+                toValue: -this.intervalSignWidth,
+                duration: 100,
                 easing: Easing.linear
-            }
-        ).start()
+            }),
+            Animated.spring(
+                this.translateXinvert,
+                {
+                    toValue: 0,
+                    duration: 100,
+                    //easing: Easing.linear
+                }
+            )
+        ]).start();
+
     }
 
     openItemRow (id) {
-        console.log('item-id: ', this.state);
-        this.itemRowAnimate();
-        this.setState({
-            activeItemId: id
-        });
-
+            this.translateX.setValue(0);
+            this.translateXinvert.setValue(-this.intervalSignWidth);
+            if( id !== this.state.activeItemId ){
+                this.setState({
+                    prevActiveItemId: this.state.activeItemId,
+                    activeItemId: id
+                },() => {
+                    this.itemRowAnimate();
+                });
+            } else {
+                this.setState({
+                    activeItemId: '',
+                    prevActiveItemId: id
+                },() => {
+                    this.itemRowAnimate();
+                });
+            }
     };
+
+    showMarkerOnMap(item) {
+        this.props.botBarToBottom(item);
+    }
 
     _keyExtractor = (item, index) => item.id;
 
@@ -60,8 +91,8 @@ class FastParking extends Component {
         const h = timeWithoutMin;
         const i = this.timeIntervalConvert;
         const d = distanceConvert;
-
         let activeItemId = this.state.activeItemId;
+        let prevActiveItemId = this.state.prevActiveItemId;
 
         return (
             <FlatList style={styles.fastParking}
@@ -71,7 +102,10 @@ class FastParking extends Component {
                 ref='flatlist'
                 renderItem={({item}) => (
                     <Animated.View
-                        style={{...styles.itemRow, transform: [{translateX: (activeItemId == item.id) ? this.translateX : 0 }] }}
+                        style={{...styles.itemRow,
+                        transform: [{translateX: (prevActiveItemId == item.id) ? this.translateXinvert : 0 || (activeItemId == item.id) ? this.translateX : 0 }]
+                        }}
+                        useNativeDriver={true}
                         id={item.id}>
                         <TouchableHighlight onPress={this.openItemRow.bind(this, item.id)}>
                             <View style={styles.oneRow}>
@@ -92,9 +126,8 @@ class FastParking extends Component {
                             </View>
                         </TouchableHighlight>
                         <View style={styles.btnWrap}>
-                            <TouchableHighlight style={styles.stdBut}>
-                                <Text>{activeItemId}</Text>
-                                    {/*<Icon name="map-o" style={{fontSize: 25}}/>*/}
+                            <TouchableHighlight onPress={this.showMarkerOnMap.bind(this, item)} style={styles.stdBut}>
+                                    <Icon name="map-o" style={{fontSize: 23}}/>
                             </TouchableHighlight>
                         </View>
                     </Animated.View>

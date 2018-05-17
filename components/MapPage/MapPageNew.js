@@ -25,6 +25,7 @@ class MapPage extends Component {
         this.ratio = PixelRatio.get();
 
         this.state = {
+            showOneMarker: '',
             markerInfo: {},
             callout: {
                 visible: false,
@@ -69,7 +70,6 @@ class MapPage extends Component {
                 visible: false
             }
         });
-
     }
 
     componentDidMount(){
@@ -112,6 +112,7 @@ class MapPage extends Component {
                                      onPress={() => this.hideColloutView()}
                                      onPanDrag={(e) => this.mapDrag(e)}
                                      showsUserLocation = {true}
+                                     ref={ref => { this.map = ref; }}
                                      initialRegion={{
                                             latitude: location.lat,
                                             longitude: location.lon,
@@ -148,15 +149,15 @@ class MapPage extends Component {
                                 snapPoints={[{y: 0}, {y: 418}]}
                                 boundaries={{top: -300}}
                                 initialPosition={{y: 0}}
+                                ref="botBar"
                                 style={styles.parkTabs}>
-
                                 <Animated.View style={{
                                 opacity: this._deltaX.interpolate({
                                     inputRange: [-SideMenuWidth, 0],
                                     outputRange: [1, 0]
                                 })
                             }}>
-                                    <ParkTabs />
+                                    <ParkTabs botBarToBottom={this.botBarToBottom.bind(this)} />
                                 </Animated.View>
                             </Interactable.View>
                         </View>
@@ -166,6 +167,22 @@ class MapPage extends Component {
             </View>
 
         );
+    }
+
+    botBarToBottom(showMarker){
+        console.log('_BOT_BAR_TO_BOTTOM__', showMarker);
+        this.map.animateToCoordinate({
+            latitude: Number(showMarker.lat),
+            longitude: Number(showMarker.lon)
+        }, 150);
+        this.showCalloutView('','',showMarker);
+        this.setState({
+            showOneMarker: showMarker,
+        }, () => {
+            console.log(' showOneMarker: ', this.state.showOneMarker );
+        });
+
+        this.refs['botBar'].setVelocity({y: 2250});
     }
 
     toggleMenu(event) {

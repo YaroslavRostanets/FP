@@ -46,6 +46,7 @@ class ParkTabs extends Component {
     render() {
         const activeTab = this.props.activeTab;
         const showTabs = this.state.showTabs;
+        const botBarToBottom = this.props.botBarToBottom;
 
         return (
 
@@ -57,7 +58,7 @@ class ParkTabs extends Component {
                             {((activeTab)=>{
                                 switch(activeTab) {
                                     case FAST_PARKING:
-                                        return (<FastParking />);
+                                        return (<FastParking botBarToBottom={botBarToBottom} />);
                                     case FILTER:
                                         return (<FilterTab/>);
                                     case SEARCH:
