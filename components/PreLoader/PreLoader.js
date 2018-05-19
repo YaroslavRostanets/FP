@@ -72,15 +72,17 @@ class PreLoader extends Component {
                     /*--конец Включаем для разработки в Киеве--*/
 
                     /*--Отключаем для разработки--*/
+                    console.log('__BY_IP__');
+                    console.log(response);
                     self.props.locationActions.setNewLocation({
                         lat: response.latitude,
                         lon: response.longitude
                     });
-                    self.props.placesActions.getPlaces({"lat":response.latitude, "lon":response.longitude, "dayIndex": this.getDayIndex() });
+                    self.props.placesActions.getPlaces({"lat":response.latitude, "lon":response.longitude, "dayIndex": self.getDayIndex(), "navigator": self.props.navigator });
                     self.goToMapPage('MapPage');
                     //
                 }).catch(error => {
-                    console.error('error___:', error);
+                    console.error('error___sss:', error);
                     setDefaultLocation();
                     self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex(), "navigator": self.props.navigator });
 
