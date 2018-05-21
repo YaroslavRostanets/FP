@@ -13,8 +13,7 @@ export function getPlaces(findOptionsObj) {
 
     const lat = findOptionsObj.lat;
     const lon = findOptionsObj.lon;
-    const dayIndex = findOptionsObj.dayIndex;
-    const myRequest = new Request(`${API}fastlist?lat=${lat}&lon=${lon}&day_index=${dayIndex}`);
+    const myRequest = new Request(`${API}fastlist?lat=${lat}&lon=${lon}`);
 
     return (dispatch) => {
         dispatch({
@@ -25,14 +24,12 @@ export function getPlaces(findOptionsObj) {
             .then(response => {
                 console.log('__response_status__', response.status);
                 if (response.status === 200) {
-                    console.log('__type of__', typeof response);
                     return response.json();
                 } else {
                     throw new Error('Something went wrong on api server!');
                 }
             })
             .then(response => {
-                console.log('__TEST___:', response);
                 dispatch({
                     type: FAST_PLACES_RESULT,
                     payload: response

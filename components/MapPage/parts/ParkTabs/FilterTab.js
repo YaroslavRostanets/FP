@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight, TimePickerAndroid } from 'react-native';
+import { View, Text, TouchableHighlight, TimePickerAndroid, AsyncStorage } from 'react-native';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../../src/config.json';
 import CheckboxField from 'react-native-checkbox-field';
@@ -17,14 +17,72 @@ const CustIcon = createIconSetFromFontello(fontelloConfig);
 class FilterTab extends Component {
 
     state = {
-        MONFRY: true,
+        MONFRY: false,
         SAT: false,
-        SUN: true,
-        filterFrom: "14-00",
-        filterTo: "16-00",
+        SUN: false,
+        filterFrom: "00-00",
+        filterTo: "00-00",
         filterTimeFrom: "30min",
         filterTimeTo: "12h",
         sliderValues: [1, 6]
+    };
+
+    async initCheckedDay(){
+        console.log('_FILTER_');
+
+            await AsyncStorage.multiGet(['MONFRY', 'SAT', 'SUN'], (err, filterItems)=>{
+                    filterItems.forEach((item) => {
+
+                            this.setState({
+                                [item[0]]: eval(item[1])
+                                }
+                            );
+                    });
+                }
+            );
+
+    }
+
+    setCheckedDay(itemName, value) {
+        try {
+            this.setState(() => {
+
+                return {
+                    [itemName]:eval(value)
+                };
+
+            }, async ()=> {
+                await AsyncStorage.setItem(itemName, value.toString());
+            } );
+        } catch (error) {
+            console.log("Error saving data" + error);
+        }
+    }
+
+    componentWillMount() {
+        this.initCheckedDay();
+    }
+
+    selectCheckbox = (selectedDays) => {
+        //this.setCheckedDay([selectedDays], !eval( this.state[selectedDays] ) );
+        switch(selectedDays) {
+            case MONFRY:
+                this.setCheckedDay('MONFRY', !eval( this.state.MONFRY ) );
+                break;
+            case SAT:
+                this.setCheckedDay('SAT', !eval( this.state.SAT ) );
+                break;
+            case SUN:
+                this.setCheckedDay('SUN', !eval( this.state.SUN ) );
+                break;
+            default :
+            console.log("Error, Ошибка установки дней");
+        }
+
+        this.setState({
+            selectedDays: false
+        })
+
     };
 
     sliderValuesChange = (values) => {
@@ -50,34 +108,6 @@ class FilterTab extends Component {
             filterTimeFrom: convertObj[values[0]],
             filterTimeTo: convertObj[values[1]]
         });
-
-    };
-
-    selectCheckbox = (selectedDays) => {
-
-        switch(selectedDays) {
-            case MONFRY:
-                this.setState({
-                    MONFRY: !this.state.MONFRY
-                });
-                break;
-            case SAT:
-                this.setState({
-                    SAT: !this.state.SAT
-                });
-                break;
-            case SUN:
-                this.setState({
-                    SUN: !this.state.SUN
-                });
-                break;
-            default :
-                //console.log("Error, Ошибка установки дней");
-        }
-
-        this.setState({
-            selectedDays: false
-        })
 
     };
 

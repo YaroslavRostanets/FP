@@ -14,9 +14,6 @@ import { LAT, LON } from '../../constants/Location'
 const loaderWidth = Dimensions.get('window').width * 0.635;
 
 class PreLoader extends Component {
-    getDayIndex(){
-        return new Date().getDay();
-    }
 
     goToMapPage(screenTitle){
         this.props.navigator.push({
@@ -78,13 +75,13 @@ class PreLoader extends Component {
                         lat: response.latitude,
                         lon: response.longitude
                     });
-                    self.props.placesActions.getPlaces({"lat":response.latitude, "lon":response.longitude, "dayIndex": self.getDayIndex(), "navigator": self.props.navigator });
+                    self.props.placesActions.getPlaces({"lat":response.latitude, "lon":response.longitude, "navigator": self.props.navigator });
                     self.goToMapPage('MapPage');
                     //
                 }).catch(error => {
                     console.error('error___sss:', error);
                     setDefaultLocation();
-                    self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "dayIndex": self.getDayIndex(), "navigator": self.props.navigator });
+                    self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "navigator": self.props.navigator });
 
             });
             function setDefaultLocation(){
