@@ -21,27 +21,52 @@ class FilterTab extends Component {
         SAT: false,
         SUN: false,
         filterFrom: "00-00",
-        filterTo: "00-00",
+        filterTo: "23-59",
         filterTimeFrom: "30min",
         filterTimeTo: "12h",
         sliderValues: [1, 6]
     };
 
-    async initCheckedDay(){
-        console.log('_FILTER_');
-
-            await AsyncStorage.multiGet(['MONFRY', 'SAT', 'SUN'], (err, filterItems)=>{
-                    filterItems.forEach((item) => {
-
-                            this.setState({
-                                [item[0]]: eval(item[1])
-                                }
-                            );
-                    });
+    async initFilter(){
+        await AsyncStorage.multiGet(['MONFRY', 'SAT', 'SUN'], (err, filterItems)=>{
+            let newState = {};
+            filterItems.forEach((item) => {
+                if( item[1] != null ){
+                    newState[item[0]] = eval(item[1])
                 }
-            );
+            });
+
+            this.setState(newState);
+
+        });
+
+        await AsyncStorage.multiGet(['filterFrom', 'filterTo', 'filterTimeFrom', 'filterTimeTo'], (err, filterItems)=>{
+            let newState = {};
+            filterItems.forEach((item) => {
+                if( item[1] != null ){
+                    newState[item[0]] = item[1]
+                }
+            });
+            this.setState(newState);
+        });
+
+
+        try {
+            const value = await AsyncStorage.getItem('sliderValues');
+            if (value !== null){
+                let valueArray = value.split(',').map(function(itemStrToNum) {
+                    return Number(itemStrToNum);
+                });
+                this.setState({
+                    sliderValues: valueArray
+                });
+            }
+        } catch (error) {
+            // Error retrieving data
+        }
 
     }
+
 
     setCheckedDay(itemName, value) {
         try {
@@ -60,7 +85,7 @@ class FilterTab extends Component {
     }
 
     componentWillMount() {
-        this.initCheckedDay();
+        this.initFilter();
     }
 
     selectCheckbox = (selectedDays) => {
@@ -106,27 +131,53 @@ class FilterTab extends Component {
 
         this.setState({
             filterTimeFrom: convertObj[values[0]],
-            filterTimeTo: convertObj[values[1]]
-        });
+            filterTimeTo: convertObj[values[1]],
+            sliderValues: values
+        }, ()=> {
+            console.log('setValues__:', values);
+            AsyncStorage.setItem('filterTimeFrom', convertObj[values[0]]);
+            AsyncStorage.setItem('filterTimeTo', convertObj[values[1]]);
+            AsyncStorage.setItem('sliderValues', values.join());
+        } );
 
     };
 
     async filterSetTime(fromOrTo) {
+
         try {
             const {action, hour, minute} = await TimePickerAndroid.open({
-                hour: 12,
+                hour: (fromOrTo == FROM) ? eval(this.state.filterFrom) : eval(this.state.filterTo),
                 minute: 0,
                 is24Hour: true
             });
             if (action !== TimePickerAndroid.dismissedAction) {
-                var returnTime = `${hour}-${minute}`;
+                let rightMinFormat = '0' + minute.toString();
+                let returnTime = `${hour}-${rightMinFormat}`;
+
                 if(fromOrTo == FROM){
-                    this.setState({
-                        filterFrom: returnTime
-                    });
+                    if(eval(returnTime) >= eval(this.state.filterTo)){
+                        this.setState({
+                            filterFrom: returnTime,
+                            filterTo: (eval(returnTime) == 23)? '23-59' :`${eval(returnTime)+1}-00`
+                        },()=>{
+                            AsyncStorage.setItem('filterFrom', returnTime);
+                            AsyncStorage.setItem('filterTo', (eval(returnTime) == 23)? '23-59' : `${eval(returnTime)+1}-00`);
+                        });
+                    } else {
+                        this.setState({
+                            filterFrom: returnTime
+                        },()=>{
+                            AsyncStorage.setItem('filterFrom', returnTime);
+                        });
+                    }
                 } else if (fromOrTo == TO) {
+                    if(eval(returnTime) <= eval(this.state.filterFrom)){
+                        returnTime = (eval(returnTime) == 23)? '23-59' : `${eval(this.state.filterFrom)+1}-00`;
+                    }
                     this.setState({
-                        filterTo: returnTime
+                       filterTo: returnTime
+                    },()=>{
+                        AsyncStorage.setItem('filterTo', returnTime);
                     });
                 }
             }
@@ -222,7 +273,7 @@ class FilterTab extends Component {
                             <Text style={styles.grayText}>
                                 to
                             </Text>
-                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this, TO)}>
+                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this,"TO")}>
                                 <View style={styles.setTimeIn}>
                                     <Icon name="clock-o" style={styles.btnIcon} />
                                     <Text style={styles.txtIcon}>
