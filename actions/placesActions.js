@@ -5,9 +5,12 @@ import {
     GET_FASTPLACES_REQUEST,
     FAST_PLACES_RESULT,
     GET_PLACE_BY_ID,
-    GET_PLACE_BY_ID_SUCCESS
+    GET_PLACE_BY_ID_SUCCESS,
+    GET_PLACES_BY_FILTER,
+    GET_PLACES_BY_FILTER_SUCCESS
 } from '../constants/Places'
 import { API } from '../constants/appConfig';
+import { objToStrGetParams } from '../helpers/helpers';
 
 export function getPlaces(findOptionsObj) {
 
@@ -82,4 +85,37 @@ export function getPlaceById(id, navigator, lat, lon) {
 
     };
 
+}
+
+export function getPlacesByFilter(filterObject, lat, lon, botBarHide){
+    let myRequest = new Request(`${API}getplacebyfilter?&lat=${lat}&lon=${lon}&` + objToStrGetParams(filterObject));
+
+    return (dispatch) => {
+        dispatch({
+            type: GET_PLACES_BY_FILTER
+        });
+
+        fetch(myRequest)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                setTimeout(function(){
+
+                    dispatch({
+                        type: GET_PLACES_BY_FILTER_SUCCESS,
+                        payload: response
+                    });
+                    botBarHide();
+                },1000);
+            }).catch(error => {
+            console.error('__ERROR__: ', error);
+        });
+
+
+    };
 }

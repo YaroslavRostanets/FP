@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import * as placesActions from '../../../../actions/placesActions';
 import { connect } from 'react-redux';
-import { View, Text, FlatList, TouchableHighlight, Dimensions, Animated, Easing } from 'react-native';
+import { View, Text, FlatList, Image, TouchableHighlight, Dimensions, Animated, Easing } from 'react-native';
 //import { createIconSetFromFontello } from 'react-native-vector-icons';
 //import fontelloConfig from '../../../src/config.json';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -18,7 +18,7 @@ class FastParking extends Component {
 
     constructor(){
         super();
-        this.intervalSignWidth = 60;
+        this.intervalSignWidth = 70;
         this.translateX = new Animated.Value(0);
         this.translateXinvert = new Animated.Value(0);
         this.state = {
@@ -94,6 +94,41 @@ class FastParking extends Component {
         let activeItemId = this.state.activeItemId;
         let prevActiveItemId = this.state.prevActiveItemId;
 
+        let thumb = (item) => {
+            switch (item['kind_of_place']) {
+                case 'FREE':
+                    return ([
+                        <Image key="1" style={styles.sign} resizeMode={'contain'}
+                               source={require('../../../../images/thumb1.png' )}
+                        />,
+                    ]);
+                case 'PAY':
+                    return ([
+                        <Image key="2" style={styles.sign}
+                               source={require('../../../../images/thumb2.png' )}
+                        />,
+                    ]);
+                case 'FORBIDDEN':
+                    return ([
+                        <Image key="3" style={styles.sign}
+                               source={require('../../../../images/thumb3.png' )}
+                        />,
+                    ]);
+                case 'FORBIDDEN_YELLOW':
+                    return ([
+                        <Image key="4" style={styles.sign}
+                               source={require('../../../../images/thumb4.png' )}
+                        />,
+                    ]);
+                case 'FORBIDDEN_PAY':
+                    return ([
+                        <Image key="5" style={styles.sign}
+                               source={require('../../../../images/thumb5.png' )}
+                        />,
+                    ]);
+            }};
+
+
         return (
             <FlatList style={styles.fastParking}
                 keyExtractor={this._keyExtractor}
@@ -110,8 +145,7 @@ class FastParking extends Component {
                         <TouchableHighlight onPress={this.openItemRow.bind(this, item.id)}>
                             <View style={styles.oneRow}>
                                 <View style={styles.imgCont}>
-                                    <Icon style={styles.timer} name="circle-thin"/>
-                                    <Text style={styles.icoTime}>{i( item['time_interval'] )}</Text>
+                                    {thumb(item)}
                                 </View>
                                 <View style={styles.content}>
                                     <Text style={styles.distance}>
@@ -176,7 +210,12 @@ const styles = {
     },
     imgCont: {
         width: 50,
-        height: '100%'
+        height: '100%',
+        borderWidth: 1,
+        borderRadius: 4,
+        borderColor: '#777879',
+        overflow: 'hidden',
+        marginRight: 15
     },
     icoTime: {
         color: '#5093DF',
@@ -225,6 +264,10 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
     },
+    sign: {
+        width: 50,
+        height: 40
+    }
 };
 
 function mapStateToProps (store) {

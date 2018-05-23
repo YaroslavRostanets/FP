@@ -30,3 +30,6 @@ export function translator(langJSON, str, lang){  //Принимает обье�
     //return (objResult[lang][str]);
 }
 
+export function objToStrGetParams(obj) {
+     return Object.entries(obj).map(([key, val]) => `${key}=${val}`).join('&');
+}

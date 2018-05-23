@@ -2,17 +2,18 @@
  * Created by Yaroslav on 08.09.2017.
  */
 import React, { Component } from 'react';
-import { View, FlatList, Text, TouchableHighlight, Animated, Dimensions } from 'react-native';
+import { View, FlatList, Text, TouchableHighlight, Animated, Dimensions, AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import {FAST_PARKING, FILTER, SEARCH} from '../../../../constants/UI';
 import {toggleBar} from '../../../../actions/uiActions';
+import * as placesActions from '../../../../actions/placesActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import TabSelector from './TabSelector';
 import  FastParking from './FastParkingTab';
 import  FilterTab from './FilterTab';
 import SearchTab from './SearchTab';
-import Interactable from 'react-native-interactable';
+import Ripple from 'react-native-material-ripple';
 
 const Screen = Dimensions.get('window');
 
@@ -31,7 +32,6 @@ class ParkTabs extends Component {
 
     componentWillReceiveProps(nextProps) {
         let tabsOpacity = (nextProps.barOpen)? 1 : 0;
-        let self = this;
 
 
         Animated.timing(
@@ -41,6 +41,38 @@ class ParkTabs extends Component {
                 duration: 300
             }
         ).start();
+
+    }
+
+    async filterHeandler(){
+        let lat = this.props.location.lat;
+        let lon = this.props.location.lon;
+        await AsyncStorage.multiGet(['MONFRY', 'SAT', 'SUN', 'filterFrom', 'filterTo', 'filterTimeFrom', 'filterTimeTo'], (err, filterItems)=>{
+            let filterObject = {};
+            filterItems.forEach((item) => {
+                if( item[1] != null ){
+                    filterObject[item[0]] = item[1]
+                }
+            });
+
+            this.props.placesActions.getPlacesByFilter(filterObject, lat, lon, this.props.hideBotBar);
+
+        });
+
+    }
+
+    redButtonHeandler() {
+        switch(this.props.activeTab) {
+            case FAST_PARKING:
+                break;
+            case FILTER:
+                this.filterHeandler();
+                break;
+            case SEARCH:
+                break;
+            default:
+                break;
+        }
     }
 
     render() {
@@ -74,11 +106,37 @@ class ParkTabs extends Component {
                     </View>
                     <View
                         style={styles.centerBut}>
-                        <TouchableHighlight style={styles.touchable}>
-                            <Text style={styles.centerButText}>
-                                Start(78)
-                            </Text>
-                        </TouchableHighlight>
+                        <Ripple
+                            rippleColor={'#FFFFFF'}
+                            rippleOpacity={0.6}
+                            rippleDuration={800}
+                            onPress={this.redButtonHeandler.bind(this)}
+                            style={styles.touchable}>
+                            {((activeTab)=>{
+                                switch(activeTab) {
+                                    case FAST_PARKING:
+                                        return (<View style={styles.centerButIn}>
+                                                    <Icon style={styles.redBtnIcon} name={'refresh'} />
+                                                        <Text style={styles.centerButText}>
+                                                            Refresh
+                                                        </Text>
+                                                </View>
+                                            );
+                                    case FILTER:
+                                        return (<Text style={styles.centerButText}>
+                                            Start(78)
+                                        </Text>);
+                                    case SEARCH:
+                                        return (<Text style={styles.centerButText}>
+                                            Start(78)
+                                        </Text>);
+                                    default:
+                                        return (<Text style={styles.centerButText}>
+                                            Start(78)
+                                        </Text>);
+                                }
+                            })(activeTab)}
+                        </Ripple>
                     </View>
                 </Animated.View>
 
@@ -135,6 +193,13 @@ const styles = {
         flexGrow: 1,
         width: "100%"
     },
+    centerButIn: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     centerButText: {
         fontSize: 16,
         color: '#FFFFFF'
@@ -175,6 +240,12 @@ const styles = {
     chevronUp: {
         fontSize: 16,
         color: "#FFFFFF"
+    },
+    redBtnIcon: {
+        fontSize: 18,
+        marginRight: 5,
+        display: 'flex',
+        color: '#FFFFFF'
     }
 
 
@@ -182,6 +253,7 @@ const styles = {
 
 function mapStateToProps (store) {
     return {
+        location: store.location,
         activeTab: store.ui.activeTab,
         //menuOpen: store.ui.menuOpen,
         barOpen: store.ui.barOpen
@@ -190,7 +262,8 @@ function mapStateToProps (store) {
 
 function mapDispatchToProps (dispatch) {
     return {
-        toggleBar: bindActionCreators(toggleBar, dispatch)
+        toggleBar: bindActionCreators(toggleBar, dispatch),
+        placesActions: bindActionCreators(placesActions, dispatch)
     }
 }
 

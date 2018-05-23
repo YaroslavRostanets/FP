@@ -157,7 +157,9 @@ class MapPage extends Component {
                                     outputRange: [1, 0]
                                 })
                             }}>
-                                    <ParkTabs botBarToBottom={this.botBarToBottom.bind(this)} />
+                                    <ParkTabs
+                                        hideBotBar={function(){this.refs['botBar'].setVelocity({y: 2250});}.bind(this)}
+                                        botBarToBottom={this.botBarToBottom.bind(this)} />
                                 </Animated.View>
                             </Interactable.View>
                         </View>
