@@ -3,6 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Image, Text, Button, Dimensions, An
 import Interactable from 'react-native-interactable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import * as locationActions from '../../actions/locationActions';
 import * as uiActions from '../../actions/uiActions';
 import * as placesActions from '../../actions/placesActions';
 import UserInfo from '../../containers/MapPage/Menu/UserInfo';
@@ -118,6 +119,10 @@ class MapPage extends Component {
                                             longitude: location.lon,
                                             latitudeDelta: 0.0920,
                                             longitudeDelta: 0.0421}}>
+                                <Marker coordinate={{
+                                    latitude: this.props.location.lat,
+                                    longitude: this.props.location.lon
+                                }} />
                                 {Array.prototype.map.call(markers,(marker, i)=>(
                                     <Marker
                                         onPress={e => this.showCalloutView(e,i,marker)}
@@ -142,6 +147,7 @@ class MapPage extends Component {
                             </View>
 
                             <TopButtons
+                                setMapCenter={this.setMapCenter.bind(this)}
                                 toggleMenu={{openMenu: this.openMenu.bind(this), closeMenu: this.closeMenu.bind(this)}}
                                 style={styles.header} />
                             <Interactable.View
@@ -172,7 +178,6 @@ class MapPage extends Component {
     }
 
     botBarToBottom(showMarker){
-        console.log('_BOT_BAR_TO_BOTTOM__', showMarker);
         this.map.animateToCoordinate({
             latitude: Number(showMarker.lat),
             longitude: Number(showMarker.lon)
@@ -180,8 +185,6 @@ class MapPage extends Component {
         this.showCalloutView('','',showMarker);
         this.setState({
             showOneMarker: showMarker,
-        }, () => {
-            console.log(' showOneMarker: ', this.state.showOneMarker );
         });
 
         this.refs['botBar'].setVelocity({y: 2250});
@@ -203,6 +206,14 @@ class MapPage extends Component {
         this._deltaX.setValue(-SideMenuWidth);
         this.refs['menuInstance'].setVelocity({x: -2000});
     }
+
+    setMapCenter() {
+        this.map.animateToCoordinate({
+            latitude: this.props.location.lat,
+            longitude: this.props.location.lon
+        }, 150);
+    }
+
 }
 
 const styles = {
@@ -303,7 +314,7 @@ function mapStateToProps (store) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        //locationActions: bindActionCreators(locationActions, dispatch),
+        locationActions: bindActionCreators(locationActions, dispatch),
         uiActions: bindActionCreators(uiActions, dispatch),
         placesActions: bindActionCreators(placesActions, dispatch)
     }

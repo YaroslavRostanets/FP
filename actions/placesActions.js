@@ -7,7 +7,8 @@ import {
     GET_PLACE_BY_ID,
     GET_PLACE_BY_ID_SUCCESS,
     GET_PLACES_BY_FILTER,
-    GET_PLACES_BY_FILTER_SUCCESS
+    GET_PLACES_BY_FILTER_SUCCESS,
+    FAST_PLACES_ON_MAP
 } from '../constants/Places'
 import { API } from '../constants/appConfig';
 import { objToStrGetParams } from '../helpers/helpers';
@@ -90,6 +91,8 @@ export function getPlaceById(id, navigator, lat, lon) {
 export function getPlacesByFilter(filterObject, lat, lon, botBarHide){
     let myRequest = new Request(`${API}getplacebyfilter?&lat=${lat}&lon=${lon}&` + objToStrGetParams(filterObject));
 
+    console.log('filterURL:__', `${API}getplacebyfilter?&lat=${lat}&lon=${lon}&` + objToStrGetParams(filterObject) );
+
     return (dispatch) => {
         dispatch({
             type: GET_PLACES_BY_FILTER
@@ -116,6 +119,12 @@ export function getPlacesByFilter(filterObject, lat, lon, botBarHide){
             console.error('__ERROR__: ', error);
         });
 
-
     };
+}
+
+export function showFastPlacesOnMap(fastParkingPlaces){
+    return {
+        type: FAST_PLACES_ON_MAP,
+        payload: fastParkingPlaces
+    }
 }

@@ -6,7 +6,8 @@ import {
     GET_PLACE_BY_ID,
     GET_PLACE_BY_ID_SUCCESS,
     GET_PLACES_BY_FILTER,
-    GET_PLACES_BY_FILTER_SUCCESS
+    GET_PLACES_BY_FILTER_SUCCESS,
+    FAST_PLACES_ON_MAP
 } from '../constants/Places';
 
 const initialState = {
@@ -30,6 +31,8 @@ export default function places(state = initialState, action) {
             return { ...state, showLoader: true };
         case GET_PLACES_BY_FILTER_SUCCESS:
             return { ...state, showLoader: false, markersOnMap: action.payload };
+        case FAST_PLACES_ON_MAP:
+            return { ...state, markersOnMap: state.fastParkingPlaces};
         default:
             return state;
     }

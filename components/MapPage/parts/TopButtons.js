@@ -3,11 +3,16 @@
  */
 import React, { Component } from 'react';
 import { View, TouchableHighlight, Text } from 'react-native';
+import Ripple from 'react-native-material-ripple';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import store from '../../../store/configureStore'
-import * as uiActions from '../../../actions/uiActions'
+import store from '../../../store/configureStore';
+import * as uiActions from '../../../actions/uiActions';
+import * as locationActions from '../../../actions/locationActions'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { API } from '../../../constants/appConfig';
+import { LAT, LON } from '../../../constants/Location'
+
 
 class TopButtons extends Component {
 
@@ -24,18 +29,79 @@ class TopButtons extends Component {
 
         return (
             <View style={styles.topButtons}>
-                <TouchableHighlight underlayColor={"#5296E7"}
-                                    onPress={this.toggleMenu.bind(this)} style={styles.stdBut}>
+                <Ripple
+                    rippleColor={'#FFFFFF'}
+                    rippleOpacity={0.6}
+                    rippleDuration={800}
+                    underlayColor={"#5296E7"}
+                    onPress={this.toggleMenu.bind(this)} style={styles.stdBut}>
                     <Icon name="reorder" style={styles.ico} />
-                </TouchableHighlight>
+                </Ripple>
 
-                <TouchableHighlight style={styles.stdBut}>
+                <Ripple
+                    onPress={this.setUserCenter.bind(this)}
+                    rippleColor={'#FFFFFF'}
+                    rippleOpacity={0.6}
+                    rippleDuration={800}
+                    style={styles.stdBut}>
                     <Icon name="map-marker" style={styles.ico} />
-                </TouchableHighlight>
+                </Ripple>
             </View>
         );
-
     }
+
+    setUserCenter() {
+        let self = this;
+
+        let options = {
+            enableHighAccuracy: false,
+            timeout: 4000,
+            maximumAge: 0
+        };
+
+        function success(position) {
+            self.props.locationActions.setNewLocation({
+                lat: position.coords.latitude,
+                lon: position.coords.longitude
+            });
+
+            self.props.setMapCenter();
+        }
+
+        function error() {
+            const myRequest = new Request(`${API}location/`);
+
+            fetch(myRequest)
+                .then(response => {
+                    if (response.status === 200) {
+                        console.log('response: ', response);
+                        return response.json();
+                    } else {
+                        throw new Error('Something went wrong on api server!');
+                    }
+                })
+                .then(response => {
+
+                    self.props.locationActions.setNewLocation({
+                        lat: response.latitude,
+                        lon: response.longitude
+                    });
+                    self.props.setMapCenter();
+                }).catch(error => {
+
+                setDefaultLocation();
+            });
+            function setDefaultLocation(){
+                self.props.locationActions.setNewLocation({
+                    lat: LAT,
+                    lon: LON
+                });
+            }
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+    }
+
 }
 
 const styles = {
@@ -69,13 +135,15 @@ const styles = {
 
 function mapStateToProps (store) {
     return {
-        menuOpen: store.ui.menuOpen
+        menuOpen: store.ui.menuOpen,
+        location: store.location
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        uiActions: bindActionCreators(uiActions, dispatch)
+        uiActions: bindActionCreators(uiActions, dispatch),
+        locationActions: bindActionCreators(locationActions, dispatch),
     }
 }
 

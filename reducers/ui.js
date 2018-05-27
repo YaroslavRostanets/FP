@@ -5,6 +5,7 @@ import {
     TOGGLE_MENU,
     TOGGLE_TAB,
     FAST_PARKING,
+    SEARCH_RESULT,
     TOGGLE_BAR,
     TOGGLE_LANGUAGE
 } from '../constants/UI';
@@ -16,7 +17,7 @@ import {Platform, NativeModules} from 'react-native';
 const initialState = {
     menuOpen: false,
     barOpen: true,
-    activeTab: FAST_PARKING,
+    activeTab: SEARCH_RESULT,
     localization: getLanguageCode()
 };
 

@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight, TimePickerAndroid, AsyncStorage } from 'react-native';
+import { View, Text, TouchableHighlight, TimePickerAndroid, AsyncStorage, ActivityIndicator } from 'react-native';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../../src/config.json';
 import CheckboxField from 'react-native-checkbox-field';
@@ -23,8 +23,8 @@ class FilterTab extends Component {
         filterFrom: "00-00",
         filterTo: "23-59",
         filterTimeFrom: "30min",
-        filterTimeTo: "12h",
-        sliderValues: [1, 6]
+        sliderValues: [1],
+        loader: true
     };
 
     async initFilter(){
@@ -33,6 +33,8 @@ class FilterTab extends Component {
             filterItems.forEach((item) => {
                 if( item[1] != null ){
                     newState[item[0]] = eval(item[1])
+                } else {
+                    AsyncStorage.setItem(item[0], this.state[item[0]].toString());
                 }
             });
 
@@ -40,11 +42,13 @@ class FilterTab extends Component {
 
         });
 
-        await AsyncStorage.multiGet(['filterFrom', 'filterTo', 'filterTimeFrom', 'filterTimeTo'], (err, filterItems)=>{
+        await AsyncStorage.multiGet(['filterFrom', 'filterTo', 'filterTimeFrom'], (err, filterItems)=>{
             let newState = {};
             filterItems.forEach((item) => {
                 if( item[1] != null ){
                     newState[item[0]] = item[1]
+                } else {
+                    AsyncStorage.setItem(item[0], this.state[item[0]]);
                 }
             });
             this.setState(newState);
@@ -58,9 +62,14 @@ class FilterTab extends Component {
                     return Number(itemStrToNum);
                 });
                 this.setState({
-                    sliderValues: valueArray
+                    sliderValues: valueArray,
                 });
+            } else {
+                AsyncStorage.setItem(value, this.state[value]);
             }
+            this.setState({
+                loader: false
+            });
         } catch (error) {
             // Error retrieving data
         }
@@ -119,7 +128,7 @@ class FilterTab extends Component {
 
     sliderConvertToTime = (values) => {
         let convertObj = {
-            "0":"0",
+            "0":"15min",
             "1":"30min",
             "2":"1h",
             "3":"2h",
@@ -131,12 +140,9 @@ class FilterTab extends Component {
 
         this.setState({
             filterTimeFrom: convertObj[values[0]],
-            filterTimeTo: convertObj[values[1]],
             sliderValues: values
         }, ()=> {
-            console.log('setValues__:', values);
             AsyncStorage.setItem('filterTimeFrom', convertObj[values[0]]);
-            AsyncStorage.setItem('filterTimeTo', convertObj[values[1]]);
             AsyncStorage.setItem('sliderValues', values.join());
         } );
 
@@ -200,115 +206,121 @@ class FilterTab extends Component {
         const initValues = this.state.sliderValues;
         const filterTimeFrom = this.state.filterTimeFrom;
         const filterTimeTo = this.state.filterTimeTo;
+        const loader = this.state.loader;
 
 
         return (
-            <View style={styles.filterTab}>
-                <View style={styles.oneRow}>
-                    <View style={styles.iconWrap}>
-                        <CustIcon name="calendar" style={styles.icon} />
-                    </View>
-                    <View style={styles.rightPart}>
-                        <Text style={styles.topDescr}>
-                            Day:
-                        </Text>
-                        <View style={styles.checkbox}>
-                            <View style={{...styles.oneCheck,marginLeft: -20, width: "auto"}}>
-                                <CheckboxField
-                                    onSelect={this.selectCheckbox.bind(this,MONFRY)}
-                                    selected={monFry}
-                                    labelSide="right"
-                                    label="Mon-Fry"
-                                    labelStyle={styles.labelStyle}
-                                >
-                                    <Icon name="check" color="#fff" />
-                                </CheckboxField>
-                            </View>
-                            <View style={{...styles.oneCheck, width: "auto"}}>
-                                <CheckboxField
-                                    onSelect={this.selectCheckbox.bind(this, SAT)}
-                                    selected={sat}
-                                    labelSide="right"
-                                    label="Sat"
-                                    labelStyle={styles.labelStyle}
-                                >
-                                    <Icon name="check" color="#fff" />
-                                </CheckboxField>
-                            </View>
-                            <View style={{...styles.oneCheck, width: "auto"}}>
-                                <CheckboxField
-                                    onSelect={this.selectCheckbox.bind(this, SUN)}
-                                    selected={sun}
-                                    labelSide="right"
-                                    label="Sun"
-                                    labelStyle={styles.labelStyle}
-                                >
-                                    <Icon name="check" color="#fff" />
-                                </CheckboxField>
-                            </View>
+            <View>
+                <View style={{...styles.loaderWrap, display: (loader) ? 'flex' : 'none' }}>
+                    <ActivityIndicator size="large" color="#247FD2" />
+                </View>
+                <View style={{...styles.filterTab, display: (loader) ? 'none' : 'flex'}}>
+                    <View style={styles.oneRow}>
+                        <View style={styles.iconWrap}>
+                            <CustIcon name="calendar" style={styles.icon} />
+                        </View>
+                        <View style={styles.rightPart}>
+                            <Text style={styles.topDescr}>
+                                Day:
+                            </Text>
+                            <View style={styles.checkbox}>
+                                <View style={{...styles.oneCheck,marginLeft: -20, width: "auto"}}>
+                                    <CheckboxField
+                                        onSelect={this.selectCheckbox.bind(this,MONFRY)}
+                                        selected={monFry}
+                                        labelSide="right"
+                                        label="Mon-Fry"
+                                        labelStyle={styles.labelStyle}
+                                    >
+                                        <Icon name="check" color="#fff" />
+                                    </CheckboxField>
+                                </View>
+                                <View style={{...styles.oneCheck, width: "auto"}}>
+                                    <CheckboxField
+                                        onSelect={this.selectCheckbox.bind(this, SAT)}
+                                        selected={sat}
+                                        labelSide="right"
+                                        label="Sat"
+                                        labelStyle={styles.labelStyle}
+                                    >
+                                        <Icon name="check" color="#fff" />
+                                    </CheckboxField>
+                                </View>
+                                <View style={{...styles.oneCheck, width: "auto"}}>
+                                    <CheckboxField
+                                        onSelect={this.selectCheckbox.bind(this, SUN)}
+                                        selected={sun}
+                                        labelSide="right"
+                                        label="Sun"
+                                        labelStyle={styles.labelStyle}
+                                    >
+                                        <Icon name="check" color="#fff" />
+                                    </CheckboxField>
+                                </View>
 
+                            </View>
                         </View>
                     </View>
-                </View>
-                <View style={{...styles.oneRow}}>
-                    <View style={styles.iconWrap}>
-                        <CustIcon name="clock" style={styles.icon} />
-                    </View>
-                    <View style={styles.rightPart}>
-                        <Text style={styles.topDescr}>
-                            Time:
-                        </Text>
-                        <View style={styles.selTime}>
-                            <Text style={styles.grayText}>
-                                from
+                    <View style={{...styles.oneRow}}>
+                        <View style={styles.iconWrap}>
+                            <CustIcon name="clock" style={styles.icon} />
+                        </View>
+                        <View style={styles.rightPart}>
+                            <Text style={styles.topDescr}>
+                                Time:
                             </Text>
-                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this,"FROM")}>
-                                <View style={styles.setTimeIn}>
-                                    <Icon name="clock-o" style={styles.btnIcon} />
-                                    <Text style={styles.txtIcon}>
-                                        {filterFrom}
-                                    </Text>
-                                </View>
-                            </TouchableHighlight>
-                            <Text style={styles.grayText}>
-                                to
+                            <View style={styles.selTime}>
+                                <Text style={styles.grayText}>
+                                    from
+                                </Text>
+                                <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this,"FROM")}>
+                                    <View style={styles.setTimeIn}>
+                                        <Icon name="clock-o" style={styles.btnIcon} />
+                                        <Text style={styles.txtIcon}>
+                                            {filterFrom}
+                                        </Text>
+                                    </View>
+                                </TouchableHighlight>
+                                <Text style={styles.grayText}>
+                                    to
+                                </Text>
+                                <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this,"TO")}>
+                                    <View style={styles.setTimeIn}>
+                                        <Icon name="clock-o" style={styles.btnIcon} />
+                                        <Text style={styles.txtIcon}>
+                                            {filterTo}
+                                        </Text>
+                                    </View>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={{...styles.oneRow,borderBottomWidth:0}}>
+                        <View style={styles.iconWrap}>
+                            <Icon name="hourglass-o" style={styles.icon} />
+                        </View>
+                        <View style={styles.rightPart}>
+                            <Text style={styles.topDescr}>
+                                Hours:
                             </Text>
-                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this,"TO")}>
-                                <View style={styles.setTimeIn}>
-                                    <Icon name="clock-o" style={styles.btnIcon} />
-                                    <Text style={styles.txtIcon}>
-                                        {filterTo}
-                                    </Text>
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
-                </View>
-                <View style={{...styles.oneRow,borderBottomWidth:0}}>
-                    <View style={styles.iconWrap}>
-                        <Icon name="hourglass-o" style={styles.icon} />
-                    </View>
-                    <View style={styles.rightPart}>
-                        <Text style={styles.topDescr}>
-                            Hours:
-                        </Text>
-                        <View style={{marginBottom: 10}}>
-                            <Text style={styles.grayText}>from <Text style={styles.b}>{filterTimeFrom} </Text>
-                                 to <Text style={styles.b}>{filterTimeTo}</Text></Text>
-                        </View>
-                        <MultiSlider values={initValues} sliderLength={245}
-                                     onValuesChange={this.sliderValuesChange}
-                                     max={7}
-                                     markerStyle={{
+                            <View style={{marginBottom: 10}}>
+                                <Text style={styles.grayText}>from <Text style={styles.b}>{filterTimeFrom} </Text>
+                                    to <Text style={styles.b}>{filterTimeTo}</Text></Text>
+                            </View>
+                            <MultiSlider values={initValues} sliderLength={245}
+                                         onValuesChange={this.sliderValuesChange}
+                                         max={7}
+                                         markerStyle={{
                                          backgroundColor: '#2182D6'
                                      }}
-                                     selectedStyle={{
+                                         selectedStyle={{
                                         backgroundColor: '#2182D6',
                                         }}
-                                     unselectedStyle={{
+                                         unselectedStyle={{
                                         backgroundColor: 'silver',
                                         }}
-                        />
+                            />
+                        </View>
                     </View>
                 </View>
             </View>
@@ -415,6 +427,12 @@ const styles = {
     },
     b: {
         fontWeight: "bold"
+    },
+    loaderWrap: {
+        height: 250,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 
 };

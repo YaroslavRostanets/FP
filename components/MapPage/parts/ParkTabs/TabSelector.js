@@ -5,8 +5,9 @@ import React, { Component } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as uiActions from '../../../../actions/uiActions'
-import {FAST_PARKING, FILTER, SEARCH} from '../../../../constants/UI'
+import * as uiActions from '../../../../actions/uiActions';
+import * as placesActions from '../../../../actions/placesActions';
+import {FAST_PARKING, FILTER, SEARCH, SEARCH_RESULT} from '../../../../constants/UI';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../../../../src/config.json';
 
@@ -16,6 +17,9 @@ const CustIcon = createIconSetFromFontello(fontelloConfig);
 class TabSelector extends Component {
 
     setActiveTab(activeTab){
+        if( activeTab === FAST_PARKING ){
+            this.props.placesActions.showFastPlacesOnMap(this.props.places);
+        }
         this.props.uiActions.toggleTab(activeTab);
     }
 
@@ -40,10 +44,12 @@ class TabSelector extends Component {
                     </View>
                 </TouchableHighlight>
                 <TouchableHighlight onPress={this.setActiveTab.bind(this,SEARCH)}
-                                    style={(this.props.activeTab == SEARCH)?{...styles.oneTabBut,...styles.activeTab}:styles.oneTabBut}>
+                                    style={(this.props.activeTab == SEARCH_RESULT || this.props.activeTab == SEARCH)?{...styles.oneTabBut,...styles.activeTab}:styles.oneTabBut}>
                     <View style={styles.align}>
-                        <CustIcon name="loupe" style={(this.props.activeTab == SEARCH)?{...styles.tabIcon,...styles.activeText}:styles.tabIcon}/>
-                        <Text style={(this.props.activeTab == SEARCH)?{...styles.tabDescr,...styles.activeText}:styles.tabDescr}>Search</Text>
+                        <CustIcon name="loupe" style={(this.props.activeTab == SEARCH
+                        || this.props.activeTab == SEARCH_RESULT)?{...styles.tabIcon,...styles.activeText}:styles.tabIcon}/>
+                        <Text style={(this.props.activeTab == SEARCH
+                        || this.props.activeTab == SEARCH_RESULT)?{...styles.tabDescr,...styles.activeText}:styles.tabDescr}>Search</Text>
                     </View>
                 </TouchableHighlight>
             </View>
@@ -93,13 +99,15 @@ const styles = {
 
 function mapStateToProps (store) {
     return {
-        activeTab: store.ui.activeTab
+        activeTab: store.ui.activeTab,
+        places: store.places.fastParkingPlaces
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        uiActions: bindActionCreators(uiActions, dispatch)
+        uiActions: bindActionCreators(uiActions, dispatch),
+        placesActions: bindActionCreators(placesActions, dispatch)
     }
 }
 

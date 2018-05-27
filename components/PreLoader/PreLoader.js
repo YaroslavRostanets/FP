@@ -69,8 +69,6 @@ class PreLoader extends Component {
                     /*--конец Включаем для разработки в Киеве--*/
 
                     /*--Отключаем для разработки--*/
-                    console.log('__BY_IP__');
-                    console.log(response);
                     self.props.locationActions.setNewLocation({
                         lat: response.latitude,
                         lon: response.longitude
@@ -79,7 +77,7 @@ class PreLoader extends Component {
                     self.goToMapPage('MapPage');
                     //
                 }).catch(error => {
-                    console.error('error___sss:', error);
+
                     setDefaultLocation();
                     self.props.placesActions.getPlaces({"lat":LAT, "lon":LON, "navigator": self.props.navigator });
 

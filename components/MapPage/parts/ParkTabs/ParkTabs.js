@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { View, FlatList, Text, TouchableHighlight, Animated, Dimensions, AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import {FAST_PARKING, FILTER, SEARCH} from '../../../../constants/UI';
+import {FAST_PARKING, FILTER, SEARCH, SEARCH_RESULT} from '../../../../constants/UI';
 import {toggleBar} from '../../../../actions/uiActions';
 import * as placesActions from '../../../../actions/placesActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -13,6 +13,7 @@ import TabSelector from './TabSelector';
 import  FastParking from './FastParkingTab';
 import  FilterTab from './FilterTab';
 import SearchTab from './SearchTab';
+import SearchResult from './SearchResult';
 import Ripple from 'react-native-material-ripple';
 
 const Screen = Dimensions.get('window');
@@ -55,15 +56,21 @@ class ParkTabs extends Component {
                 }
             });
 
+            console.log('filter_:', filterObject);
+
             this.props.placesActions.getPlacesByFilter(filterObject, lat, lon, this.props.hideBotBar);
 
         });
+    }
 
+    refreshFastParking(){
+        console.log('_refresh_fast_parking_');
     }
 
     redButtonHeandler() {
         switch(this.props.activeTab) {
             case FAST_PARKING:
+                this.refreshFastParking();
                 break;
             case FILTER:
                 this.filterHeandler();
@@ -95,6 +102,8 @@ class ParkTabs extends Component {
                                         return (<FilterTab/>);
                                     case SEARCH:
                                         return (<SearchTab/>);
+                                    case SEARCH_RESULT:
+                                        return (<SearchResult/>);
                                     default:
                                         return (<FastParking />);
                                 }
@@ -123,13 +132,19 @@ class ParkTabs extends Component {
                                                 </View>
                                             );
                                     case FILTER:
-                                        return (<Text style={styles.centerButText}>
-                                            Start(78)
-                                        </Text>);
+                                        return (<View style={styles.centerButIn}>
+                                                    <Icon style={styles.redBtnIcon} name={'check-square-o'} />
+                                                    <Text style={styles.centerButText}>
+                                                        Apply Filter
+                                                    </Text>
+                                                </View>);
                                     case SEARCH:
-                                        return (<Text style={styles.centerButText}>
-                                            Start(78)
-                                        </Text>);
+                                        return (<View style={styles.centerButIn}>
+                                                    <Icon style={styles.redBtnIcon} name={'search'} />
+                                                    <Text style={styles.centerButText}>
+                                                        Search
+                                                    </Text>
+                                                </View>);
                                     default:
                                         return (<Text style={styles.centerButText}>
                                             Start(78)
