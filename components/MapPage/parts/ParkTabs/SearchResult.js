@@ -2,17 +2,12 @@
  * Created by Yaroslav on 27.05.2018.
  */
 
-/**
- * Created by Yaroslav on 19.09.2017.
- */
-
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import * as placesActions from '../../../../actions/placesActions';
 import { connect } from 'react-redux';
 import { View, Text, FlatList, Image, TouchableHighlight, Dimensions, Animated, Easing } from 'react-native';
-//import { createIconSetFromFontello } from 'react-native-vector-icons';
-//import fontelloConfig from '../../../src/config.json';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {timeWithoutMin, distanceConvert} from '../../../../helpers/helpers'
 
@@ -59,6 +54,26 @@ class SearchResult extends Component {
 
     }
 
+    openItemRow (id) {
+        this.translateX.setValue(0);
+        this.translateXinvert.setValue(-this.intervalSignWidth);
+        if( id !== this.state.activeItemId ){
+            this.setState({
+                prevActiveItemId: this.state.activeItemId,
+                activeItemId: id
+            },() => {
+                this.itemRowAnimate();
+            });
+        } else {
+            this.setState({
+                activeItemId: '',
+                prevActiveItemId: id
+            },() => {
+                this.itemRowAnimate();
+            });
+        }
+    };
+
 
     showMarkerOnMap(item) {
         this.props.botBarToBottom(item);
@@ -72,7 +87,7 @@ class SearchResult extends Component {
     }
 
     render(){
-        const fastPlaces = this.props.places;
+        const searchPlaces = this.props.places;
         const h = timeWithoutMin;
         const i = this.timeIntervalConvert;
         const d = distanceConvert;
@@ -117,7 +132,7 @@ class SearchResult extends Component {
         return (
             <FlatList style={styles.fastParking}
                       keyExtractor={this._keyExtractor}
-                      data={fastPlaces}
+                      data={searchPlaces}
                       extraData={this.state.activeItemId}
                       ref='flatlist'
                       renderItem={({item}) => (
@@ -130,7 +145,7 @@ class SearchResult extends Component {
                         <TouchableHighlight onPress={this.openItemRow.bind(this, item.id)}>
                             <View style={styles.oneRow}>
                                 <View style={styles.imgCont}>
-
+                                    {thumb(item)}
                                 </View>
                                 <View style={styles.content}>
                                     <Text style={styles.distance}>
@@ -259,7 +274,7 @@ function mapStateToProps (store) {
 
     return {
         location: store.location,
-        places: store.places.fastParkingPlaces
+        places: store.places.searchResult
     }
 }
 

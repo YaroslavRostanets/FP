@@ -8,8 +8,12 @@ import {
     GET_PLACE_BY_ID_SUCCESS,
     GET_PLACES_BY_FILTER,
     GET_PLACES_BY_FILTER_SUCCESS,
-    FAST_PLACES_ON_MAP
+    FAST_PLACES_ON_MAP,
+    SEARCH_FILTER_EDIT,
+    SEARCH_PLACES_REQUEST,
+    SEARCH_PLACES_SUCCES
 } from '../constants/Places'
+import { SEARCH_RESULT } from '../constants/UI'
 import { API } from '../constants/appConfig';
 import { objToStrGetParams } from '../helpers/helpers';
 
@@ -124,7 +128,47 @@ export function getPlacesByFilter(filterObject, lat, lon, botBarHide){
 
 export function showFastPlacesOnMap(fastParkingPlaces){
     return {
-        type: FAST_PLACES_ON_MAP,
+        type: SEARCH_PLACES_REQUEST,
         payload: fastParkingPlaces
     }
+}
+
+export function editSearchOptions(searchOptionsObject){
+    return {
+        type: SEARCH_FILTER_EDIT,
+        payload: searchOptionsObject
+    }
+}
+
+export function getPlacesSearch(searchObject, lat, lon, toggleTab){
+    let myRequest = new Request(`${API}getplacessearch?&lat=${lat}&lon=${lon}&` + objToStrGetParams(searchObject));
+
+    console.log('_TEST_URL_:', `${API}getplacessearch?&lat=${lat}&lon=${lon}&` + objToStrGetParams(searchObject));
+
+    return (dispatch) => {
+        dispatch({
+            type: SEARCH_PLACES_REQUEST,
+        });
+
+        fetch(myRequest)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                setTimeout(function(){
+                    dispatch({
+                        type: SEARCH_PLACES_SUCCES,
+                        payload: response
+                    });
+                    toggleTab(SEARCH_RESULT);
+                },1000);
+            }).catch(error => {
+            console.error('__ERROR__: ', error);
+        });
+    };
+
 }

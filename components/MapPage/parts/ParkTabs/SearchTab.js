@@ -2,8 +2,11 @@
  * Created by Yaroslav on 23.09.2017.
  */
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight, TimePickerAndroid } from 'react-native';
+import { View, Text, TouchableHighlight, TimePickerAndroid, ActivityIndicator } from 'react-native';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as placesActions from '../../../../actions/placesActions';
 import fontelloConfig from '../../../../src/config.json';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -17,28 +20,21 @@ const CustIcon = createIconSetFromFontello(fontelloConfig);
 class SearchTab extends Component {
 
     state = {
-        MONFRY: true,
-        SAT: false,
-        SUN: true,
-        filterFrom: "14-00",
-        filterTo: "16-00",
+        MONFRY: this.props.monFry,
+        SAT: this.props.sat,
+        SUN: this.props.sun,
+        filterFrom: this.props.filterFrom,
+        filterTo: this.props.filterTo,
         filterTimeFrom: "30min",
-        filterTimeTo: "12h",
-        sliderValues: [1, 6],
+        sliderValues: [1],
         sliderDistanceValue: [3],
         distance: 8
     };
 
     sliderValuesChange = (values) => {
-        this.setState({
-            sliderValues: values,
-        });
-        this.sliderConvertToTime(values);
-    };
 
-    sliderConvertToTime = (values) => {
         let convertObj = {
-            "0":"0",
+            "0":"15min",
             "1":"30min",
             "2":"1h",
             "3":"2h",
@@ -49,12 +45,20 @@ class SearchTab extends Component {
         };
 
         this.setState({
-            filterTimeFrom: convertObj[values[0]],
-            filterTimeTo: convertObj[values[1]]
+            filterTimeFrom: convertObj[ values[0] ],
+        });
+
+    };
+
+    sliderValuesChangeFinish = (values) => {
+        this.setState({
+            sliderValues: values
+        }, () => {
+            this.props.placesActions.editSearchOptions(this.state);
         });
     };
 
-    sliderConvertDistance = (values) => {
+    sliderDistanceChange = (values) => {
         let convertObj = {
             "0":"2",
             "1":"4",
@@ -69,62 +73,64 @@ class SearchTab extends Component {
             "10":"20"
         };
         this.setState({
-            distance: convertObj[values]
+            distance: convertObj[values[0]]
         });
     };
 
-    sliderDistanceChange = (values) => {
-        this.setState({
-            sliderDistanceValue: values,
-        });
-        this.sliderConvertDistance(values);
-
+    sliderDistanceChangeEnd = (values) => {
+          this.setState({
+              sliderDistanceValue: values
+          }, () => {
+              this.props.placesActions.editSearchOptions(this.state);
+          });
     };
 
     selectCheckbox = (selectedDays) => {
 
-        switch(selectedDays) {
-            case MONFRY:
-                this.setState({
-                    MONFRY: !this.state.MONFRY
-                });
-                break;
-            case SAT:
-                this.setState({
-                    SAT: !this.state.SAT
-                });
-                break;
-            case SUN:
-                this.setState({
-                    SUN: !this.state.SUN
-                });
-                break;
-            default :
-                //console.log("Error, Ошибка установки дней");
-        }
-
         this.setState({
-            selectedDays: false
-        })
+            [selectedDays]:!this.state[selectedDays]
+        }, ()=>{
+           this.props.placesActions.editSearchOptions(this.state);
+        });
 
     };
 
     async filterSetTime(fromOrTo) {
         try {
             const {action, hour, minute} = await TimePickerAndroid.open({
-                hour: 12,
+                hour: (fromOrTo == FROM) ? eval(this.state.filterFrom) : eval(this.state.filterTo),
                 minute: 0,
                 is24Hour: true
             });
             if (action !== TimePickerAndroid.dismissedAction) {
-                var returnTime = `${hour}-${minute}`;
+                let rightMinFormat = (minute.toString().length > 1) ? minute.toString() : '0' + minute.toString();
+                let returnTime = `${hour}-${rightMinFormat}`;
+
                 if(fromOrTo == FROM){
-                    this.setState({
-                        filterFrom: returnTime
-                    });
+                    if(eval(returnTime) >= eval(this.state.filterTo)){
+
+                        this.setState({
+                            filterFrom: returnTime,
+                            filterTo: (eval(returnTime) == 23)? '23-59' :`${eval(returnTime)+1}-00`
+                        }, ()=>{
+                            this.props.placesActions.editSearchOptions(this.state);
+                        });
+                    } else {
+                        this.setState({
+                            filterFrom: returnTime
+                        }, ()=>{
+                            this.props.placesActions.editSearchOptions(this.state);
+                        });
+                    }
                 } else if (fromOrTo == TO) {
+                    if(eval(returnTime) <= eval(this.state.filterFrom)){
+                        returnTime = (eval(returnTime) == 23)? '23-59' : `${eval(this.state.filterFrom)+1}-00`;
+                    }
+
                     this.setState({
                         filterTo: returnTime
+                    },()=>{
+                        this.props.placesActions.editSearchOptions(this.state);
                     });
                 }
             }
@@ -138,146 +144,171 @@ class SearchTab extends Component {
     };
 
     render(){
-
-        const monFry = this.state.MONFRY;
-        const sat = this.state.SAT;
-        const sun = this.state.SUN;
+        const loader = this.props.loader;
         const filterFrom = this.state.filterFrom;
         const filterTo = this.state.filterTo;
-        const initValues = this.state.sliderValues;
         const filterTimeFrom = this.state.filterTimeFrom;
-        const filterTimeTo = this.state.filterTimeTo;
         const initDistance = this.state.sliderDistanceValue;
         const distance = this.state.distance;
 
         return (
-            <View style={styles.searchTab}>
-                <View style={styles.oneRow}>
-                    <View style={styles.iconWrap}>
-                        <CustIcon name="calendar" style={styles.icon} />
-                    </View>
-                    <View style={styles.rightPart}>
-                        <Text style={styles.topDescr}>
-                            Day:
-                        </Text>
-                        <View style={styles.checkbox}>
-                            <View style={{...styles.oneCheck,marginLeft: -20, width: "auto"}}>
-                                <CheckboxField
-                                    onSelect={this.selectCheckbox.bind(this,MONFRY)}
-                                    selected={monFry}
-                                    labelSide="right"
-                                    label="Mon-Fry"
-                                    labelStyle={styles.labelStyle}
-                                >
-                                    <Icon name="check" color="#fff" />
-                                </CheckboxField>
-                            </View>
-                            <View style={{...styles.oneCheck, width: "auto"}}>
-                                <CheckboxField
-                                    onSelect={this.selectCheckbox.bind(this, SAT)}
-                                    selected={sat}
-                                    labelSide="right"
-                                    label="Sat"
-                                    labelStyle={styles.labelStyle}
-                                >
-                                    <Icon name="check" color="#fff" />
-                                </CheckboxField>
-                            </View>
-                            <View style={{...styles.oneCheck, width: "auto"}}>
-                                <CheckboxField
-                                    onSelect={this.selectCheckbox.bind(this, SUN)}
-                                    selected={sun}
-                                    labelSide="right"
-                                    label="Sun"
-                                    labelStyle={styles.labelStyle}
-                                >
-                                    <Icon name="check" color="#fff" />
-                                </CheckboxField>
-                            </View>
+            <View>
+                <View style={{...styles.loaderWrap, display: (loader) ? 'flex' : 'none' }}>
+                    <ActivityIndicator size="large" color="#247FD2" />
+                </View>
+                <View style={{...styles.searchTab, display: (loader) ? 'none' : 'flex'  }}>
+                    <View style={styles.oneRow}>
+                        <View style={styles.iconWrap}>
+                            <CustIcon name="calendar" style={styles.icon} />
+                        </View>
+                        <View style={styles.rightPart}>
+                            <Text style={styles.topDescr}>
+                                Day:
+                            </Text>
+                            <View style={styles.checkbox}>
+                                <View style={{...styles.oneCheck,marginLeft: -20, width: "auto"}}>
+                                    <CheckboxField
+                                        onSelect={this.selectCheckbox.bind(this,MONFRY)}
+                                        selected={this.props.monFry}
+                                        labelSide="right"
+                                        label="Mon-Fry"
+                                        labelStyle={styles.labelStyle}
+                                    >
+                                        <Icon name="check" color="#fff" />
+                                    </CheckboxField>
+                                </View>
+                                <View style={{...styles.oneCheck, width: "auto"}}>
+                                    <CheckboxField
+                                        onSelect={this.selectCheckbox.bind(this, SAT)}
+                                        selected={this.props.sat}
+                                        labelSide="right"
+                                        label="Sat"
+                                        labelStyle={styles.labelStyle}
+                                    >
+                                        <Icon name="check" color="#fff" />
+                                    </CheckboxField>
+                                </View>
+                                <View style={{...styles.oneCheck, width: "auto"}}>
+                                    <CheckboxField
+                                        onSelect={this.selectCheckbox.bind(this, SUN)}
+                                        selected={this.props.sun}
+                                        labelSide="right"
+                                        label="Sun"
+                                        labelStyle={styles.labelStyle}
+                                    >
+                                        <Icon name="check" color="#fff" />
+                                    </CheckboxField>
+                                </View>
 
+                            </View>
                         </View>
                     </View>
-                </View>
-                <View style={styles.oneRow}>
-                    <View style={styles.iconWrap}>
-                        <CustIcon name="clock" style={styles.icon} />
-                    </View>
-                    <View style={styles.rightPart}>
-                        <Text style={styles.topDescr}>
-                            Time:
-                        </Text>
-                        <View style={styles.selTime}>
-                            <Text style={styles.grayText}>
-                                from
+                    <View style={styles.oneRow}>
+                        <View style={styles.iconWrap}>
+                            <CustIcon name="clock" style={styles.icon} />
+                        </View>
+                        <View style={styles.rightPart}>
+                            <Text style={styles.topDescr}>
+                                Time:
                             </Text>
-                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this,"FROM")}>
-                                <View style={styles.setTimeIn}>
-                                    <Icon name="clock-o" style={styles.btnIcon} />
-                                    <Text style={styles.txtIcon}>
-                                        {filterFrom}
-                                    </Text>
-                                </View>
-                            </TouchableHighlight>
-                            <Text style={styles.grayText}>
-                                to
-                            </Text>
-                            <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this, TO)}>
-                                <View style={styles.setTimeIn}>
-                                    <Icon name="clock-o" style={styles.btnIcon} />
-                                    <Text style={styles.txtIcon}>
-                                        {filterTo}
-                                    </Text>
-                                </View>
-                            </TouchableHighlight>
+                            <View style={styles.selTime}>
+                                <Text style={styles.grayText}>
+                                    from
+                                </Text>
+                                <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this,"FROM")}>
+                                    <View style={styles.setTimeIn}>
+                                        <Icon name="clock-o" style={styles.btnIcon} />
+                                        <Text style={styles.txtIcon}>
+                                            {filterFrom}
+                                        </Text>
+                                    </View>
+                                </TouchableHighlight>
+                                <Text style={styles.grayText}>
+                                    to
+                                </Text>
+                                <TouchableHighlight style={styles.setTime} onPress={this.filterSetTime.bind(this, TO)}>
+                                    <View style={styles.setTimeIn}>
+                                        <Icon name="clock-o" style={styles.btnIcon} />
+                                        <Text style={styles.txtIcon}>
+                                            {filterTo}
+                                        </Text>
+                                    </View>
+                                </TouchableHighlight>
+                            </View>
                         </View>
                     </View>
-                </View>
-                <View style={styles.oneRow}>
-                    <View style={styles.iconWrap}>
-                        <Icon name="hourglass-o" style={styles.icon} />
-                    </View>
-                    <View style={styles.rightPart}>
-                        <Text style={{...styles.topDescr, marginBottom: 15}}>
-                            Hours:<Text style={styles.grayText}> from <Text style={styles.b}>{filterTimeFrom} </Text>
-                            to <Text style={styles.b}>{filterTimeTo}</Text></Text>
-                        </Text>
-                        <MultiSlider values={initValues} sliderLength={245}
-                                     onValuesChange={this.sliderValuesChange}
-                                     max={7}
-                                     markerStyle={{
-                                         backgroundColor: '#2182D6'
+                    <View style={styles.oneRow}>
+                        <View style={styles.iconWrap}>
+                            <Icon name="hourglass-o" style={styles.icon} />
+                        </View>
+                        <View style={styles.rightPart}>
+                            <Text style={{...styles.topDescr, marginBottom: 15}}>
+                                Hours:
+                                <Text style={styles.grayText}> from
+                                    <Text style={styles.b}> {filterTimeFrom} </Text>
+                                </Text>
+                            </Text>
+                            <MultiSlider values={this.state.sliderValues} sliderLength={245}
+                                         onValuesChange={this.sliderValuesChange}
+                                         onValuesChangeFinish={this.sliderValuesChangeFinish}
+                                         max={7}
+                                         touchDimensions={{
+                                         height: 65,
+                                         width: 65,
+                                         slipDisplacement: 65
                                      }}
-                                     selectedStyle={{
+                                         markerStyle={{
+                                         backgroundColor: '#2182D6',
+                                         height: 20,
+                                         width: 20,
+                                         borderRadius: 10
+                                     }}
+                                         pressedMarkerStyle={{
+                                        height: 25,
+                                        width: 25,
+                                        borderRadius: 15
+                                     }}
+                                         selectedStyle={{
                                          backgroundColor: '#2182D6',
                                      }}
-                                     unselectedStyle={{
+                                         unselectedStyle={{
                                          backgroundColor: 'silver',
                                      }}
-                        />
+                            />
+                        </View>
                     </View>
-                </View>
-                <View style={{...styles.oneRow,borderBottomWidth: 0}}>
-                    <View style={styles.iconWrap}>
-                        <CustIcon name="distance-parking" style={styles.icon} />
-                    </View>
-                    <View style={styles.rightPart}>
-                        <Text style={{...styles.topDescr, marginBottom: 15}}>
-                            Distance: <Text style={styles.grayText}>{distance} km</Text>
-                        </Text>
-                        <MultiSlider
-                            values={initDistance}
-                            sliderLength={245}
-                            onValuesChange={this.sliderDistanceChange}
-                            markerStyle={{
-                                backgroundColor: '#2182D6'
+                    <View style={{...styles.oneRow,borderBottomWidth: 0}}>
+                        <View style={styles.iconWrap}>
+                            <CustIcon name="distance-parking" style={styles.icon} />
+                        </View>
+                        <View style={styles.rightPart}>
+                            <Text style={{...styles.topDescr, marginBottom: 15}}>
+                                Distance: <Text style={styles.grayText}>{distance} km</Text>
+                            </Text>
+                            <MultiSlider
+                                values={initDistance}
+                                sliderLength={245}
+                                onValuesChange={this.sliderDistanceChange}
+                                onValuesChangeFinish={this.sliderDistanceChangeEnd}
+                                markerStyle={{
+                                backgroundColor: '#2182D6',
+                                height: 20,
+                                width: 20,
+                                borderRadius: 10
                             }}
-                            selectedStyle={{
+                                pressedMarkerStyle={{
+                                height: 25,
+                                width: 25,
+                                borderRadius: 15
+                            }}
+                                selectedStyle={{
                                 backgroundColor: '#2182D6',
                             }}
-                            unselectedStyle={{
+                                unselectedStyle={{
                                 backgroundColor: 'silver',
                             }}
-                        />
+                            />
+                        </View>
                     </View>
                 </View>
             </View>
@@ -382,9 +413,35 @@ const styles = {
     },
     b: {
         fontWeight: "bold"
+    },
+    loaderWrap: {
+        height: 250,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 };
 
-export default SearchTab
+function mapStateToProps (store) {
+
+    return {
+        loader: store.places.searchFilter.loader,
+        monFry: store.places.searchFilter.MONFRY,
+        sat: store.places.searchFilter.SAT,
+        sun: store.places.searchFilter.SUN,
+        filterFrom: store.places.searchFilter.filterFrom,
+        filterTo: store.places.searchFilter.filterTo,
+        distance: store.places.searchFilter.distance
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        placesActions: bindActionCreators(placesActions, dispatch)
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)
 
 

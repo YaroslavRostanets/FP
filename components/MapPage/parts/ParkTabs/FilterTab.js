@@ -154,10 +154,11 @@ class FilterTab extends Component {
             const {action, hour, minute} = await TimePickerAndroid.open({
                 hour: (fromOrTo == FROM) ? eval(this.state.filterFrom) : eval(this.state.filterTo),
                 minute: 0,
-                is24Hour: true
+                is24Hour: true,
+                mode: 'spinner'
             });
             if (action !== TimePickerAndroid.dismissedAction) {
-                let rightMinFormat = '0' + minute.toString();
+                let rightMinFormat = (minute.toString().length > 1)? minute.toString() : '0' + minute.toString();
                 let returnTime = `${hour}-${rightMinFormat}`;
 
                 if(fromOrTo == FROM){
@@ -312,7 +313,12 @@ class FilterTab extends Component {
                                          max={7}
                                          markerStyle={{
                                          backgroundColor: '#2182D6'
-                                     }}
+                                         }}
+                                         pressedMarkerStyle={{
+                                            height: 25,
+                                            width: 25,
+                                            borderRadius: 15
+                                         }}
                                          selectedStyle={{
                                         backgroundColor: '#2182D6',
                                         }}

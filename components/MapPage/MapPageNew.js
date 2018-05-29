@@ -198,7 +198,7 @@ class MapPage extends Component {
         }
     }
     openMenu() {
-        console.log('__REFS__: ', this.refs);
+
         this._deltaX.setValue(0);
         this.refs['menuInstance'].setVelocity({x: 2000});
     }

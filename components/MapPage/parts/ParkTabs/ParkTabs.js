@@ -6,7 +6,7 @@ import { View, FlatList, Text, TouchableHighlight, Animated, Dimensions, AsyncSt
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import {FAST_PARKING, FILTER, SEARCH, SEARCH_RESULT} from '../../../../constants/UI';
-import {toggleBar} from '../../../../actions/uiActions';
+import {toggleTab} from '../../../../actions/uiActions';
 import * as placesActions from '../../../../actions/placesActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import TabSelector from './TabSelector';
@@ -67,6 +67,14 @@ class ParkTabs extends Component {
         console.log('_refresh_fast_parking_');
     }
 
+    searchHeandler() {
+        let lat = this.props.location.lat;
+        let lon = this.props.location.lon;
+        let searchOptionsObject = this.props.searchFilter;
+
+        this.props.placesActions.getPlacesSearch(searchOptionsObject, lat, lon, this.props.toggleTab.bind(this));
+    }
+
     redButtonHeandler() {
         switch(this.props.activeTab) {
             case FAST_PARKING:
@@ -76,6 +84,7 @@ class ParkTabs extends Component {
                 this.filterHeandler();
                 break;
             case SEARCH:
+                this.searchHeandler();
                 break;
             default:
                 break;
@@ -145,6 +154,13 @@ class ParkTabs extends Component {
                                                         Search
                                                     </Text>
                                                 </View>);
+                                    case SEARCH_RESULT:
+                                        return (<View style={styles.centerButIn}>
+                                            <Icon style={styles.redBtnIcon} name={'search'} />
+                                            <Text style={styles.centerButText}>
+                                                New Search
+                                            </Text>
+                                        </View>);
                                     default:
                                         return (<Text style={styles.centerButText}>
                                             Start(78)
@@ -270,14 +286,13 @@ function mapStateToProps (store) {
     return {
         location: store.location,
         activeTab: store.ui.activeTab,
-        //menuOpen: store.ui.menuOpen,
-        barOpen: store.ui.barOpen
+        searchFilter: store.places.searchFilter
     }
 }
 
 function mapDispatchToProps (dispatch) {
     return {
-        toggleBar: bindActionCreators(toggleBar, dispatch),
+        toggleTab: bindActionCreators(toggleTab, dispatch),
         placesActions: bindActionCreators(placesActions, dispatch)
     }
 }

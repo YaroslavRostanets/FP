@@ -31,7 +31,7 @@ class PreLoader extends Component {
         const self = this;
         let options = {
             enableHighAccuracy: false,
-            timeout: 10000,
+            timeout: 9000,
             maximumAge: 0
         };
 
@@ -44,7 +44,6 @@ class PreLoader extends Component {
             self.props.placesActions.getPlaces(
                 {   "lat":position.coords.latitude,
                     "lon":position.coords.longitude,
-                    "dayIndex": self.getDayIndex(),
                     "navigator": self.props.navigator }
             );
 
