@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import * as placesActions from '../../../../actions/placesActions';
 import { connect } from 'react-redux';
-import { View, Text, FlatList, Image, TouchableHighlight, Dimensions, Animated, Easing } from 'react-native';
+import { View, Text, FlatList, Image, TouchableHighlight, Dimensions, Animated, Easing, ActivityIndicator } from 'react-native';
 //import { createIconSetFromFontello } from 'react-native-vector-icons';
 //import fontelloConfig from '../../../src/config.json';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -29,7 +29,6 @@ class FastParking extends Component {
     }
 
     componentDidMount(){
-        console.log('__DID_MOUNT__');
         this.itemRowAnimate();
     }
 
@@ -130,12 +129,16 @@ class FastParking extends Component {
 
 
         return (
-            <FlatList style={styles.fastParking}
-                keyExtractor={this._keyExtractor}
-                data={fastPlaces}
-                extraData={this.state.activeItemId}
-                ref='flatlist'
-                renderItem={({item}) => (
+            <View>
+                <View style={{...styles.loaderWrap, display: (this.props.placesLoader) ? 'flex' : 'none' }}>
+                    <ActivityIndicator size="large" color="#247FD2" />
+                </View>
+                <FlatList style={{...styles.fastParking, display: (this.props.placesLoader) ? 'none' : 'flex'}}
+                          keyExtractor={this._keyExtractor}
+                          data={fastPlaces}
+                          extraData={this.state.activeItemId}
+                          ref='flatlist'
+                          renderItem={({item}) => (
                     <Animated.View
                         style={{...styles.itemRow,
                         transform: [{translateX: (prevActiveItemId == item.id) ? this.translateXinvert : 0 || (activeItemId == item.id) ? this.translateX : 0 }]
@@ -167,7 +170,8 @@ class FastParking extends Component {
                     </Animated.View>
 
                 )}
-            />
+                />
+            </View>
         )
     }
 
@@ -267,6 +271,12 @@ const styles = {
     sign: {
         width: 50,
         height: 40
+    },
+    loaderWrap: {
+        height: 250,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 };
 
@@ -274,7 +284,8 @@ function mapStateToProps (store) {
 
     return {
         location: store.location,
-        places: store.places.fastParkingPlaces
+        places: store.places.fastParkingPlaces,
+        placesLoader: store.places.fastPlacesLoader
     }
 }
 

@@ -13,8 +13,11 @@ import { Marker } from 'react-native-maps';
 import PlaceMarker from './parts/PlaceMarker';
 import CalloutView from './parts/CalloutView';
 import ParkTabs from './parts/ParkTabs/ParkTabs';
-import TopButtons from './parts/TopButtons';
-import Loader from '../layers/loader'
+import MenuBtn from './parts/MenuBtn';
+import UserCenterBtn from './parts/UserCenterBtn';
+import Loader from '../layers/loader';
+import MapViewDirections from 'react-native-maps-directions';
+import {GOOGLE_MAPS_APIKEY} from '../../constants/appConfig';
 
 const Screen = Dimensions.get('window');
 const SideMenuWidth = Math.floor( Screen.width * 0.8 );
@@ -57,7 +60,7 @@ class MapPage extends Component {
         },150);
     }
 
-    hideColloutView(){
+    hideCalloutView(){
         this.setState({
             callout: {
                 visible: false
@@ -112,13 +115,14 @@ class MapPage extends Component {
                             <MapView style={styles.map}
                                      onPress={() => this.hideColloutView()}
                                      onPanDrag={(e) => this.mapDrag(e)}
-                                     showsUserLocation = {true}
+                                     showsUserLocation = {false}
                                      ref={ref => { this.map = ref; }}
                                      initialRegion={{
                                             latitude: location.lat,
                                             longitude: location.lon,
                                             latitudeDelta: 0.0920,
                                             longitudeDelta: 0.0421}}>
+
                                 <Marker coordinate={{
                                     latitude: this.props.location.lat,
                                     longitude: this.props.location.lon
@@ -131,6 +135,20 @@ class MapPage extends Component {
                                         <PlaceMarker marker={marker} />
                                     </Marker>
                                 ))}
+                                <MapViewDirections
+                                    origin={{
+                                            latitude: this.props.location.lat,
+                                           longitude: this.props.location.lon
+                                    }}
+                                    destination={{
+                                        latitude: 50.44012552534331,
+                                        longitude: 30.54417661762477
+                                    }}
+                                    mode={'driving'}
+                                    strokeWidth={3}
+                                    strokeColor="hotpink"
+                                    apikey={GOOGLE_MAPS_APIKEY}
+                                />
                             </MapView>
 
                             <View style={{...styles.callout,
@@ -146,10 +164,8 @@ class MapPage extends Component {
                                 />
                             </View>
 
-                            <TopButtons
-                                setMapCenter={this.setMapCenter.bind(this)}
-                                toggleMenu={{openMenu: this.openMenu.bind(this), closeMenu: this.closeMenu.bind(this)}}
-                                style={styles.header} />
+                            <MenuBtn toggleMenu={{openMenu: this.openMenu.bind(this), closeMenu: this.closeMenu.bind(this)}} />
+                            <UserCenterBtn style={styles.userCenterBtn} setMapCenter={this.setMapCenter.bind(this)}/>
                             <Interactable.View
                                 verticalOnly={true}
                                 snapPoints={[{y: 0}, {y: 418}]}
@@ -164,6 +180,7 @@ class MapPage extends Component {
                                 })
                             }}>
                                     <ParkTabs
+                                        hideCalloutView={this.hideCalloutView.bind(this)}
                                         hideBotBar={function(){this.refs['botBar'].setVelocity({y: 2250});}.bind(this)}
                                         botBarToBottom={this.botBarToBottom.bind(this)} />
                                 </Animated.View>
@@ -191,6 +208,7 @@ class MapPage extends Component {
     }
 
     toggleMenu(event) {
+
         if(event.nativeEvent.index == 0){
             this.props.uiActions.toggleMenu(true);
         } else {
@@ -201,10 +219,12 @@ class MapPage extends Component {
 
         this._deltaX.setValue(0);
         this.refs['menuInstance'].setVelocity({x: 2000});
+        this.props.uiActions.toggleMenu(true);
     }
     closeMenu() {
         this._deltaX.setValue(-SideMenuWidth);
         this.refs['menuInstance'].setVelocity({x: -2000});
+        this.props.uiActions.toggleMenu(false);
     }
 
     setMapCenter() {
@@ -258,12 +278,14 @@ const styles = {
         marginBottom: 20
     },
     header: {
-        height: 60,
+        height: 2,
         paddingLeft: 20,
         flexDirection: 'row',
         backgroundColor: 'red',
         alignItems: 'center',
-        zIndex: 1001
+        zIndex: 1001,
+        position: 'absolute',
+        overflow: 'visible'
     },
     body: {
         flex: 1,

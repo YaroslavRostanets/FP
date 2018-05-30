@@ -1,8 +1,11 @@
 /**
+ * Created by Yaroslav on 30.05.2018.
+ */
+
+/**
  * Created by Yaroslav on 26.08.2017.
  */
 import React, { Component } from 'react';
-import { View, TouchableHighlight, Text } from 'react-native';
 import Ripple from 'react-native-material-ripple';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -13,39 +16,19 @@ import { API } from '../../../constants/appConfig';
 import { LAT, LON } from '../../../constants/Location'
 
 
-class TopButtons extends Component {
-
-    toggleMenu(){
-        if(this.props.menuOpen){
-            this.props.toggleMenu.closeMenu();
-        } else {
-            this.props.toggleMenu.openMenu();
-        }
-    }
-
+class UserCenterBtn extends Component {
 
     render() {
 
         return (
-            <View style={styles.topButtons}>
-                <Ripple
-                    rippleColor={'#FFFFFF'}
-                    rippleOpacity={0.6}
-                    rippleDuration={800}
-                    underlayColor={"#5296E7"}
-                    onPress={this.toggleMenu.bind(this)} style={styles.stdBut}>
-                    <Icon name="reorder" style={styles.ico} />
-                </Ripple>
-
-                <Ripple
-                    onPress={this.setUserCenter.bind(this)}
-                    rippleColor={'#FFFFFF'}
-                    rippleOpacity={0.6}
-                    rippleDuration={800}
-                    style={styles.stdBut}>
-                    <Icon name="map-marker" style={styles.ico} />
-                </Ripple>
-            </View>
+            <Ripple
+                onPress={this.setUserCenter.bind(this)}
+                rippleColor={'#FFFFFF'}
+                rippleOpacity={0.6}
+                rippleDuration={800}
+                style={styles.stdBut}>
+                <Icon name="map-marker" style={styles.ico} />
+            </Ripple>
         );
     }
 
@@ -104,18 +87,6 @@ class TopButtons extends Component {
 }
 
 const styles = {
-    topButtons: {
-        position: "absolute",
-        top: 15,
-        width: "100%",
-        paddingRight: "3.5%",
-        paddingLeft: "3.5%",
-        zIndex: 9,
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        backgroundColor: '#FF00AE',
-    },
     stdBut: {
         height: 50,
         width: 50,
@@ -125,7 +96,10 @@ const styles = {
         borderColor: '#D3DFE1',
         display: "flex",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        position: 'absolute',
+        top: 15,
+        right: 13
     },
     ico: {
         color: "#6F7071",
@@ -146,4 +120,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TopButtons);
+export default connect(mapStateToProps, mapDispatchToProps)(UserCenterBtn);

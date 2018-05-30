@@ -17,6 +17,7 @@ const CustIcon = createIconSetFromFontello(fontelloConfig);
 class TabSelector extends Component {
 
     setActiveTab(activeTab){
+        this.props.hideCalloutView();
         if( activeTab === FAST_PARKING ){
             this.props.placesActions.showFastPlacesOnMap(this.props.places);
         }

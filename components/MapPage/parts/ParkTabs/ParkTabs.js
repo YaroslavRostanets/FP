@@ -56,15 +56,16 @@ class ParkTabs extends Component {
                 }
             });
 
-            console.log('filter_:', filterObject);
-
             this.props.placesActions.getPlacesByFilter(filterObject, lat, lon, this.props.hideBotBar);
 
         });
     }
 
     refreshFastParking(){
-        console.log('_refresh_fast_parking_');
+        this.props.placesActions.refreshFastPlaces({
+            'lat': this.props.location.lat,
+            'lon': this.props.location.lon
+        });
     }
 
     searchHeandler() {
@@ -119,7 +120,7 @@ class ParkTabs extends Component {
                             })(activeTab)}
                         </View>
                         <View style={{display: (showTabs)? "flex" : "none"}}>
-                            <TabSelector />
+                            <TabSelector hideCalloutView={this.props.hideCalloutView} />
                         </View>
                     </View>
                     <View

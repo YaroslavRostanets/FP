@@ -2,6 +2,7 @@
  * Created by Yaroslav on 13.02.2018.
  */
 import {
+    GET_FASTPLACES_REQUEST,
     FAST_PLACES_RESULT,
     GET_PLACE_BY_ID,
     GET_PLACE_BY_ID_SUCCESS,
@@ -15,6 +16,7 @@ import {
 
 const initialState = {
     fastParkingPlaces: [],
+    fastPlacesLoader: false,
     markersOnMap: [],
     placeDetail: {},
     searchResult: [],
@@ -34,11 +36,12 @@ const initialState = {
 };
 
 export default function places(state = initialState, action) {
-
+    console.log('__PLACES__');
     switch (action.type) {
-        //case GET_FASTPLACES_REQUEST:
+        case GET_FASTPLACES_REQUEST:
+            return { ...state, fastPlacesLoader: true};
         case FAST_PLACES_RESULT:
-            return { ...state , fastParkingPlaces: action.payload, markersOnMap: action.payload };
+            return { ...state , fastParkingPlaces: action.payload, markersOnMap: action.payload, fastPlacesLoader: false };
         case GET_PLACE_BY_ID:
             return { ...state, showLoader: true };
         case GET_PLACE_BY_ID_SUCCESS:

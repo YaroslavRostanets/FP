@@ -17,7 +17,7 @@ import {Platform, NativeModules} from 'react-native';
 const initialState = {
     menuOpen: false,
     barOpen: true,
-    activeTab: SEARCH,
+    activeTab: FAST_PARKING,
     localization: getLanguageCode()
 };
 

@@ -51,7 +51,39 @@ export function getPlaces(findOptionsObj) {
         });
 
     };
+}
 
+export function refreshFastPlaces(findOptionsObj) {
+
+    const lat = findOptionsObj.lat;
+    const lon = findOptionsObj.lon;
+    const myRequest = new Request(`${API}fastlist?lat=${lat}&lon=${lon}`);
+
+    return (dispatch) => {
+        dispatch({
+            type: GET_FASTPLACES_REQUEST
+        });
+
+        fetch(myRequest)
+            .then(response => {
+
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                dispatch({
+                    type: FAST_PLACES_RESULT,
+                    payload: response
+                });
+
+            }).catch(error => {
+            console.log('__ERROR___: ', error);
+        });
+
+    };
 }
 
 export function getPlaceById(id, navigator, lat, lon) {
@@ -128,7 +160,7 @@ export function getPlacesByFilter(filterObject, lat, lon, botBarHide){
 
 export function showFastPlacesOnMap(fastParkingPlaces){
     return {
-        type: SEARCH_PLACES_REQUEST,
+        type: FAST_PLACES_ON_MAP,
         payload: fastParkingPlaces
     }
 }

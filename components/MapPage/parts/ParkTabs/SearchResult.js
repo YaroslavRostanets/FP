@@ -28,7 +28,6 @@ class SearchResult extends Component {
     }
 
     componentDidMount(){
-        console.log('__DID_MOUNT__');
         this.itemRowAnimate();
     }
 
