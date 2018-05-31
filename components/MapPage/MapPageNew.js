@@ -16,8 +16,8 @@ import ParkTabs from './parts/ParkTabs/ParkTabs';
 import MenuBtn from './parts/MenuBtn';
 import UserCenterBtn from './parts/UserCenterBtn';
 import Loader from '../layers/loader';
-import MapViewDirections from 'react-native-maps-directions';
-import {GOOGLE_MAPS_APIKEY} from '../../constants/appConfig';
+import RouteView from './parts/RouteView';
+
 
 const Screen = Dimensions.get('window');
 const SideMenuWidth = Math.floor( Screen.width * 0.8 );
@@ -89,6 +89,7 @@ class MapPage extends Component {
     }
 
     render() {
+        const dMarker = this.props.directionsMarker;
         const navigator = this.props.navigator;
         const location = this.props.location;
         const markers = this.props.markersOnMap;
@@ -106,7 +107,7 @@ class MapPage extends Component {
                     boundaries={{left: -SideMenuWidth}}
                     animatedValueX={this._deltaX}
                     initialPosition={{x: -SideMenuWidth}}>
-                    <View style={styles.mapPage}>
+                    <View style={{...styles.mapPage}}>
                         <View style={styles.sideMenu}>
                             <UserInfo/>
                             <MenuList navigator={this.props.navigator} />
@@ -135,20 +136,7 @@ class MapPage extends Component {
                                         <PlaceMarker marker={marker} />
                                     </Marker>
                                 ))}
-                                <MapViewDirections
-                                    origin={{
-                                            latitude: this.props.location.lat,
-                                           longitude: this.props.location.lon
-                                    }}
-                                    destination={{
-                                        latitude: 50.44012552534331,
-                                        longitude: 30.54417661762477
-                                    }}
-                                    mode={'driving'}
-                                    strokeWidth={3}
-                                    strokeColor="hotpink"
-                                    apikey={GOOGLE_MAPS_APIKEY}
-                                />
+                                {(this.props.directionsMarker) ? <RouteView /> : null}
                             </MapView>
 
                             <View style={{...styles.callout,
@@ -160,6 +148,7 @@ class MapPage extends Component {
                                     location={this.props.location}
                                     marker={markerInfo}
                                     getPlaceById={this.props.placesActions.getPlaceById.bind(this)}
+                                    getDirection={this.props.placesActions.getDirections}
                                     navigator={this.props.navigator}
                                 />
                             </View>
@@ -168,9 +157,9 @@ class MapPage extends Component {
                             <UserCenterBtn style={styles.userCenterBtn} setMapCenter={this.setMapCenter.bind(this)}/>
                             <Interactable.View
                                 verticalOnly={true}
-                                snapPoints={[{y: 0}, {y: 418}]}
+                                snapPoints={[{y: (dMarker) ? 310 : 0}, {y: 418}]}
                                 boundaries={{top: -300}}
-                                initialPosition={{y: 0}}
+                                initialPosition={{y: (dMarker) ? 310 : 0}}
                                 ref="botBar"
                                 style={styles.parkTabs}>
                                 <Animated.View style={{
@@ -327,6 +316,7 @@ const styles = {
 function mapStateToProps (store) {
 
     return {
+        directionsMarker: store.places.route.markerId,
         location: store.location,
         fastPlaces: store.places.fastParkingPlaces,
         markersOnMap: store.places.markersOnMap,
@@ -338,7 +328,7 @@ function mapDispatchToProps(dispatch) {
     return {
         locationActions: bindActionCreators(locationActions, dispatch),
         uiActions: bindActionCreators(uiActions, dispatch),
-        placesActions: bindActionCreators(placesActions, dispatch)
+        placesActions: bindActionCreators(placesActions, dispatch),
     }
 }
 

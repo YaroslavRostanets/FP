@@ -78,7 +78,9 @@ class CalloutView extends Component {
                     <TouchableHighlight style={styles.stdBut}>
                         <Icon name="star-o" style={styles.ico} />
                     </TouchableHighlight>
-                    <TouchableHighlight style={styles.routeMapBtn}>
+                    <TouchableHighlight
+                        onPress={this.props.getDirection.bind(this, marker)}
+                        style={styles.routeMapBtn}>
                         <View style={styles.routeMapBtnIn}>
                             <Icon name="car" style={{...styles.ico,...styles.icoRoute}} />
                             <Text>

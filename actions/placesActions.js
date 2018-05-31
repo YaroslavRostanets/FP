@@ -11,7 +11,11 @@ import {
     FAST_PLACES_ON_MAP,
     SEARCH_FILTER_EDIT,
     SEARCH_PLACES_REQUEST,
-    SEARCH_PLACES_SUCCES
+    SEARCH_PLACES_SUCCES,
+    GET_DIRECTION_REQUEST,
+    GET_DIRECTION_ERROR,
+    GET_DIRECTION_SUCCESS,
+    HIDE_LOADER
 } from '../constants/Places'
 import { SEARCH_RESULT } from '../constants/UI'
 import { API } from '../constants/appConfig';
@@ -202,5 +206,52 @@ export function getPlacesSearch(searchObject, lat, lon, toggleTab){
             console.error('__ERROR__: ', error);
         });
     };
+}
 
+export function getDirections(marker){
+    return (dispatch) => {
+        dispatch({
+            type: GET_DIRECTION_REQUEST,
+        });
+
+        let options = {
+            enableHighAccuracy: false,
+            timeout: 10000,
+            maximumAge: 0
+        };
+
+        function success(position) {
+            dispatch({
+                type: GET_DIRECTION_SUCCESS,
+                payload: {
+                    markerId: marker.id,
+                    origin: {
+                        latitude: Number(position.coords.latitude),
+                        longitude: Number(position.coords.longitude)
+                    },
+                    destination: {
+                        latitude: Number(marker.lat),
+                        longitude: Number(marker.lon)
+                    },
+                    marker: marker
+                }
+            });
+        }
+
+        function error() {
+            dispatch({
+                type: GET_DIRECTION_ERROR,
+                payload: {'error':'Ошибка GPS'}
+            });
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+    };
+
+}
+
+export function hideLoader(){
+    return {
+        type: HIDE_LOADER,
+    }
 }

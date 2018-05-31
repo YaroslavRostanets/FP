@@ -2,9 +2,6 @@
  * Created by Yaroslav on 30.05.2018.
  */
 
-/**
- * Created by Yaroslav on 26.08.2017.
- */
 import React, { Component } from 'react';
 import Ripple from 'react-native-material-ripple';
 import { bindActionCreators } from 'redux'

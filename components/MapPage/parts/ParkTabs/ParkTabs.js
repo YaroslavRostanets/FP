@@ -2,7 +2,7 @@
  * Created by Yaroslav on 08.09.2017.
  */
 import React, { Component } from 'react';
-import { View, FlatList, Text, TouchableHighlight, Animated, Dimensions, AsyncStorage } from 'react-native';
+import { View, FlatList, Text, Image, TouchableHighlight, Animated, Dimensions, AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import {FAST_PARKING, FILTER, SEARCH, SEARCH_RESULT} from '../../../../constants/UI';
@@ -13,6 +13,7 @@ import TabSelector from './TabSelector';
 import  FastParking from './FastParkingTab';
 import  FilterTab from './FilterTab';
 import SearchTab from './SearchTab';
+import RouteMarkerDetail from './RouteMarkerDetail';
 import SearchResult from './SearchResult';
 import Ripple from 'react-native-material-ripple';
 
@@ -93,6 +94,7 @@ class ParkTabs extends Component {
     }
 
     render() {
+        const directionsMarkerId = this.props.directionsMarkerId;
         const activeTab = this.props.activeTab;
         const showTabs = this.state.showTabs;
         const botBarToBottom = this.props.botBarToBottom;
@@ -101,28 +103,38 @@ class ParkTabs extends Component {
 
                 <Animated.View style={styles.botCont}>
                     <View style={styles.line}></View>
-                    {/*<Icon style={styles.chevronIcon} name="chevron-down"/>*/}
-                    <View>
-                        <View style={ styles.tabCont }>
-                            {((activeTab)=>{
-                                switch(activeTab) {
-                                    case FAST_PARKING:
-                                        return (<FastParking botBarToBottom={botBarToBottom} />);
-                                    case FILTER:
-                                        return (<FilterTab/>);
-                                    case SEARCH:
-                                        return (<SearchTab/>);
-                                    case SEARCH_RESULT:
-                                        return (<SearchResult/>);
-                                    default:
-                                        return (<FastParking />);
-                                }
-                            })(activeTab)}
-                        </View>
-                        <View style={{display: (showTabs)? "flex" : "none"}}>
-                            <TabSelector hideCalloutView={this.props.hideCalloutView} />
-                        </View>
-                    </View>
+                    {((directionsMarkerId)=>{
+                        if(directionsMarkerId){
+                            return(
+                                <RouteMarkerDetail routeMarker={this.props.marker} style={styles.routeMarker} />
+                            )
+
+                        } else {
+                            return(
+                                <View>
+                                    <View style={ styles.tabCont }>
+                                        {((activeTab)=>{
+                                            switch(activeTab) {
+                                                case FAST_PARKING:
+                                                    return (<FastParking botBarToBottom={botBarToBottom} />);
+                                                case FILTER:
+                                                    return (<FilterTab/>);
+                                                case SEARCH:
+                                                    return (<SearchTab/>);
+                                                case SEARCH_RESULT:
+                                                    return (<SearchResult/>);
+                                                default:
+                                                    return (<FastParking />);
+                                            }
+                                        })(activeTab)}
+                                    </View>
+                                    <View style={{display: (showTabs)? "flex" : "none"}}>
+                                        <TabSelector hideCalloutView={this.props.hideCalloutView} />
+                                    </View>
+                                </View>
+                                )
+                        }
+                    })(directionsMarkerId)}
                     <View
                         style={styles.centerBut}>
                         <Ripple
@@ -278,13 +290,19 @@ const styles = {
         marginRight: 5,
         display: 'flex',
         color: '#FFFFFF'
-    }
+    },
+    routeMarker: {
+        height: 250,
+        backgroundColor: '#FFFFFF',
 
+    }
 
 };
 
 function mapStateToProps (store) {
     return {
+        directionsMarkerId: store.places.route.markerId,
+        marker: store.places.route.marker,
         location: store.location,
         activeTab: store.ui.activeTab,
         searchFilter: store.places.searchFilter

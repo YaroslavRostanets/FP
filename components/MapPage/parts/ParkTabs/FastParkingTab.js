@@ -10,7 +10,7 @@ import { View, Text, FlatList, Image, TouchableHighlight, Dimensions, Animated, 
 //import { createIconSetFromFontello } from 'react-native-vector-icons';
 //import fontelloConfig from '../../../src/config.json';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {timeWithoutMin, distanceConvert} from '../../../../helpers/helpers'
+import {timeWithoutMin, distanceConvert} from '../../../../helpers/helpers';
 
 //const CustIcon = createIconSetFromFontello(fontelloConfig);
 
