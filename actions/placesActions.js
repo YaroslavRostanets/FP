@@ -15,7 +15,8 @@ import {
     GET_DIRECTION_REQUEST,
     GET_DIRECTION_ERROR,
     GET_DIRECTION_SUCCESS,
-    HIDE_LOADER
+    HIDE_LOADER,
+    SET_ROUTE_DATA
 } from '../constants/Places'
 import { SEARCH_RESULT } from '../constants/UI'
 import { API } from '../constants/appConfig';
@@ -250,8 +251,19 @@ export function getDirections(marker){
 
 }
 
-export function hideLoader(){
+export function hideLoader(calculatedData){
     return {
         type: HIDE_LOADER,
+    }
+}
+
+export function setRouteData(calculatedData){
+    console.log('_DATA_:', calculatedData);
+    return {
+        type: SET_ROUTE_DATA,
+        payload: {
+            distance: calculatedData.distance,
+            duration: calculatedData.duration
+        }
     }
 }

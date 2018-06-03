@@ -10,9 +10,12 @@ import * as placesActions from '../../../actions/placesActions';
 
 class RouteView extends Component {
 
-    setRouteDistance(calculatedData) {
+    setRouteData(calculatedData) {
+        this.props.placesActions.setRouteData({
+            distance: calculatedData.distance,
+            duration: calculatedData.duration
+        });
         this.props.placesActions.hideLoader();
-        console.log('_DISTANCE_:', calculatedData);
     }
 
     render() {
@@ -27,7 +30,8 @@ class RouteView extends Component {
                 strokeWidth={3}
                 strokeColor="hotpink"
                 apikey={GOOGLE_MAPS_APIKEY}
-                onReady={this.setRouteDistance.bind(this)}
+                onReady={this.setRouteData.bind(this)}
+                onError={(errorMessage) => {console.log(errorMessage) }}
             />
         );
     }

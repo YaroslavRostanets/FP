@@ -15,7 +15,8 @@ import {
     GET_DIRECTION_REQUEST,
     GET_DIRECTION_ERROR,
     GET_DIRECTION_SUCCESS,
-    HIDE_LOADER
+    HIDE_LOADER,
+    SET_ROUTE_DATA
 } from '../constants/Places';
 
 const initialState = {
@@ -42,7 +43,7 @@ const initialState = {
         distance: '',
         duration: '',
         origin: {
-            latitude: 50.31209812145984,
+            latitude: 50.3120981214598,
             longitude: 30.53152084350586
         },
         destination: {
@@ -86,6 +87,8 @@ export default function places(state = initialState, action) {
             return { ...state, error: action.payload };
         case HIDE_LOADER:
             return { ...state, showLoader: false };
+        case SET_ROUTE_DATA:
+            return { ...state, route: { ...state.route, distance: action.payload.distance, duration: action.payload.duration} };
         default:
             return state;
     }
