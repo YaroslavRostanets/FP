@@ -17,3 +17,5 @@ export const TOGGLE_BAR = 'TOGGLE_BAR';
 /*----------------*/
 
 export const TOGGLE_LANGUAGE = 'TOGGLE_LANGUAGE';
+
+export const TOGGLE_CALLOUT = 'TOGGLE_CALLOUT';

@@ -5,7 +5,8 @@ import {
     TOGGLE_MENU,
     TOGGLE_BAR,
     TOGGLE_TAB,
-    TOGGLE_LANGUAGE
+    TOGGLE_LANGUAGE,
+    TOGGLE_CALLOUT
 } from '../constants/UI';
 
 export function toggleMenu(menuState) {
@@ -39,5 +40,12 @@ export function toggleLanguage(language) {
             type: TOGGLE_LANGUAGE,
             payload: language
         });
+    }
+}
+
+export function toggleCallOut(calloutState) {
+    return {
+        type: TOGGLE_CALLOUT,
+        payload: calloutState
     }
 }

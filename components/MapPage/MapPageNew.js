@@ -49,15 +49,18 @@ class MapPage extends Component {
             }
         });
 
-        setTimeout(function(){
-            self.setState({
-                callout: {
-                    visible: true,
-                    top: Screen.height / 2,
-                    left: Screen.width / 2
-                }
-            });
-        },150);
+        if (!this.props.isRouteDetail){
+            setTimeout(function(){
+                self.setState({
+                    callout: {
+                        visible: true,
+                        top: Screen.height / 2,
+                        left: Screen.width / 2
+                    }
+                });
+            },150);
+        }
+
     }
 
     hideCalloutView(){
@@ -149,6 +152,8 @@ class MapPage extends Component {
                                     marker={markerInfo}
                                     getPlaceById={this.props.placesActions.getPlaceById.bind(this)}
                                     getDirection={this.props.placesActions.getDirections}
+                                    setNewLocation={this.props.locationActions.setNewLocation.bind(this)}
+                                    hideCalloutView={this.hideCalloutView.bind(this)}
                                     navigator={this.props.navigator}
                                 />
                             </View>
@@ -320,7 +325,8 @@ function mapStateToProps (store) {
         location: store.location,
         fastPlaces: store.places.fastParkingPlaces,
         markersOnMap: store.places.markersOnMap,
-        showLoader:  store.places.showLoader
+        showLoader:  store.places.showLoader,
+        isRouteDetail: store.places.route.markerId
     }
 }
 

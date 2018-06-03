@@ -6,20 +6,25 @@ import React, { Component } from 'react';
 import { View, Image, Text, Linking } from 'react-native';
 import Ripple from 'react-native-material-ripple';
 import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import * as uiActions from '../../../../actions/uiActions';
+import * as placesActions from '../../../../actions/placesActions';
+import * as locationActions from '../../../../actions/locationActions';
 import {timeWithoutMin} from '../../../../helpers/helpers';
-import store from '../../../../store/configureStore';
-import * as locationActions from '../../../../actions/locationActions'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 
 class RouteMarkerDetail extends Component {
 
+    constructor(){
+        super();
+    }
+
     openInGMaps(){
         const destination = this.props.destination;
         const origin = this.props.origin;
-        
+
         let url = `http://maps.google.com/maps?saddr=${destination.latitude},${destination.longitude}&daddr=${origin.latitude},${origin.longitude}`;
         openExternalApp(url);
 
@@ -35,9 +40,31 @@ class RouteMarkerDetail extends Component {
     }
 
     closeRoute(){
-
+        this.props.uiActions.toggleTab('FAST_PARKING');
+        this.props.placesActions.closeRoute();
     }
 
+    componentWillMount() {
+        let self = this;
+        let options = {
+            enableHighAccuracy: false,
+            timeout: 6000,
+            maximumAge: 300
+        };
+
+        function success(position) {
+            self.props.locationActions.setNewLocation({
+                lat: position.coords.latitude,
+                lon: position.coords.longitude
+            });
+        }
+
+        this.locationWatchId = navigator.geolocation.watchPosition(success, null, options);
+    }
+
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.locationWatchId);
+    }
 
 
     render() {
@@ -192,7 +219,9 @@ function mapStateToProps (store) {
 
 function mapDispatchToProps(dispatch) {
     return {
-
+        uiActions: bindActionCreators(uiActions, dispatch),
+        placesActions: bindActionCreators(placesActions, dispatch),
+        locationActions: bindActionCreators(locationActions, dispatch)
     }
 }
 

@@ -16,7 +16,8 @@ import {
     GET_DIRECTION_ERROR,
     GET_DIRECTION_SUCCESS,
     HIDE_LOADER,
-    SET_ROUTE_DATA
+    SET_ROUTE_DATA,
+    CLOSE_ROUTE
 } from '../constants/Places';
 
 const initialState = {
@@ -84,11 +85,13 @@ export default function places(state = initialState, action) {
         case GET_DIRECTION_SUCCESS:
             return { ...state, route: action.payload, markersOnMap: [action.payload.marker] };
         case GET_DIRECTION_ERROR:
-            return { ...state, error: action.payload };
+            return { ...state, error: action.payload.error, showLoader: false };
         case HIDE_LOADER:
             return { ...state, showLoader: false };
         case SET_ROUTE_DATA:
             return { ...state, route: { ...state.route, distance: action.payload.distance, duration: action.payload.duration} };
+        case CLOSE_ROUTE:
+            return { ...state, route: { ...state.route, markerId: ''}, markersOnMap: state.fastParkingPlaces };
         default:
             return state;
     }

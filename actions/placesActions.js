@@ -16,7 +16,8 @@ import {
     GET_DIRECTION_ERROR,
     GET_DIRECTION_SUCCESS,
     HIDE_LOADER,
-    SET_ROUTE_DATA
+    SET_ROUTE_DATA,
+    CLOSE_ROUTE
 } from '../constants/Places'
 import { SEARCH_RESULT } from '../constants/UI'
 import { API } from '../constants/appConfig';
@@ -209,7 +210,7 @@ export function getPlacesSearch(searchObject, lat, lon, toggleTab){
     };
 }
 
-export function getDirections(marker){
+export function getDirections(marker, setNewLocation){
     return (dispatch) => {
         dispatch({
             type: GET_DIRECTION_REQUEST,
@@ -222,6 +223,10 @@ export function getDirections(marker){
         };
 
         function success(position) {
+            setNewLocation({
+                lat: Number(position.coords.latitude),
+                lon: Number(position.coords.longitude)
+            });
             dispatch({
                 type: GET_DIRECTION_SUCCESS,
                 payload: {
@@ -258,12 +263,17 @@ export function hideLoader(calculatedData){
 }
 
 export function setRouteData(calculatedData){
-    console.log('_DATA_:', calculatedData);
     return {
         type: SET_ROUTE_DATA,
         payload: {
             distance: calculatedData.distance,
             duration: calculatedData.duration
         }
+    }
+}
+
+export function closeRoute(calculatedData){
+    return {
+        type: CLOSE_ROUTE
     }
 }

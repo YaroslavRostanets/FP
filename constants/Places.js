@@ -24,4 +24,5 @@ export const GET_DIRECTION_SUCCESS = 'GET_DIRECTIONS_SUCCESS';
 
 export const HIDE_LOADER = 'HIDE_LOADER';
 export const SET_ROUTE_DATA = 'SET_ROUTE_DATA';
+
 export const CLOSE_ROUTE = 'CLOSE_ROUTE';

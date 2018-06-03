@@ -7,7 +7,8 @@ import {
     FAST_PARKING,
     SEARCH,
     TOGGLE_BAR,
-    TOGGLE_LANGUAGE
+    TOGGLE_LANGUAGE,
+    TOGGLE_CALLOUT
 } from '../constants/UI';
 
 import {lang} from '../constants/appConfig'
@@ -18,6 +19,7 @@ const initialState = {
     menuOpen: false,
     barOpen: true,
     activeTab: FAST_PARKING,
+    callout: false,
     localization: getLanguageCode()
 };
 

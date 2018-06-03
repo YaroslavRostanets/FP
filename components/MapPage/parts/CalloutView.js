@@ -17,6 +17,11 @@ class CalloutView extends Component {
         this.props.getPlaceById(marker['id'], navigator, lat, lon);
     }
 
+    getDirection(marker){
+        this.props.hideCalloutView();
+        this.props.getDirection(marker, this.props.setNewLocation);
+    }
+
     render (){
         const marker = this.props.marker;
         const h = timeWithoutMin;
@@ -79,7 +84,7 @@ class CalloutView extends Component {
                         <Icon name="star-o" style={styles.ico} />
                     </TouchableHighlight>
                     <TouchableHighlight
-                        onPress={this.props.getDirection.bind(this, marker)}
+                        onPress={this.getDirection.bind(this, marker)}
                         style={styles.routeMapBtn}>
                         <View style={styles.routeMapBtnIn}>
                             <Icon name="car" style={{...styles.ico,...styles.icoRoute}} />

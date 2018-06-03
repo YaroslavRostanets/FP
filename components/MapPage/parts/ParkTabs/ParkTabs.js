@@ -77,6 +77,10 @@ class ParkTabs extends Component {
         this.props.placesActions.getPlacesSearch(searchOptionsObject, lat, lon, this.props.toggleTab.bind(this));
     }
 
+    searchResultHeandler() {
+        this.props.toggleTab(SEARCH);
+    }
+
     redButtonHeandler() {
         switch(this.props.activeTab) {
             case FAST_PARKING:
@@ -87,6 +91,9 @@ class ParkTabs extends Component {
                 break;
             case SEARCH:
                 this.searchHeandler();
+                break;
+            case SEARCH_RESULT:
+                this.searchResultHeandler();
                 break;
             default:
                 break;
@@ -106,7 +113,9 @@ class ParkTabs extends Component {
                     {((directionsMarkerId)=>{
                         if(directionsMarkerId){
                             return(
-                                <RouteMarkerDetail routeMarker={this.props.marker} style={styles.routeMarker} />
+                                <RouteMarkerDetail
+                                    hideCalloutView={this.props.hideCalloutView}
+                                    routeMarker={this.props.marker} style={styles.routeMarker} />
                             )
 
                         } else {
@@ -122,7 +131,7 @@ class ParkTabs extends Component {
                                                 case SEARCH:
                                                     return (<SearchTab/>);
                                                 case SEARCH_RESULT:
-                                                    return (<SearchResult/>);
+                                                    return (<SearchResult botBarToBottom={botBarToBottom} />);
                                                 default:
                                                     return (<FastParking />);
                                             }

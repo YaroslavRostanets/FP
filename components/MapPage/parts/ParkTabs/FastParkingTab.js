@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import * as placesActions from '../../../../actions/placesActions';
 import { connect } from 'react-redux';
-import { View, Text, FlatList, Image, TouchableHighlight, Dimensions, Animated, Easing, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Image, TouchableHighlight, Dimensions, Animated, Easing, ActivityIndicator, Linking } from 'react-native';
 //import { createIconSetFromFontello } from 'react-native-vector-icons';
 //import fontelloConfig from '../../../src/config.json';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -18,7 +18,7 @@ class FastParking extends Component {
 
     constructor(){
         super();
-        this.intervalSignWidth = 70;
+        this.intervalSignWidth = 80;
         this.translateX = new Animated.Value(0);
         this.translateXinvert = new Animated.Value(0);
         this.state = {
@@ -76,6 +76,26 @@ class FastParking extends Component {
 
     showMarkerOnMap(item) {
         this.props.botBarToBottom(item);
+    }
+
+    openInGMaps(destination) {
+        const origin = {
+            latitude: this.props.location.lat,
+            longitude: this.props.location.lon
+        };
+
+        let url = `http://maps.google.com/maps?saddr=${destination.lat},${destination.lon}&daddr=${origin.latitude},${origin.longitude}`;
+        openExternalApp(url);
+
+        function openExternalApp(url) {
+            Linking.canOpenURL(url).then(supported => {
+                if (supported) {
+                    Linking.openURL(url);
+                } else {
+                    console.log('Don\'t know how to open URI: ' + url);
+                }
+            });
+        }
     }
 
     _keyExtractor = (item, index) => item.id;
@@ -164,7 +184,10 @@ class FastParking extends Component {
                         </TouchableHighlight>
                         <View style={styles.btnWrap}>
                             <TouchableHighlight onPress={this.showMarkerOnMap.bind(this, item)} style={styles.stdBut}>
-                                    <Icon name="map-o" style={{fontSize: 23}}/>
+                                    <Icon name="map-o" style={{fontSize: 21}}/>
+                            </TouchableHighlight>
+                            <TouchableHighlight onPress={this.openInGMaps.bind(this, item)} style={styles.stdBut}>
+                                    <Icon name="map-marker" style={{fontSize: 21}}/>
                             </TouchableHighlight>
                         </View>
                     </Animated.View>
@@ -202,7 +225,7 @@ const styles = {
     btnWrap: {
         flexDirection: 'row',
         backgroundColor: '#DFDFDF',
-        width: 55,
+        width: 80,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -210,7 +233,7 @@ const styles = {
         flexDirection: 'row',
         display: 'flex',
         paddingLeft: 12,
-        width: Dimensions.get('window').width + 50,
+        width: Dimensions.get('window').width + 70,
     },
     imgCont: {
         width: 50,
@@ -258,8 +281,8 @@ const styles = {
         color: '#FB0007'
     },
     stdBut: {
-        height: 50,
-        width: 40,
+        height: 45,
+        width: 35,
         borderRadius: 3,
         backgroundColor: '#F2F5F7',
         borderWidth: 1,

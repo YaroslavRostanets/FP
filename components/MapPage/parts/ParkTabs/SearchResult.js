@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import * as placesActions from '../../../../actions/placesActions';
 import { connect } from 'react-redux';
-import { View, Text, FlatList, Image, TouchableHighlight, Dimensions, Animated, Easing } from 'react-native';
+import { View, Text, FlatList, Image, TouchableHighlight, Dimensions, Animated, Easing, Linking } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {timeWithoutMin, distanceConvert} from '../../../../helpers/helpers'
@@ -72,6 +72,30 @@ class SearchResult extends Component {
             });
         }
     };
+
+    showMarkerOnMap(item) {
+        this.props.botBarToBottom(item);
+    }
+
+    openInGMaps(destination) {
+        const origin = {
+            latitude: this.props.location.lat,
+            longitude: this.props.location.lon
+        };
+
+        let url = `http://maps.google.com/maps?saddr=${destination.lat},${destination.lon}&daddr=${origin.latitude},${origin.longitude}`;
+        openExternalApp(url);
+
+        function openExternalApp(url) {
+            Linking.canOpenURL(url).then(supported => {
+                if (supported) {
+                    Linking.openURL(url);
+                } else {
+                    console.log('Don\'t know how to open URI: ' + url);
+                }
+            });
+        }
+    }
 
 
     showMarkerOnMap(item) {
@@ -160,7 +184,10 @@ class SearchResult extends Component {
                         </TouchableHighlight>
                         <View style={styles.btnWrap}>
                             <TouchableHighlight onPress={this.showMarkerOnMap.bind(this, item)} style={styles.stdBut}>
-                                    <Icon name="search" style={{fontSize: 23}}/>
+                                    <Icon name="map-o" style={{fontSize: 21}}/>
+                            </TouchableHighlight>
+                            <TouchableHighlight onPress={this.openInGMaps.bind(this, item)} style={styles.stdBut}>
+                                    <Icon name="map-marker" style={{fontSize: 21}}/>
                             </TouchableHighlight>
                         </View>
                     </Animated.View>
@@ -197,7 +224,7 @@ const styles = {
     btnWrap: {
         flexDirection: 'row',
         backgroundColor: '#DFDFDF',
-        width: 55,
+        width: 80,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -205,7 +232,7 @@ const styles = {
         flexDirection: 'row',
         display: 'flex',
         paddingLeft: 12,
-        width: Dimensions.get('window').width + 50,
+        width: Dimensions.get('window').width + 70,
     },
     imgCont: {
         width: 50,
