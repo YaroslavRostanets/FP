@@ -12,6 +12,7 @@ import ParkDetail from '../components/ParkDetail/ParkDetail';
 import Info from '../components/Info/Info';
 import Options from '../components/Options/Options2';
 import PreLoader from '../components/PreLoader/PreLoader';
+import AddPlace from '../components/AddPlace/AddPlace';
 import * as uiActions from '../actions/uiActions';
 
 class App extends Component {
@@ -46,6 +47,10 @@ class App extends Component {
             case 'Options':
                 return (
                     <Options navigator={navigator}/>
+                );
+            case 'AddPlace':
+                return (
+                    <AddPlace navigator={navigator}/>
                 );
             default:
                 return (

@@ -1,7 +1,8 @@
 package com.fp;
 
 import android.app.Application;
-
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
+import com.rnfs.RNFSPackage;
 import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -28,7 +29,9 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new VectorIconsPackage(),
             new MapsPackage(),
-            new Interactable()
+            new Interactable(),
+            new RCTCameraPackage(),
+            new RNFSPackage()
       );
     }
   };

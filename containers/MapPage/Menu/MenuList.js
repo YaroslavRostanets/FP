@@ -39,6 +39,12 @@ class MenuList extends Component {
                         <Icon name="plus" style={styles.ico} />
                         <Text style={styles.menuItem}>Add new parking</Text>
                     </View>
+                    <TouchableHighlight onPress={this.goToScreen.bind(this, 'AddPlace')} style={styles.botMenuItem}>
+                        <View>
+                            <Icon name="plus" style={styles.ico} />
+                            <Text style={styles.menuItem}>Add new parking</Text>
+                        </View>
+                    </TouchableHighlight>
                 </View>
 
                 <View style={styles.botMenu}>
