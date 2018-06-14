@@ -1,6 +1,7 @@
 /**
  * Created by Yaroslav on 27.04.2018.
  */
+import {Platform, NativeModules} from 'react-native';
 
 export function timeIntervalConvert(interval) {
     return (interval >= 60) ? interval / 60 + ' h' : interval + ' min';
@@ -32,4 +33,18 @@ export function translator(langJSON, str, lang){  //Принимает обье�
 
 export function objToStrGetParams(obj) {
      return Object.entries(obj).map(([key, val]) => `${key}=${val}`).join('&');
+}
+
+export function getLanguageCode() {
+    let systemLanguage = 'en';
+    let defaultLang = 'en';
+
+    if (Platform.OS === 'android') {
+        systemLanguage = NativeModules.I18nManager.localeIdentifier;
+    } else {
+        systemLanguage = NativeModules.SettingsManager.settings.AppleLocale;
+    }
+    let languageCode = systemLanguage.substring(0, 2);
+
+    return languageCode;
 }

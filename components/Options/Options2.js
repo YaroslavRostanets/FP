@@ -39,7 +39,7 @@ class Options extends Component {
 
     componentDidMount() {
 
-        AsyncStorage.getItem('localization',(value)=>{
+        AsyncStorage.getItem('language',(value)=>{
            if(value != null){
                this.langItemSelect(value);
            }
@@ -65,10 +65,10 @@ class Options extends Component {
     };
 
     langItemSelect(langCode) {
-        AsyncStorage.setItem('localization', langCode);
-
-        this.props.uiActions.toggleLanguage(langCode);
-
+        AsyncStorage.setItem('language', langCode , ()=>{
+            this.props.uiActions.toggleLanguage(langCode);
+        });
+        
         this.setState({
             availableLanguages: {
                 isOpen: false

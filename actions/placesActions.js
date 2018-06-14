@@ -181,8 +181,6 @@ export function editSearchOptions(searchOptionsObject){
 export function getPlacesSearch(searchObject, lat, lon, toggleTab){
     let myRequest = new Request(`${API}getplacessearch?&lat=${lat}&lon=${lon}&` + objToStrGetParams(searchObject));
 
-    console.log('_TEST_URL_:', `${API}getplacessearch?&lat=${lat}&lon=${lon}&` + objToStrGetParams(searchObject));
-
     return (dispatch) => {
         dispatch({
             type: SEARCH_PLACES_REQUEST,

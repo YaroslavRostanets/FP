@@ -11,16 +11,12 @@ import {
     TOGGLE_CALLOUT
 } from '../constants/UI';
 
-import {lang} from '../constants/appConfig'
-
-import {Platform, NativeModules} from 'react-native';
-
 const initialState = {
     menuOpen: false,
     barOpen: true,
     activeTab: FAST_PARKING,
     callout: false,
-    localization: getLanguageCode()
+    localization: 'en'
 };
 
 export default function ui(state = initialState, action) {
@@ -38,18 +34,4 @@ export default function ui(state = initialState, action) {
     }
 }
 
-function getLanguageCode() {
-    let systemLanguage = 'en';
-    let defaultLang = 'en';
 
-    if (Platform.OS === 'android') {
-        systemLanguage = NativeModules.I18nManager.localeIdentifier;
-    } else {
-        systemLanguage = NativeModules.SettingsManager.settings.AppleLocale;
-    }
-    const languageCode = systemLanguage.substring(0, 2);
-
-    if(~lang.indexOf(languageCode)) return  defaultLang; //Если в программе нету такого языка то английский
-
-    return languageCode;
-}

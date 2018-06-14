@@ -55,7 +55,7 @@ const initialState = {
 };
 
 export default function places(state = initialState, action) {
-    console.log('__PLACES__');
+
     switch (action.type) {
         case GET_FASTPLACES_REQUEST:
             return { ...state, fastPlacesLoader: true};

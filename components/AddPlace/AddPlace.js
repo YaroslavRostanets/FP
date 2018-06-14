@@ -2,12 +2,17 @@
  * Created by Yaroslav on 04.06.2018.
  */
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { View, Text, Button, PermissionsAndroid, Image } from 'react-native';
 import Camera from 'react-native-camera';
 import Ripple from 'react-native-material-ripple';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RNFS from 'react-native-fs';
 import {API} from '../../constants/appConfig';
+import Loader from '../layers/loader';
+import Dialog from '../layers/dialog';
+import * as locationActions from '../../actions/locationActions';
 
 
 
@@ -17,7 +22,9 @@ class AddPlace extends Component {
         super(props);
         this.state = {
             isPhotoTaken: false,
-            filePhotoUrl: ''
+            filePhotoUrl: '',
+            loader: false,
+            dialog: false
         }
     }
 
@@ -73,19 +80,62 @@ class AddPlace extends Component {
     }
 
     sendParkPlace() {
-        const file = {
-            uri,             // e.g. 'file:///path/to/file/image123.jpg'
-            name,            // e.g. 'image123.jpg',
-            type             // e.g. 'image/jpg'
+        let self = this;
+        //this.props.locationActions.getCurrentPosition();
+        navigator.geolocation.getCurrentPosition(success, error, options);
+
+        let options = {
+            enableHighAccuracy: false,
+            timeout: 5000,
+            maximumAge: 60000
         };
 
-        const body = new FormData()
-        body.append('file', file)
+        function success(position) {
+            // self.props.locationActions.setNewLocation({
+            //     lat: Number(position.coords.latitude),
+            //     lon: Number(position.coords.longitude)
+            // });
+
+            self.sendPhoto();
+        }
+
+        function error(err) {
+            console.log('_ERROR_: AddPlace', err);
+        }
+
+    }
+
+    sendPhoto() {
+        const url = `${API}offerparking/`;
+        const file = {
+            uri: this.state.filePhotoUrl,
+            name: this.state.filePhotoUrl.split('/').pop(),
+            type: 'image/jpg',
+        };
+
+        const body = new FormData();
+        body.append('file', file);
+        body.append('from_user_id', '23');
+        body.append('location', JSON.stringify(this.props.location));
 
         fetch(url, {
             method: 'POST',
             body
-        })
+        }).then( response => {
+            if (response.status === 200) {
+                return response;
+            } else {
+                throw new Error('Something went wrong on api server!');
+            }
+        }).then( response => {
+            this.setState({
+                isPhotoTaken: false,
+                loader: false,
+                dialog: true
+            });
+        }).catch( error => {
+            console.log('_ERROR_:', error);
+        });
     }
 
     takePicture() {
@@ -93,7 +143,6 @@ class AddPlace extends Component {
         //options.location = ...
         this.camera.capture({metadata: options})
             .then((data) => {
-            console.log(data);
                 this.setState({
                     isPhotoTaken: true,
                     filePhotoUrl: data.path
@@ -112,13 +161,19 @@ class AddPlace extends Component {
                 source={{isStatic:true, uri: this.state.filePhotoUrl}}  />
             <View style={styles.botBtn}>
                 <Ripple
-                    onPress={this.sendParkPlace.bind(this)}
+                    onPress={()=>{
+                        this.setState({
+                            loader: true
+                        },
+                            this.sendParkPlace.bind(this)
+                        );
+                    }}
                     rippleColor={'#FFFFFF'}
                     rippleOpacity={0.6}
                     rippleDuration={800}
                     style={{...styles.stdBtn, marginRight: 1}}>
                     <Icon style={styles.stdBtnIcon} name={'paper-plane-o'} />
-                    <Text style={styles.stdBtnText}>SEND</Text>
+                    <Text style={styles.stdBtnText}>SEND {this.props.location.lat}</Text>
                 </Ripple>
                 <Ripple
                     onPress={this.remakePhoto.bind(this)}
@@ -132,6 +187,8 @@ class AddPlace extends Component {
             </View>
         </View> ;
 
+
+
         return (
             <View style={styles.addPlace}>
                 {(this.state.isPhotoTaken)? finishedPhoto :
@@ -139,12 +196,26 @@ class AddPlace extends Component {
                             ref={(cam) => {
                             this.camera = cam;
                             }}
-                            captureQuality={Camera.constants.CaptureQuality["480p"]}
+                            captureQuality={Camera.constants.CaptureQuality["720p"]}
                             style={styles.preview}>
                             <Icon style={styles.photoBtn} name={'camera'} onPress={this.takePicture.bind(this)} />
                         </Camera>
                 }
-
+                {(this.state.loader)? <Loader /> : null}
+                {(this.state.dialog)? <Dialog
+                                        title={'Thank you!'}
+                                        text={'Thank you for adding parking. It will appear in the system after verification by the moderator.'}
+                                        btnActions={[
+                                            {
+                                                'title':'OK',
+                                                'action': ()=>{
+                                                    this.setState({
+                                                        dialog: false
+                                                    });
+                                                    this.props.navigator.pop();
+                                                }
+                                            }
+                                        ]} />: null }
             </View>
         )
     }
@@ -191,7 +262,27 @@ const styles = {
         fontSize: 23,
         color: '#FFFFFF',
         marginRight: 5
+    },
+    overlay: {
+        backgroundColor: 'rgba(7,76,87,0.5)',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0
     }
 };
 
-export default AddPlace
+function mapStateToProps (store) {
+    return {
+        location: store.location
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        locationActions: bindActionCreators(locationActions, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddPlace)

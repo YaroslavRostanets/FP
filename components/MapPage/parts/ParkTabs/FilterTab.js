@@ -225,12 +225,13 @@ class FilterTab extends Component {
                                 Day:
                             </Text>
                             <View style={styles.checkbox}>
-                                <View style={{...styles.oneCheck,marginLeft: -20, width: "auto"}}>
+                                <View style={{...styles.oneCheck, width: "auto"}}>
                                     <CheckboxField
                                         onSelect={this.selectCheckbox.bind(this,MONFRY)}
                                         selected={monFry}
                                         labelSide="right"
                                         label="Mon-Fry"
+                                        containerStyle={styles.containerStyle}
                                         labelStyle={styles.labelStyle}
                                     >
                                         <Icon name="check" color="#fff" />
@@ -242,6 +243,7 @@ class FilterTab extends Component {
                                         selected={sat}
                                         labelSide="right"
                                         label="Sat"
+                                        containerStyle={styles.containerStyle}
                                         labelStyle={styles.labelStyle}
                                     >
                                         <Icon name="check" color="#fff" />
@@ -253,6 +255,7 @@ class FilterTab extends Component {
                                         selected={sun}
                                         labelSide="right"
                                         label="Sun"
+                                        containerStyle={styles.containerStyle}
                                         labelStyle={styles.labelStyle}
                                     >
                                         <Icon name="check" color="#fff" />
@@ -369,7 +372,8 @@ const styles = {
     },
     rightPart: {
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        flexGrow: 1
     },
     topDescr: {
         color: "#5093DF",
@@ -378,17 +382,26 @@ const styles = {
     checkbox: {
         display: "flex",
         flexDirection: "row",
-        width: "100%"
+        width: "100%",
+        flexGrow: 1
     },
     oneCheck: {
         width: 120,
-        marginLeft: -20,
-        flexGrow: 1
+        marginLeft: 0,
+        flexGrow: 1,
+        flexWrap: 'nowrap'
     },
     labelStyle: {
         fontSize: 14,
         color: "#6F7071",
-        marginLeft: 8
+        marginLeft: 8,
+        flexDirection: 'row',
+
+    },
+    containerStyle: {
+        padding: 5,
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     checkboxStyle: {
         width: 24,

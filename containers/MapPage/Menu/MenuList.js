@@ -35,12 +35,8 @@ class MenuList extends Component {
                         <Icon name="map" style={styles.ico} />
                         <Text style={styles.menuItem}>Map settings</Text>
                     </View>
-                    <View style={styles.middleMenuItem}>
-                        <Icon name="plus" style={styles.ico} />
-                        <Text style={styles.menuItem}>Add new parking</Text>
-                    </View>
-                    <TouchableHighlight onPress={this.goToScreen.bind(this, 'AddPlace')} style={styles.botMenuItem}>
-                        <View>
+                    <TouchableHighlight onPress={this.goToScreen.bind(this, 'AddPlace')} style={styles.middleMenuItem}>
+                        <View style={styles.botMenuItemIn}>
                             <Icon name="plus" style={styles.ico} />
                             <Text style={styles.menuItem}>Add new parking</Text>
                         </View>
@@ -106,6 +102,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         justifyContent: "flex-start"
+    },
+    botMenuItemIn: {
+       flexDirection: 'row'
     }
 });
 

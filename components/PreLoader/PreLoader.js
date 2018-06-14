@@ -2,14 +2,17 @@
  * Created by Yaroslav on 13.02.2018.
  */
 import React, { Component } from 'react';
-import { View, Text, Button, Image, Dimensions } from 'react-native';
+import { View, Text, Button, Image, Dimensions, AsyncStorage } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as locationActions from '../../actions/locationActions';
 import * as placesActions from '../../actions/placesActions';
+import * as uiActions from '../../actions/uiActions';
 import { API } from '../../constants/appConfig';
 import { Bars } from 'react-native-loader';
-import { LAT, LON } from '../../constants/Location'
+import { LAT, LON } from '../../constants/Location';
+import { getLanguageCode } from '../../helpers/helpers';
+import {lang} from '../../constants/appConfig';
 
 const loaderWidth = Dimensions.get('window').width * 0.635;
 
@@ -22,12 +25,31 @@ class PreLoader extends Component {
         })
     }
 
-    componentWillReceiveProps(nextProps){
-        //this.goToMapPage('MapPage');
+    async setAppLanguage(){
+        try {
+            const value = await AsyncStorage.getItem('language');
+            if (value !== null){
+                this.props.uiActions.toggleLanguage(value);
+            } else {
+                let systemLangCode = getLanguageCode();
+                if( ~lang.indexOf(systemLangCode) ){
+                    await AsyncStorage.setItem('language', systemLangCode, ()=>{
+                        this.props.uiActions.toggleLanguage(systemLangCode);
+
+                    });
+                }
+            }
+
+        } catch (error) {
+            // Error retrieving data
+        }
     }
 
     componentDidMount() {
         //return false;
+        this.setAppLanguage();
+
+
         const self = this;
         let options = {
             enableHighAccuracy: false,
@@ -89,6 +111,7 @@ class PreLoader extends Component {
             }
 
         }
+
 
         navigator.geolocation.getCurrentPosition(success, error, options);
     }
@@ -183,7 +206,8 @@ function mapStateToProps (store) {
 function mapDispatchToProps(dispatch) {
     return {
         locationActions: bindActionCreators(locationActions, dispatch),
-        placesActions: bindActionCreators(placesActions, dispatch)
+        placesActions: bindActionCreators(placesActions, dispatch),
+        uiActions: bindActionCreators(uiActions, dispatch)
     }
 }
 
